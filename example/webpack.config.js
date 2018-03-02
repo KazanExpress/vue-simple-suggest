@@ -7,8 +7,8 @@ const root = './example'
 module.exports = {
   entry: root + '/src/main.js',
   output: {
-    path: path.resolve(__dirname, root + '/dist'),
-    publicPath: root + '/dist/',
+    path: path.resolve(__dirname, './dist'),
+    publicPath: './dist/',
     filename: 'build.js'
   },
   module: {
