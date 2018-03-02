@@ -6,8 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --mode development --config example/webpack.config.js --open --hot",
-    "build": "webpack --mode production --config example/webpack.config.js --progress --hide-modules"
+    "example": "webpack-dev-server --mode development --config example/webpack.config.js --open --hot"
   },
   "dependencies": {
     "vue": "^2.5.11"
