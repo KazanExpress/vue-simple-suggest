@@ -2,15 +2,13 @@ var path = require('path')
 var webpack = require('webpack')
 var HtmlWebPackPlugin = require('html-webpack-plugin')
 
-const root = './example'
-
 module.exports = {
-  entry: root + '/src/main.js',
-  output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: './dist/',
-    filename: 'build.js'
-  },
+  entry: path.resolve(__dirname, './src/main.js'),
+  // output: {
+  //   path: path.resolve(__dirname, './dist'),
+  //   publicPath: 'dist/',
+  //   filename: 'main.js'
+  // },
   module: {
     rules: [
       {
@@ -54,21 +52,17 @@ module.exports = {
     extensions: ['*', '.js', '.vue', '.json']
   },
   devServer: {
-    contentBase: root,
+    contentBase: __dirname,
     historyApiFallback: true,
-    noInfo: true,
+    noInfo: false,
     overlay: true
   },
   performance: {
     hints: false
   },
-  optimization: {
-    minimize: true
-  },
-  // plugins: [
-  //   new HtmlWebPackPlugin({
-  //     template: root + "src/index.html",
-  //     filename: root + "index.html"
-  //   })
-  // ]
+  plugins: [
+    new HtmlWebPackPlugin({
+      template: path.resolve(__dirname, 'index.html')
+    })
+  ]
 }

@@ -9,8 +9,8 @@
 npm install
 
 # serve example with hot reload at localhost:8080
-npm run example
+npm run dev
 
-# build example for static usage
+# build lib for static usage
 npm run build
 ```
