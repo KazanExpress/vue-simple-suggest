@@ -1,0 +1,36 @@
+{
+  "name": "vue-simple-suggest",
+  "description": "Suggestion component for Vue.js",
+  "version": "0.0.0",
+  "author": "KazanExpress",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "webpack-dev-server --mode development --config example/webpack.config.js --open --hot",
+    "build": "webpack --mode production --config example/webpack.config.js --progress --hide-modules"
+  },
+  "dependencies": {
+    "vue": "^2.5.11"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.0.4",
+    "cross-env": "^5.0.5",
+    "css-loader": "^0.28.7",
+    "file-loader": "^1.1.4",
+    "vue-loader": "^13.0.5",
+    "vue-template-compiler": "^2.4.4",
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.8",
+    "webpack-dev-server": "^3.1.0"
+  }
+}
