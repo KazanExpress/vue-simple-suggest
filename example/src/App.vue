@@ -1,36 +1,51 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <h1>\{{ msg }}</h1>
-    <vue-suggest></vue-suggest>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+    <vue-suggest @onSelect="onSuggestSelect" :getList="getList">
+      <!-- <test-input/> -->
+      <!-- var1 -->
+      <!-- <div class="g"><input type="text"></div> -->
+
+      <!-- var2 -->
+      <!-- <div class="h">
+        <div class="e"></div>
+      </div> -->
+
+      <!-- var3 -->
+      <test-input/>
+      <div slot="suggestionItemTpl" slot-scope="{ suggest }">
+        <p>My {{ suggest.title }}</p>
+      </div>
+    </vue-suggest>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur iusto repellendus recusandae, distinctio ratione voluptate? Doloribus suscipit quibusdam atque perferendis quam consequatur dolore dolores nemo, quia exercitationem voluptatibus facere repellat.</p>
   </div>
 </template>
 
 <script>
   import VueSuggest from 'vue-simple-suggest'
+  import TestInput from './TestInput'
 
   export default {
     components: {
-      VueSuggest
+      VueSuggest,
+      TestInput
     },
     name: 'app',
     data () {
       return {
         msg: 'Welcome to Your Vue.js App'
+      }
+    },
+    methods: {
+      onSuggestSelect (suggest) {
+        console.log(suggest)
+      },
+      getList () {
+        return [0,0,0,0,0].map(el => {
+          return el = {
+            title: 'suggest item ' + Math.floor(Math.random() * Math.floor(300))
+          }
+        })
       }
     }
   }
@@ -44,23 +59,5 @@
     text-align: center;
     color: #2c3e50;
     margin-top: 60px;
-  }
-
-  h1, h2 {
-    font-weight: normal;
-  }
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-
-  a {
-    color: #42b983;
   }
 </style>
