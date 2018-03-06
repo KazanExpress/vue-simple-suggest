@@ -1,19 +1,13 @@
 <template>
   <div id="app">
-    <vue-suggest @onSelect="onSuggestSelect" :getList="getList">
-      <!-- <test-input/> -->
-      <!-- var1 -->
-      <!-- <div class="g"><input type="text"></div> -->
+    <vue-suggest @onSelect="onSuggestSelect" :getList="getList" class="asdad" :isDesigned="true">
+      <!-- <input type="text" v-model="val"> -->
 
-      <!-- var2 -->
-      <!-- <div class="h">
-        <div class="e"></div>
-      </div> -->
+      <!-- <div class="g"><input type="text" v-model="val"></div> -->
 
-      <!-- var3 -->
-      <test-input/>
-      <div slot="suggestionItemTpl" slot-scope="{ suggest }">
-        <p>My {{ suggest.title }}</p>
+      <test-input v-model="val" />
+      <div slot="suggestionItem" slot-scope="{ suggest }">
+        <div>My {{ suggest.title }}</div>
       </div>
     </vue-suggest>
 
@@ -33,17 +27,22 @@
     name: 'app',
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        selected: null,
+        val: ''
       }
     },
     methods: {
       onSuggestSelect (suggest) {
+        this.selected = suggest
+        this.val = this.selected.title
         console.log(suggest)
       },
-      getList () {
+      getList (inputValue) {
         return [0,0,0,0,0].map(el => {
+          let id = Math.floor(Math.random() * Math.floor(300))
           return el = {
-            title: 'suggest item ' + Math.floor(Math.random() * Math.floor(300))
+            id,
+            title: 'suggest item ' + id
           }
         })
       }
@@ -56,7 +55,6 @@
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
     color: #2c3e50;
     margin-top: 60px;
   }

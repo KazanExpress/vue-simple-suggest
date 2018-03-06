@@ -1,12 +1,14 @@
 <template>
-  <input type="text" @input="onInput" @blur="onBlur" @focus="onFocus">
+  <input type="text" @input="onInput" @blur="onBlur" @focus="onFocus" :value="value">
 </template>
 
 <script>
 export default {
+  props: ['value'],
   methods: {
     onInput (e) {
-      this.$emit('input', e)
+      this.$emit('input', e.target.value)
+      console.log('input', e)
     },
     onBlur (e) {
       this.$emit('blur', e)
@@ -19,3 +21,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+ input {
+   color: red
+ }
+</style>
