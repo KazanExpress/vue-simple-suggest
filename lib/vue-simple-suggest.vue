@@ -5,7 +5,7 @@
         <input type="text" :placeholder="placeholder" @blur="hideList" @focus="showList">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!show && !!suggestions.length">
+    <div class="suggestions" v-if="!!show && suggestions.length > 0">
       <div class="suggest-item" v-for="suggest in suggestions" :key="suggest.id" @click="select(suggest)">
         <slot name="suggestionItemTpl" :suggest="suggest">
           <span>{{ suggest[displayAttribute] }}</span>
@@ -38,30 +38,36 @@ export default {
     return {
       selected: null,
       suggestions: [],
-      show: false
+      show: false,
+      inputElement: null
+    }
+  },
+  computed: {
+    slotIsComponent() {
+      return !!this.$slots.default[0].componentInstance;
+    },
+    input() {
+      return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement;
+    },
+    on() {
+      return this.slotIsComponent ? '$on' : 'addEventListener';
+    },
+    off() {
+      return this.slotIsComponent ? '$off' : 'removeEventListener';
     }
   },
   created () {
     this.$on('input', this.getSuggestions)
   },
   mounted () {
-    if (this.$slots.default[0].componentInstance) {
-      this.$slots.default[0].componentInstance.$on('blur', this.hideList)
-      this.$slots.default[0].componentInstance.$on('focus', this.showList)
-      console.log('Component found')
-    } else {
-      let slotElement = this.$refs['inputSlot']
-      let inputElement = slotElement.querySelector('input')
-      if (!!inputElement) {
-        inputElement.addEventListener('blur', this.hideList)
-        inputElement.addEventListener('focus', this.showList)
-        console.log('Input found')
-      }
-    }
-    console.log(this.$slots.default[0])
+    this.inputElement = this.$refs['inputSlot'].querySelector('input');
+    this.input[this.on]('blur', this.hideList)
+    this.input[this.on]('focus', this.showList)
   },
   beforeDestroy () {
     this.$off('input', this.getSuggestions)
+    this.input[this.off]('blur', this.hideList);
+    this.input[this.off]('focus', this.showList);
   },
   methods: {
     select (item) {
@@ -80,15 +86,19 @@ export default {
     },
     async getSuggestions (inputEvent) {
       if (!!inputEvent.target.value) {
-        let res =  await this.getList()
+        let res = (await this.getList()) || [];
         this.$set(this, 'suggestions', res)
 
-        if (!this.suggestions.length) {
+        if (!this.show) {
+          this.showList()
+        }
+
+        if (this.suggestions.length === 0) {
           this.hideList()
         }
       } else {
         this.hideList()
-        this.$set(this, 'suggestions', [])
+        this.suggestions.splice(0)
       }
     },
     clearSuggestions () {
