@@ -7,7 +7,7 @@
     </div>
     <div class="suggestions" v-if="!!show && suggestions.length > 0" :class="{ designed: isDesigned }">
       <div class="suggest-item" v-for="suggest in suggestions" @mouseover="hover(suggest)" :key="suggest[valueAttribute]" :class="{ selected: selected ? suggest[valueAttribute] == selected[valueAttribute] : false }">
-        <slot name="suggestionItemTpl" :suggest="suggest">
+        <slot name="suggestionItem" :suggest="suggest">
           <span>{{ suggest[displayAttribute] }}</span>
         </slot>
       </div>
@@ -51,7 +51,8 @@ export default {
       hovered: null,
       suggestions: [],
       show: false,
-      inputElement: null
+      inputElement: null,
+      text: ''
     }
   },
   computed: {
@@ -91,19 +92,20 @@ export default {
       this.hovered = item
     },
     hideList () {
-      console.log('hide')
-
-      if (this.hovered) {
+      if (this.hovered && this.text) {
         this.select(this.hovered)
       }
 
       this.show = false
+      this.$emit('onHideList')
     },
     showList () {
-      console.log('show')
+      console.log('showList')
       this.show = true
+      this.$emit('onShowList')
     },
     async getSuggestions (inputEvent) {
+      this.text = inputEvent.target.value
       if (!!inputEvent.target.value) {
         let res = (await this.getList(inputEvent.target.value)) || [];
         this.$set(this, 'suggestions', res.slice(0, this.maxCount))
@@ -134,10 +136,6 @@ export default {
 
 .vue-simple-suggest, .vue-simple-suggest * {
   box-sizing: border-box;
-}
-
-.vue-simple-suggest .input-wrapper.designed {
-
 }
 
 .vue-simple-suggest .input-wrapper.designed input {

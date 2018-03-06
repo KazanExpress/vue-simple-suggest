@@ -1,19 +1,13 @@
 <template>
   <div id="app">
     <vue-suggest @onSelect="onSuggestSelect" :getList="getList" class="asdad" :isDesigned="true">
-      <!-- <test-input/> -->
-      <!-- var1 -->
-      <!-- <div class="g"><input type="text"></div> -->
+      <!-- <input type="text" v-model="val"> -->
 
-      <!-- var2 -->
-      <!-- <div class="h">
-        <div class="e"></div>
-      </div> -->
+      <!-- <div class="g"><input type="text" v-model="val"></div> -->
 
-      <!-- var3 -->
-      <test-input/>
-      <div slot="suggestionItemTpl" slot-scope="{ suggest }">
-        <p>My {{ suggest.title }}</p>
+      <test-input v-model="val" />
+      <div slot="suggestionItem" slot-scope="{ suggest }">
+        <div>My {{ suggest.title }}</div>
       </div>
     </vue-suggest>
 
@@ -33,11 +27,14 @@
     name: 'app',
     data () {
       return {
-        msg: 'Welcome to Your Vue.js App'
+        selected: null,
+        val: ''
       }
     },
     methods: {
       onSuggestSelect (suggest) {
+        this.selected = suggest
+        this.val = this.selected.title
         console.log(suggest)
       },
       getList (inputValue) {
