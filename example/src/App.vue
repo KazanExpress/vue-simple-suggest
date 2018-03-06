@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <vue-suggest @onSelect="onSuggestSelect" :getList="getList">
+    <vue-suggest @onSelect="onSuggestSelect" :getList="getList" class="asdad" :isDesigned="true">
       <!-- <test-input/> -->
       <!-- var1 -->
       <!-- <div class="g"><input type="text"></div> -->
@@ -40,10 +40,12 @@
       onSuggestSelect (suggest) {
         console.log(suggest)
       },
-      getList () {
+      getList (inputValue) {
         return [0,0,0,0,0].map(el => {
+          let id = Math.floor(Math.random() * Math.floor(300))
           return el = {
-            title: 'suggest item ' + Math.floor(Math.random() * Math.floor(300))
+            id,
+            title: 'suggest item ' + id
           }
         })
       }
@@ -56,7 +58,6 @@
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
     color: #2c3e50;
     margin-top: 60px;
   }

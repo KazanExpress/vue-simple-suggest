@@ -1,12 +1,12 @@
 <template>
   <div class="vue-simple-suggest">
-    <div class="input-wrapper" @input="getSuggestions" ref="inputSlot">
+    <div class="input-wrapper" @input="getSuggestions" ref="inputSlot" :class="{ designed: isDesigned }">
       <slot>
         <input type="text" :placeholder="placeholder" @blur="hideList" @focus="showList">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!show && suggestions.length > 0">
-      <div class="suggest-item" v-for="suggest in suggestions" :key="suggest.id" @click="select(suggest)">
+    <div class="suggestions" v-if="!!show && suggestions.length > 0" :class="{ designed: isDesigned }">
+      <div class="suggest-item" v-for="suggest in suggestions" @mouseover="hover(suggest)" :key="suggest[valueAttribute]" :class="{ selected: selected ? suggest[valueAttribute] == selected[valueAttribute] : false }">
         <slot name="suggestionItemTpl" :suggest="suggest">
           <span>{{ suggest[displayAttribute] }}</span>
         </slot>
@@ -22,21 +22,33 @@ export default {
   name: 'vue-simple-suggest',
   props: {
     placeholder: {
-      type: String,
-      default: ''
+      type: String
+    },
+    maxCount: {
+      type: Number,
+      default: 10
     },
     displayAttribute: {
       type: String,
       default: 'title'
     },
+    valueAttribute: {
+      type: String,
+      default: 'id'
+    },
     getList: {
       type: Function,
       default: () => []
+    },
+    isDesigned: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
     return {
       selected: null,
+      hovered: null,
       suggestions: [],
       show: false,
       inputElement: null
@@ -44,7 +56,7 @@ export default {
   },
   computed: {
     slotIsComponent() {
-      return !!this.$slots.default[0].componentInstance;
+      return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance;
     },
     input() {
       return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement;
@@ -72,12 +84,19 @@ export default {
   methods: {
     select (item) {
       this.selected = item
-      this.hideList()
-
       this.$emit('onSelect', item)
+      this.hovered = null
+    },
+    hover (item) {
+      this.hovered = item
     },
     hideList () {
       console.log('hide')
+
+      if (this.hovered) {
+        this.select(this.hovered)
+      }
+
       this.show = false
     },
     showList () {
@@ -86,8 +105,8 @@ export default {
     },
     async getSuggestions (inputEvent) {
       if (!!inputEvent.target.value) {
-        let res = (await this.getList()) || [];
-        this.$set(this, 'suggestions', res)
+        let res = (await this.getList(inputEvent.target.value)) || [];
+        this.$set(this, 'suggestions', res.slice(0, this.maxCount))
 
         if (!this.show) {
           this.showList()
@@ -113,12 +132,53 @@ export default {
   position: relative;
 }
 
+.vue-simple-suggest, .vue-simple-suggest * {
+  box-sizing: border-box;
+}
+
+.vue-simple-suggest .input-wrapper.designed {
+
+}
+
+.vue-simple-suggest .input-wrapper.designed input {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cde;
+  border-radius: 3px;
+  color: black;
+  background: white;
+  outline:none;
+  transition: all .1s;
+}
+
+.vue-simple-suggest .input-wrapper.designed input:focus {
+  border: 1px solid #aaa;
+}
+
 .vue-simple-suggest .suggestions {
   position: absolute;
   left: 0;
   right: 0;
   top: calc(100% + 5px);
-  border: 1px solid #000;
+  border-radius: 3px;
+  border: 1px solid #aaa;
+  background-color: #fff;
+}
+
+.vue-simple-suggest .suggestions .suggest-item {
+  padding: 5px 10px;
+}
+
+.vue-simple-suggest .suggestions .suggest-item:hover,
+.vue-simple-suggest .suggestions .suggest-item.hover {
+  background-color: #2874D5;
+  color: #fff;
+}
+
+.vue-simple-suggest .suggestions .suggest-item.selected {
+  background-color: #2832D5;
+  color: #fff;
 }
 </style>
 
