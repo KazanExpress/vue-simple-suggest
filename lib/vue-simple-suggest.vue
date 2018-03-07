@@ -75,16 +75,16 @@ export default {
     }
   },
   computed: {
-    slotIsComponent() {
+    slotIsComponent () {
       return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance;
     },
-    input() {
+    input () {
       return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement;
     },
-    on() {
+    on () {
       return this.slotIsComponent ? '$on' : 'addEventListener';
     },
-    off() {
+    off () {
       return this.slotIsComponent ? '$off' : 'removeEventListener';
     },
     hoveredIndex () {
