@@ -2,11 +2,11 @@
   <div class="vue-simple-suggest">
     <div class="input-wrapper" @input="getSuggestions" ref="inputSlot" :class="{ designed: isDesigned }">
       <slot>
-        <input type="text" :placeholder="placeholder" @blur="hideList" @focus="showList">
+        <input type="text" :placeholder="placeholder" :value="selected ? selected[displayAttribute] : text">
       </slot>
     </div>
     <div class="suggestions" v-if="!!show && suggestions.length > 0" :class="{ designed: isDesigned }">
-      <div class="suggest-item" v-for="suggest in suggestions" @mouseover="hover(suggest)" :key="suggest[valueAttribute]" :class="{ selected: selected ? suggest[valueAttribute] == selected[valueAttribute] : false }">
+      <div class="suggest-item" v-for="suggest in suggestions" @mouseover="hover(suggest)" @mouseout="hover(null)" :key="suggest[valueAttribute]" :class="{ selected: selected ? suggest[valueAttribute] == selected[valueAttribute] : false }">
         <slot name="suggestionItem" :suggest="suggest">
           <span>{{ suggest[displayAttribute] }}</span>
         </slot>
@@ -74,13 +74,13 @@ export default {
   },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
-    this.input[this.on]('blur', this.hideList)
-    this.input[this.on]('focus', this.showList)
+    this.input[this.on]('blur', this.onBlur)
+    this.input[this.on]('focus', this.onFocus)
   },
   beforeDestroy () {
     this.$off('input', this.getSuggestions)
-    this.input[this.off]('blur', this.hideList);
-    this.input[this.off]('focus', this.showList);
+    this.input[this.off]('blur', this.onBlur);
+    this.input[this.off]('focus', this.onFocus);
   },
   methods: {
     select (item) {
@@ -100,11 +100,19 @@ export default {
       this.$emit('onHideList')
     },
     showList () {
-      console.log('showList')
       this.show = true
       this.$emit('onShowList')
     },
+    onBlur () {
+      this.hideList()
+    },
+    onFocus () {
+      if (this.suggestions.length > 0) {
+        this.showList()
+      }
+    },
     async getSuggestions (inputEvent) {
+      this.selected = null
       this.text = inputEvent.target.value
       if (!!inputEvent.target.value) {
         let res = (await this.getList(inputEvent.target.value)) || [];

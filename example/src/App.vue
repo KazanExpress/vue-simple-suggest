@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <vue-suggest @onSelect="onSuggestSelect" :getList="getList" class="asdad" :isDesigned="true">
+    <vue-suggest @onSelect="onSuggestSelect" :getList="getList" class="asdad" :isDesigned="true" @onShowList="onShowList" @onHideList="onHideList">
       <!-- <input type="text" v-model="val"> -->
 
       <!-- <div class="g"><input type="text" v-model="val"></div> -->
 
-      <test-input v-model="val" />
+      <!-- <test-input v-model="val" /> -->
       <div slot="suggestionItem" slot-scope="{ suggest }">
         <div>My {{ suggest.title }}</div>
       </div>
@@ -32,6 +32,12 @@
       }
     },
     methods: {
+      onShowList () {
+        console.log('showList')
+      },
+      onHideList () {
+        console.log('hideList')
+      },
       onSuggestSelect (suggest) {
         this.selected = suggest
         this.val = this.selected.title
