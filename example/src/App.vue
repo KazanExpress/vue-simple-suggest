@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <vue-suggest @onSelect="onSuggestSelect" :getList="getList" class="asdad" :isDesigned="true" @onShowList="onShowList" @onHideList="onHideList">
+    <vue-suggest @onSelect="onSuggestSelect" :getList="getList" class="asdad" :maxCount="10" :isDesigned="true" @onShowList="onShowList" @onHideList="onHideList">
       <!-- <input type="text" v-model="val"> -->
 
       <!-- <div class="g"><input type="text" v-model="val"></div> -->
 
-      <!-- <test-input v-model="val" /> -->
+      <test-input v-model="val" />
       <div slot="suggestionItem" slot-scope="{ suggest }">
         <div>My {{ suggest.title }}</div>
       </div>
@@ -44,7 +44,7 @@
         console.log(suggest)
       },
       getList (inputValue) {
-        return [0,0,0,0,0].map(el => {
+        return [0,0,0,0,0,0,0,0,0,0,0,0].map(el => {
           let id = Math.floor(Math.random() * Math.floor(300))
           return el = {
             id,

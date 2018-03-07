@@ -1,12 +1,19 @@
 <template>
   <div class="vue-simple-suggest">
-    <div class="input-wrapper" @input="getSuggestions" ref="inputSlot" :class="{ designed: isDesigned }">
+    <div class="input-wrapper" @click="onInputClick" @input="getSuggestions" ref="inputSlot" :class="{ designed: isDesigned }">
       <slot>
         <input type="text" :placeholder="placeholder" :value="selected ? selected[displayAttribute] : text">
       </slot>
     </div>
     <div class="suggestions" v-if="!!show && suggestions.length > 0" :class="{ designed: isDesigned }">
-      <div class="suggest-item" v-for="suggest in suggestions" @mouseover="hover(suggest)" @mouseout="hover(null)" :key="suggest[valueAttribute]" :class="{ selected: selected ? suggest[valueAttribute] == selected[valueAttribute] : false }">
+      <div class="suggest-item" v-for="suggest in suggestions"
+      @mouseover="hover(suggest)"
+      @mouseout="hover(null)"
+      :key="suggest[valueAttribute]"
+      :class="{
+        selected: selected ? suggest[valueAttribute] == selected[valueAttribute] : false,
+        hover: hovered ? hovered[valueAttribute] == suggest[valueAttribute] : false
+      }">
         <slot name="suggestionItem" :suggest="suggest">
           <span>{{ suggest[displayAttribute] }}</span>
         </slot>
@@ -67,6 +74,9 @@ export default {
     },
     off() {
       return this.slotIsComponent ? '$off' : 'removeEventListener';
+    },
+    hoveredIndex () {
+      return this.suggestions.findIndex(el => this.hovered ? this.hovered[this.valueAttribute] == el[this.valueAttribute] : false)
     }
   },
   created () {
@@ -76,11 +86,13 @@ export default {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
     this.input[this.on]('blur', this.onBlur)
     this.input[this.on]('focus', this.onFocus)
+    this.input[this.on]('keyup', this.onKeyUp)
   },
   beforeDestroy () {
     this.$off('input', this.getSuggestions)
     this.input[this.off]('blur', this.onBlur);
     this.input[this.off]('focus', this.onFocus);
+    this.input[this.off]('keyup', this.onKeyUp);
   },
   methods: {
     select (item) {
@@ -91,8 +103,8 @@ export default {
     hover (item) {
       this.hovered = item
     },
-    hideList () {
-      if (this.hovered && this.text) {
+    hideList (ignoreSelection = false) {
+      if (this.hovered && this.text && !ignoreSelection) {
         this.select(this.hovered)
       }
 
@@ -102,6 +114,60 @@ export default {
     showList () {
       this.show = true
       this.$emit('onShowList')
+    },
+    onInputClick (event) {
+      if (!this.show && this.suggestions.length > 0) {
+        this.showList()
+      }
+    },
+    onKeyUp (event) {
+      switch (event.key) {
+        case 'ArrowDown':
+        if (this.suggestions.length > 0) {
+          if (!this.show) {
+            this.showList()
+          }
+          if (!this.hovered) {
+            this.hovered = this.selected || this.suggestions[0]
+          } else {
+            if (this.hoveredIndex < this.suggestions.length-1) {
+              this.hovered = this.suggestions[this.hoveredIndex+1]
+            } else {
+              this.hovered = this.suggestions[0]
+            }
+          }
+        }
+        break
+
+        case 'ArrowUp':
+        if (this.suggestions.length > 0) {
+          if (!this.show) {
+            this.showList()
+          }
+          if (!this.hovered) {
+            this.hovered = this.suggestions[this.suggestions.length-1]
+          } else {
+            if (this.hoveredIndex > 0) {
+              this.hovered = this.suggestions[this.hoveredIndex-1]
+            } else {
+              this.hovered = this.suggestions[this.suggestions.length-1]
+            }
+          }
+        }
+        break
+
+        case 'Escape':
+        if (this.show) {
+          this.hideList(true)
+        }
+        break
+
+        case 'Enter':
+        if (this.show && this.suggestions.length > 0 && this.hovered) {
+          this.hideList()
+        }
+        break
+      }
     },
     onBlur () {
       this.hideList()
@@ -176,10 +242,9 @@ export default {
   padding: 5px 10px;
 }
 
-.vue-simple-suggest .suggestions .suggest-item:hover,
 .vue-simple-suggest .suggestions .suggest-item.hover {
-  background-color: #2874D5;
-  color: #fff;
+  background-color: #2874D5 !important;
+  color: #fff !important;
 }
 
 .vue-simple-suggest .suggestions .suggest-item.selected {
