@@ -1,12 +1,13 @@
 <template>
   <div id="app">
     <vue-suggest class="asdad"
+      v-model="model"
       :getList="getList"
       :maxCount="10"
       :minLength="3"
-      @onSelect="onSuggestSelect"
-      @onShowList="onShowList"
-      @onHideList="onHideList">
+      @select="onSuggestSelect"
+      @showList="onShowList"
+      @hideList="onHideList">
       <!-- <input type="text" v-model="val"> -->
 
       <!-- <div class="g"><input type="text" v-model="val"></div> -->
@@ -37,6 +38,7 @@
     data () {
       return {
         selected: null,
+        model: '',
         val: ''
       }
     },
@@ -56,6 +58,11 @@
           let id = Math.floor(Math.random() * Math.floor(300))
           return { id, title: 'suggest item ' + id };
         }).filter((v, i, arr) => arr.findIndex(el => el.id === v.id) === i)
+      }
+    },
+    watch: {
+      model(newval) {
+        console.log(newval);
       }
     }
   }

@@ -59,6 +59,9 @@ export default {
     destyled: {
       type: Boolean,
       default: false
+    },
+    value: {
+      type: String
     }
   },
   data () {
@@ -88,27 +91,25 @@ export default {
       return this.suggestions.findIndex(el => this.hovered && (this.hovered[this.valueAttribute] == el[this.valueAttribute]))
     }
   },
-  created () {
-    this.$on('input', this.getSuggestions)
-  },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
     this.input[this.on]('blur', this.onBlur)
     this.input[this.on]('focus', this.onFocus)
   },
   beforeDestroy () {
-    this.$off('input', this.getSuggestions)
     this.input[this.off]('blur', this.onBlur);
     this.input[this.off]('focus', this.onFocus);
   },
   methods: {
     select (item) {
       this.selected = item
-      this.$emit('onSelect', item)
+      this.$emit('select', item)
+      this.$emit('input', item[this.displayAttribute]);
       this.hovered = null
     },
     hover (item) {
       this.hovered = item
+      this.$emit('select', item)
     },
     hideList (ignoreSelection = false) {
       if (this.hovered && this.text && !ignoreSelection) {
@@ -116,11 +117,11 @@ export default {
       }
 
       this.show = false
-      this.$emit('onHideList')
+      this.$emit('hideList')
     },
     showList () {
       this.show = true
-      this.$emit('onShowList')
+      this.$emit('showList')
     },
     onInputClick (event) {
       if (!this.show && this.suggestions.length > 0) {
@@ -180,6 +181,8 @@ export default {
         this.hideList()
         this.suggestions.splice(0)
       }
+
+      this.$emit('input', this.text)
     },
     clearSuggestions () {
       this.suggestions.splice(0)
