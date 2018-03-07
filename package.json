@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "author": "KazanExpress",
   "license": "MIT",
-  "main": "lib/vue-simple-suggest.vue",
+  "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --mode development --config example/webpack.config.js --open --hot"
   },

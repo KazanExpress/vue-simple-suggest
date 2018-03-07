@@ -1,12 +1,26 @@
 <template>
   <div class="vue-simple-suggest">
-    <div class="input-wrapper" @input="getSuggestions" ref="inputSlot" :class="{ designed: isDesigned }">
+    <div class="input-wrapper" :class="{ designed: isDesigned }"
+      @click="onInputClick"
+      @input="getSuggestions"
+      @keydown.up.down.prevent="onArrowKeyDown"
+      @keyup.enter.esc.prevent="onListKeyUp"
+      ref="inputSlot"
+    >
       <slot>
-        <input type="text" :placeholder="placeholder" @blur="hideList" @focus="showList">
+        <input type="text" :placeholder="placeholder" :value="selected ? selected[displayAttribute] : text">
       </slot>
     </div>
     <div class="suggestions" v-if="!!show && suggestions.length > 0" :class="{ designed: isDesigned }">
-      <div class="suggest-item" v-for="suggest in suggestions" @mouseover="hover(suggest)" :key="suggest[valueAttribute]" :class="{ selected: selected ? suggest[valueAttribute] == selected[valueAttribute] : false }">
+      <div class="suggest-item" v-for="suggest in suggestions"
+        @mouseover="hover(suggest)"
+        @mouseout="hover(null)"
+        :key="suggest[valueAttribute]"
+        :class="{
+          selected: selected && (suggest[valueAttribute] == selected[valueAttribute]),
+          hover: hovered && (hovered[valueAttribute] == suggest[valueAttribute])
+        }"
+      >
         <slot name="suggestionItem" :suggest="suggest">
           <span>{{ suggest[displayAttribute] }}</span>
         </slot>
@@ -67,6 +81,9 @@ export default {
     },
     off() {
       return this.slotIsComponent ? '$off' : 'removeEventListener';
+    },
+    hoveredIndex () {
+      return this.suggestions.findIndex(el => this.hovered && (this.hovered[this.valueAttribute] == el[this.valueAttribute]))
     }
   },
   created () {
@@ -74,13 +91,13 @@ export default {
   },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
-    this.input[this.on]('blur', this.hideList)
-    this.input[this.on]('focus', this.showList)
+    this.input[this.on]('blur', this.onBlur)
+    this.input[this.on]('focus', this.onFocus)
   },
   beforeDestroy () {
     this.$off('input', this.getSuggestions)
-    this.input[this.off]('blur', this.hideList);
-    this.input[this.off]('focus', this.showList);
+    this.input[this.off]('blur', this.onBlur);
+    this.input[this.off]('focus', this.onFocus);
   },
   methods: {
     select (item) {
@@ -91,8 +108,8 @@ export default {
     hover (item) {
       this.hovered = item
     },
-    hideList () {
-      if (this.hovered && this.text) {
+    hideList (ignoreSelection = false) {
+      if (this.hovered && this.text && !ignoreSelection) {
         this.select(this.hovered)
       }
 
@@ -100,14 +117,53 @@ export default {
       this.$emit('onHideList')
     },
     showList () {
-      console.log('showList')
       this.show = true
       this.$emit('onShowList')
     },
+    onInputClick (event) {
+      if (!this.show && this.suggestions.length > 0) {
+        this.showList()
+      }
+    },
+    onArrowKeyDown (event) {
+      if (this.suggestions.length > 0) {
+        if (!this.show) {
+          this.showList()
+        }
+
+        const isArrowDown = event.key === 'ArrowDown';
+        const direction = isArrowDown * 2 - 1;
+        const listEdge = isArrowDown ? 0 : this.suggestions.length - 1
+        const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
+
+        if (!this.hovered) {
+          this.hovered = this.selected || this.suggestions[listEdge];
+        } else if (hoversBetweenEdges) {
+          this.hovered = this.suggestions[this.hoveredIndex + direction];
+        } else /* if hovers on edge */ {
+          this.hovered = this.suggestions[listEdge];
+        }
+      }
+    },
+    onListKeyUp (event) {
+      if (this.show) {
+        this.hideList(event.key === 'Escape');
+      }
+    },
+    onBlur () {
+      this.hideList()
+    },
+    onFocus () {
+      if (this.suggestions.length > 0) {
+        this.showList()
+      }
+    },
     async getSuggestions (inputEvent) {
+      this.selected = null
       this.text = inputEvent.target.value
-      if (!!inputEvent.target.value) {
-        let res = (await this.getList(inputEvent.target.value)) || [];
+
+      if (this.text) {
+        let res = (await this.getList(this.text)) || [];
         this.$set(this, 'suggestions', res.slice(0, this.maxCount))
 
         if (!this.show) {
@@ -168,10 +224,9 @@ export default {
   padding: 5px 10px;
 }
 
-.vue-simple-suggest .suggestions .suggest-item:hover,
 .vue-simple-suggest .suggestions .suggest-item.hover {
-  background-color: #2874D5;
-  color: #fff;
+  background-color: #2874D5 !important;
+  color: #fff !important;
 }
 
 .vue-simple-suggest .suggestions .suggest-item.selected {
