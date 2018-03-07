@@ -1,6 +1,12 @@
 <template>
   <div class="vue-simple-suggest">
-    <div class="input-wrapper" @click="onInputClick" @input="getSuggestions" ref="inputSlot" :class="{ designed: isDesigned }">
+    <div class="input-wrapper" :class="{ designed: isDesigned }"
+      @click="onInputClick"
+      @input="getSuggestions"
+      @keydown.up.down.prevent="onArrowKeyDown"
+      @keyup.enter.esc.prevent="onListKeyUp"
+      ref="inputSlot"
+    >
       <slot>
         <input type="text" :placeholder="placeholder" :value="selected ? selected[displayAttribute] : text">
       </slot>
@@ -11,8 +17,8 @@
       @mouseout="hover(null)"
       :key="suggest[valueAttribute]"
       :class="{
-        selected: selected ? suggest[valueAttribute] == selected[valueAttribute] : false,
-        hover: hovered ? hovered[valueAttribute] == suggest[valueAttribute] : false
+        selected: selected && (suggest[valueAttribute] == selected[valueAttribute]),
+        hover: hovered && (hovered[valueAttribute] == suggest[valueAttribute])
       }">
         <slot name="suggestionItem" :suggest="suggest">
           <span>{{ suggest[displayAttribute] }}</span>
@@ -76,7 +82,7 @@ export default {
       return this.slotIsComponent ? '$off' : 'removeEventListener';
     },
     hoveredIndex () {
-      return this.suggestions.findIndex(el => this.hovered ? this.hovered[this.valueAttribute] == el[this.valueAttribute] : false)
+      return this.suggestions.findIndex(el => this.hovered && (this.hovered[this.valueAttribute] == el[this.valueAttribute]))
     }
   },
   created () {
@@ -86,13 +92,11 @@ export default {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
     this.input[this.on]('blur', this.onBlur)
     this.input[this.on]('focus', this.onFocus)
-    this.input[this.on]('keyup', this.onKeyUp)
   },
   beforeDestroy () {
     this.$off('input', this.getSuggestions)
     this.input[this.off]('blur', this.onBlur);
     this.input[this.off]('focus', this.onFocus);
-    this.input[this.off]('keyup', this.onKeyUp);
   },
   methods: {
     select (item) {
@@ -120,53 +124,29 @@ export default {
         this.showList()
       }
     },
-    onKeyUp (event) {
-      switch (event.key) {
-        case 'ArrowDown':
-        if (this.suggestions.length > 0) {
-          if (!this.show) {
-            this.showList()
-          }
-          if (!this.hovered) {
-            this.hovered = this.selected || this.suggestions[0]
-          } else {
-            if (this.hoveredIndex < this.suggestions.length-1) {
-              this.hovered = this.suggestions[this.hoveredIndex+1]
-            } else {
-              this.hovered = this.suggestions[0]
-            }
-          }
+    onArrowKeyDown (event) {
+      if (this.suggestions.length > 0) {
+        if (!this.show) {
+          this.showList()
         }
-        break
 
-        case 'ArrowUp':
-        if (this.suggestions.length > 0) {
-          if (!this.show) {
-            this.showList()
-          }
-          if (!this.hovered) {
-            this.hovered = this.suggestions[this.suggestions.length-1]
-          } else {
-            if (this.hoveredIndex > 0) {
-              this.hovered = this.suggestions[this.hoveredIndex-1]
-            } else {
-              this.hovered = this.suggestions[this.suggestions.length-1]
-            }
-          }
-        }
-        break
+        const isArrowDown = event.key === 'ArrowDown';
+        const direction = isArrowDown * 2 - 1;
+        const listEdge = isArrowDown ? 0 : this.suggestions.length - 1
+        const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
 
-        case 'Escape':
-        if (this.show) {
-          this.hideList(true)
+        if (!this.hovered) {
+          this.hovered = this.selected || this.suggestions[listEdge];
+        } else if (hoversBetweenEdges) {
+          this.hovered = this.suggestions[this.hoveredIndex + direction];
+        } else /* if hovers on edge */ {
+          this.hovered = this.suggestions[listEdge];
         }
-        break
-
-        case 'Enter':
-        if (this.show && this.suggestions.length > 0 && this.hovered) {
-          this.hideList()
-        }
-        break
+      }
+    },
+    onListKeyUp (event) {
+      if (this.show) {
+        this.hideList(event.key === 'Escape');
       }
     },
     onBlur () {
@@ -180,8 +160,9 @@ export default {
     async getSuggestions (inputEvent) {
       this.selected = null
       this.text = inputEvent.target.value
-      if (!!inputEvent.target.value) {
-        let res = (await this.getList(inputEvent.target.value)) || [];
+
+      if (this.text) {
+        let res = (await this.getList(this.text)) || [];
         this.$set(this, 'suggestions', res.slice(0, this.maxCount))
 
         if (!this.show) {

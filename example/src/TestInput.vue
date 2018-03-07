@@ -8,7 +8,7 @@ export default {
   methods: {
     onInput (e) {
       this.$emit('input', e.target.value)
-      console.log('input', e)
+      // console.log('input', e)
     },
     onBlur (e) {
       this.$emit('blur', e)

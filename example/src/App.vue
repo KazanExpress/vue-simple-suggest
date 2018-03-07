@@ -3,9 +3,9 @@
     <vue-suggest @onSelect="onSuggestSelect" :getList="getList" class="asdad" :maxCount="10" :isDesigned="true" @onShowList="onShowList" @onHideList="onHideList">
       <!-- <input type="text" v-model="val"> -->
 
-      <!-- <div class="g"><input type="text" v-model="val"></div> -->
+      <div class="g"><input type="text" v-model="val"></div>
 
-      <test-input v-model="val" />
+      <!-- <test-input v-model="val" /> -->
       <div slot="suggestionItem" slot-scope="{ suggest }">
         <div>My {{ suggest.title }}</div>
       </div>
@@ -41,16 +41,12 @@
       onSuggestSelect (suggest) {
         this.selected = suggest
         this.val = this.selected.title
-        console.log(suggest)
       },
       getList (inputValue) {
-        return [0,0,0,0,0,0,0,0,0,0,0,0].map(el => {
+        return [0,0,0,0,0,0,0,0,0,0,0,0].map((v) => {
           let id = Math.floor(Math.random() * Math.floor(300))
-          return el = {
-            id,
-            title: 'suggest item ' + id
-          }
-        })
+          return { id, title: 'suggest item ' + id };
+        }).filter((v, i, arr) => arr.findIndex(el => el.id === v.id) === i)
       }
     }
   }
@@ -62,6 +58,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
-    margin-top: 60px;
+    margin: 60px auto 0;
+    width: 500px;
   }
 </style>
