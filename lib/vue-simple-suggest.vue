@@ -1,17 +1,16 @@
 <template>
   <div class="vue-simple-suggest">
-    <div class="input-wrapper" :class="{ designed: isDesigned }"
+    <div class="input-wrapper" :class="{ designed: !destyled }"
       @click="onInputClick"
       @input="getSuggestions"
       @keydown.up.down.prevent="onArrowKeyDown"
       @keyup.enter.esc.prevent="onListKeyUp"
-      ref="inputSlot"
-    >
+      ref="inputSlot">
       <slot>
         <input type="text" :placeholder="placeholder" :value="selected ? selected[displayAttribute] : text">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!show && suggestions.length > 0" :class="{ designed: isDesigned }">
+    <div class="suggestions" v-if="!!show && suggestions.length > 0" :class="{ designed: !destyled }">
       <div class="suggest-item" v-for="suggest in suggestions"
         @mouseover="hover(suggest)"
         @mouseout="hover(null)"
@@ -19,8 +18,7 @@
         :class="{
           selected: selected && (suggest[valueAttribute] == selected[valueAttribute]),
           hover: hovered && (hovered[valueAttribute] == suggest[valueAttribute])
-        }"
-      >
+        }">
         <slot name="suggestionItem" :suggest="suggest">
           <span>{{ suggest[displayAttribute] }}</span>
         </slot>
@@ -38,6 +36,10 @@ export default {
     placeholder: {
       type: String
     },
+    minLength: {
+      type: Number,
+      default: 1
+    },
     maxCount: {
       type: Number,
       default: 10
@@ -54,7 +56,7 @@ export default {
       type: Function,
       default: () => []
     },
-    isDesigned: {
+    destyled: {
       type: Boolean,
       default: false
     }
@@ -162,7 +164,7 @@ export default {
       this.selected = null
       this.text = inputEvent.target.value
 
-      if (this.text) {
+      if (this.text.length >= this.minLength) {
         let res = (await this.getList(this.text)) || [];
         this.$set(this, 'suggestions', res.slice(0, this.maxCount))
 
@@ -173,7 +175,8 @@ export default {
         if (this.suggestions.length === 0) {
           this.hideList()
         }
-      } else {
+      /* hide only if 0 text left and got no suggestions, mthrfckr */
+      } else if (this.show && (this.suggestions.length === 0 || !this.text)) {
         this.hideList()
         this.suggestions.splice(0)
       }
