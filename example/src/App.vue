@@ -1,17 +1,42 @@
 <template>
   <div id="app">
-    <vue-suggest @onSelect="onSuggestSelect" :getList="getList" class="asdad" :maxCount="10" :isDesigned="true" @onShowList="onShowList" @onHideList="onHideList">
-      <!-- <input type="text" v-model="val"> -->
+    <div class="example">
+      <p>v-model: {{ model || 'empty' }}</p>
+      <vue-suggest class="asdad"
+        v-model="model"
+        :getList="getList"
+        :maxCount="10"
+        :minLength="3"
+        @select="onSuggestSelect"
+        @hover="onSuggestHover"
+        @focus="onFocus"
+        @blur="onBlur"
+        @showList="onShowList"
+        @hideList="onHideList">
+        <!-- <input type="text" v-model="val"> -->
 
-      <div class="g"><input type="text" v-model="val"></div>
+        <!-- <div class="g"><input type="text" v-model="val"></div> -->
 
-      <!-- <test-input v-model="val" /> -->
-      <div slot="suggestionItem" slot-scope="{ suggest }">
-        <div>My {{ suggest.title }}</div>
+        <test-input v-model="val" />
+        <div slot="suggestionItem" slot-scope="{ suggest }">
+          <div>My {{ suggest.title }}</div>
+        </div>
+      </vue-suggest>
+
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+        Consectetur iusto repellendus recusandae, distinctio ratione voluptate?
+        Doloribus suscipit quibusdam atque perferendis quam consequatur
+        dolore dolores nemo, quia exercitationem voluptatibus facere repellat.</p>
+    </div>
+    <div class="log-container">
+      <p class="title">
+        Event Log: (<a href="#clear" @click.prevent="log.splice(0)">clear</a>)
+      </p>
+      <div class="log" ref="log" v-if="log.length > 0">
+        <p v-for="(text, i) in log" :key="i" :ref="'p' + i"><pre>{{ text }}</pre></p>
       </div>
-    </vue-suggest>
-
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur iusto repellendus recusandae, distinctio ratione voluptate? Doloribus suscipit quibusdam atque perferendis quam consequatur dolore dolores nemo, quia exercitationem voluptatibus facere repellat.</p>
+      <p v-else>Empty</p>
+    </div>
   </div>
 </template>
 
@@ -28,19 +53,37 @@
     data () {
       return {
         selected: null,
-        val: ''
+        model: '',
+        val: '',
+        log: []
       }
     },
     methods: {
+      addToLog (name, e) {
+        this.log.push(name + (e ? ': ' + e.toString() : ''))
+        this.$nextTick(() => {
+          this.$refs.log.scrollTop = this.$refs.log.scrollHeight;
+        })
+      },
+      onFocus () {
+        this.addToLog('focus')
+      },
+      onBlur () {
+        this.addToLog('blur')
+      },
       onShowList () {
-        console.log('showList')
+        this.addToLog('showList')
       },
       onHideList () {
-        console.log('hideList')
+        this.addToLog('hideList')
       },
       onSuggestSelect (suggest) {
+        this.addToLog('select', JSON.stringify(suggest))
         this.selected = suggest
         this.val = this.selected.title
+      },
+      onSuggestHover (suggestion) {
+        this.addToLog('hover', JSON.stringify(suggestion));
       },
       getList (inputValue) {
         return [0,0,0,0,0,0,0,0,0,0,0,0].map((v) => {
@@ -59,6 +102,39 @@
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
     margin: 60px auto 0;
-    width: 500px;
+    width: 800px;
+    height: 374px;
+    display: flex;
+  }
+
+  #app .log-container .title {
+    position: sticky;
+  }
+
+  #app .example,
+  #app .log-container,
+  #app .log {
+    padding: 0 16px;
+  }
+
+  #app .log-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 230px;
+  }
+
+  #app .log {
+    height: 100%;
+    border-radius: 3px;
+    border: 1px solid #aaa;
+    text-align: right;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  #app .log pre {
+    white-space: pre-wrap;
+    word-break: break-all;
   }
 </style>

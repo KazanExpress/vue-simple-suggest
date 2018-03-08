@@ -1,26 +1,24 @@
 <template>
   <div class="vue-simple-suggest">
-    <div class="input-wrapper" :class="{ designed: isDesigned }"
+    <div class="input-wrapper" :class="{ designed: !destyled }"
       @click="onInputClick"
       @input="getSuggestions"
       @keydown.up.down.prevent="onArrowKeyDown"
       @keyup.enter.esc.prevent="onListKeyUp"
-      ref="inputSlot"
-    >
+      ref="inputSlot">
       <slot>
         <input type="text" :placeholder="placeholder" :value="selected ? selected[displayAttribute] : text">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!show && suggestions.length > 0" :class="{ designed: isDesigned }">
+    <div class="suggestions" v-if="!!show && suggestions.length > 0" :class="{ designed: !destyled }">
       <div class="suggest-item" v-for="suggest in suggestions"
-        @mouseover="hover(suggest)"
-        @mouseout="hover(null)"
+        @mouseenter="hover(suggest)"
+        @mouseleave="hover(null)"
         :key="suggest[valueAttribute]"
         :class="{
           selected: selected && (suggest[valueAttribute] == selected[valueAttribute]),
           hover: hovered && (hovered[valueAttribute] == suggest[valueAttribute])
-        }"
-      >
+        }">
         <slot name="suggestionItem" :suggest="suggest">
           <span>{{ suggest[displayAttribute] }}</span>
         </slot>
@@ -38,6 +36,10 @@ export default {
     placeholder: {
       type: String
     },
+    minLength: {
+      type: Number,
+      default: 1
+    },
     maxCount: {
       type: Number,
       default: 10
@@ -54,9 +56,12 @@ export default {
       type: Function,
       default: () => []
     },
-    isDesigned: {
+    destyled: {
       type: Boolean,
       default: false
+    },
+    value: {
+      type: String
     }
   },
   data () {
@@ -70,24 +75,21 @@ export default {
     }
   },
   computed: {
-    slotIsComponent() {
+    slotIsComponent () {
       return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance;
     },
-    input() {
+    input () {
       return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement;
     },
-    on() {
+    on () {
       return this.slotIsComponent ? '$on' : 'addEventListener';
     },
-    off() {
+    off () {
       return this.slotIsComponent ? '$off' : 'removeEventListener';
     },
     hoveredIndex () {
       return this.suggestions.findIndex(el => this.hovered && (this.hovered[this.valueAttribute] == el[this.valueAttribute]))
     }
-  },
-  created () {
-    this.$on('input', this.getSuggestions)
   },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
@@ -95,30 +97,35 @@ export default {
     this.input[this.on]('focus', this.onFocus)
   },
   beforeDestroy () {
-    this.$off('input', this.getSuggestions)
     this.input[this.off]('blur', this.onBlur);
     this.input[this.off]('focus', this.onFocus);
   },
   methods: {
     select (item) {
       this.selected = item
-      this.$emit('onSelect', item)
+      this.$emit('select', item)
+      this.$emit('input', item[this.displayAttribute]);
       this.hovered = null
     },
     hover (item) {
       this.hovered = item
+      if (this.hovered != null) {
+        this.$emit('hover', item)
+      }
     },
     hideList (ignoreSelection = false) {
       if (this.hovered && this.text && !ignoreSelection) {
         this.select(this.hovered)
       }
 
-      this.show = false
-      this.$emit('onHideList')
+      if (this.show) {
+        this.show = false
+        this.$emit('hideList')
+      }
     },
     showList () {
       this.show = true
-      this.$emit('onShowList')
+      this.$emit('showList')
     },
     onInputClick (event) {
       if (!this.show && this.suggestions.length > 0) {
@@ -136,13 +143,17 @@ export default {
         const listEdge = isArrowDown ? 0 : this.suggestions.length - 1
         const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
 
+        let item = null;
+
         if (!this.hovered) {
-          this.hovered = this.selected || this.suggestions[listEdge];
+          item = this.selected || this.suggestions[listEdge];
         } else if (hoversBetweenEdges) {
-          this.hovered = this.suggestions[this.hoveredIndex + direction];
+          item = this.suggestions[this.hoveredIndex + direction];
         } else /* if hovers on edge */ {
-          this.hovered = this.suggestions[listEdge];
+          item = this.suggestions[listEdge];
         }
+
+        this.hover(item);
       }
     },
     onListKeyUp (event) {
@@ -150,19 +161,21 @@ export default {
         this.hideList(event.key === 'Escape');
       }
     },
-    onBlur () {
+    onBlur (e) {
       this.hideList()
+      this.$emit('blur', e)
     },
-    onFocus () {
+    onFocus (e) {
       if (this.suggestions.length > 0) {
         this.showList()
       }
+      this.$emit('focus', e)
     },
     async getSuggestions (inputEvent) {
       this.selected = null
       this.text = inputEvent.target.value
 
-      if (this.text) {
+      if (this.text.length >= this.minLength) {
         let res = (await this.getList(this.text)) || [];
         this.$set(this, 'suggestions', res.slice(0, this.maxCount))
 
@@ -173,10 +186,13 @@ export default {
         if (this.suggestions.length === 0) {
           this.hideList()
         }
-      } else {
+      /* hide only if 0 text left and got no suggestions, mthrfckr */
+      } else if (this.show && (this.suggestions.length === 0 || !this.text)) {
         this.hideList()
         this.suggestions.splice(0)
       }
+
+      this.$emit('input', this.text)
     },
     clearSuggestions () {
       this.suggestions.splice(0)
@@ -214,6 +230,7 @@ export default {
   position: absolute;
   left: 0;
   right: 0;
+  top: 100%;
   top: calc(100% + 5px);
   border-radius: 3px;
   border: 1px solid #aaa;

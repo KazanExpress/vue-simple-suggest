@@ -1,5 +1,5 @@
 <template>
-  <input type="text" @input="onInput" @blur="onBlur" @focus="onFocus" @keyup="onKeyUp" :value="value">
+  <input type="text" @input="onInput" @blur="onBlur" @focus="onFocus" :value="value">
 </template>
 
 <script>
@@ -17,9 +17,6 @@ export default {
     onFocus (e) {
       this.$emit('focus', e)
       // console.log('focus')
-    },
-    onKeyUp (e) {
-      this.$emit('keyup', e)
     }
   }
 }
