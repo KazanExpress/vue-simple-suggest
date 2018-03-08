@@ -7,22 +7,26 @@
       @keyup.enter.esc.prevent="onListKeyUp"
       ref="inputSlot">
       <slot>
-        <input type="text" :placeholder="placeholder" :value="selected ? selected[displayAttribute] : text">
+        <input v-bind="$props" :value="selected ? selected[displayAttribute] : text">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!show && suggestions.length > 0" :class="{ designed: !destyled }">
-      <div class="suggest-item" v-for="suggest in suggestions"
-        @mouseenter="hover(suggest)"
-        @mouseleave="hover(null)"
-        :key="suggest[valueAttribute]"
+    <div class="suggestions" v-if="!!listShown" :class="{ designed: !destyled }">
+      <slot name="miscItem-above" :suggestions="suggestions" :query="text"></slot>
+
+      <div class="suggest-item" v-for="suggestion in suggestions"
+        @mouseenter="hover(suggestion, $event.target)"
+        @mouseleave="hover(null, $event.target)"
+        :key="suggestion[valueAttribute]"
         :class="{
-          selected: selected && (suggest[valueAttribute] == selected[valueAttribute]),
-          hover: hovered && (hovered[valueAttribute] == suggest[valueAttribute])
+          selected: selected && (suggestion[valueAttribute] == selected[valueAttribute]),
+          hover: hovered && (hovered[valueAttribute] == suggestion[valueAttribute])
         }">
-        <slot name="suggestionItem" :suggest="suggest">
-          <span>{{ suggest[displayAttribute] }}</span>
+        <slot name="suggestionItem" :suggestion="suggestion">
+          <span>{{ suggestion[displayAttribute] }}</span>
         </slot>
       </div>
+
+      <slot name="miscItem-below" :suggestions="suggestions" :query="text"></slot>
     </div>
   </div>
 </template>
@@ -36,11 +40,15 @@ export default {
     placeholder: {
       type: String
     },
+    type: {
+      type: String,
+      default: 'text'
+    },
     minLength: {
       type: Number,
       default: 1
     },
-    maxCount: {
+    maxSuggestions: {
       type: Number,
       default: 10
     },
@@ -60,9 +68,13 @@ export default {
       type: Boolean,
       default: false
     },
+    filterByQuery: {
+      type: Boolean,
+      default: false
+    },
     debounce: {
       type: Number,
-      default: 500
+      default: 0
     },
     value: {
       type: String
@@ -73,11 +85,11 @@ export default {
       selected: null,
       hovered: null,
       suggestions: [],
-      show: false,
+      listShown: false,
       inputElement: null,
       canSend: true,
       timeoutInstance: null,
-      text: ''
+      text: this.value
     }
   },
   computed: {
@@ -113,33 +125,33 @@ export default {
       this.$emit('input', item[this.displayAttribute]);
       this.hovered = null
     },
-    hover (item) {
+    hover (item, elem) {
       this.hovered = item
       if (this.hovered != null) {
-        this.$emit('hover', item)
+        this.$emit('hover', item, elem)
       }
     },
     hideList (ignoreSelection = false) {
-      if (this.show) {
+      if (this.listShown) {
         if (this.hovered && this.text && !ignoreSelection) {
           this.select(this.hovered)
         }
-        this.show = false
+        this.listShown = false
         this.$emit('hideList')
       }
     },
     showList () {
-      this.show = true
+      this.listShown = true
       this.$emit('showList')
     },
     onInputClick (event) {
-      if (!this.show && this.suggestions.length > 0) {
+      if (!this.listShown && this.suggestions.length > 0) {
         this.showList()
       }
     },
     onArrowKeyDown (event) {
       if (this.suggestions.length > 0) {
-        if (!this.show) {
+        if (!this.listShown) {
           this.showList()
         }
 
@@ -162,7 +174,7 @@ export default {
       }
     },
     onListKeyUp (event) {
-      if (this.show) {
+      if (this.listShown) {
         this.hideList(event.key === 'Escape');
       }
     },
@@ -207,22 +219,27 @@ export default {
           if (!Array.isArray(res))
             res = [res];
 
+          if (typeof res[0] === 'string' || typeof res[0] === 'number') {
+            res = res.map((title, id) => { id, title });
+          }
+
+          if (this.filterByQuery) {
+            res = res.filter(el => ~el.title.indexOf(value));
+          }
+
           this.$emit('requestDone', res)
         } catch (e) {
           this.$emit('requestFailed', e)
         }
 
-        this.$set(this, 'suggestions', res.slice(0, this.maxCount))
+        this.$set(this, 'suggestions', res.slice(0, this.maxSuggestions))
 
-        if (!this.show) {
+        if (!this.listShown) {
           this.showList()
         }
-
-        if (this.suggestions.length === 0) {
-          this.hideList()
-        }
-      /* hide only if 0 text left and got no suggestions, mthrfckr */
-      } else if (this.show && (this.suggestions.length === 0 || !value)) {
+      }
+      /* hide only if 0 text left, mthrfckr */
+      else if (this.listShown && !value) {
         this.hideList()
         this.suggestions.splice(0)
       }
@@ -272,7 +289,8 @@ export default {
   background-color: #fff;
 }
 
-.vue-simple-suggest .suggestions .suggest-item {
+.vue-simple-suggest .suggestions .suggest-item,
+.vue-simple-suggest .suggestions .misc-item {
   padding: 5px 10px;
 }
 

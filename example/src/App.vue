@@ -8,6 +8,7 @@
         :maxCount="10"
         :minLength="3"
         :debounce="100"
+        :filterByQuery="true"
         @select="onSuggestSelect"
         @hover="onSuggestHover"
         @focus="onFocus"
@@ -22,8 +23,22 @@
         <!-- <div class="g"><input type="text" v-model="val"></div> -->
 
         <test-input v-model="val" />
-        <div slot="suggestionItem" slot-scope="{ suggest }">
-          <div>My {{ suggest.title }}</div>
+
+        <template slot="miscItem-above" slot-scope="{ suggestions, query }">
+          <div class="misc-item">
+            <span>You're searching for {{ query }}.</span>
+          </div>
+          <div class="misc-item">
+            <span>{{ suggestions.length }} suggestions are shown...</span>
+          </div>
+        </template>
+
+        <div slot="suggestionItem" slot-scope="{ suggestion }">
+          <div>My {{ suggestion.title }}</div>
+        </div>
+
+        <div class="misc-item" slot="miscItem-below" slot-scope="{ suggestions }" v-if="true">
+          <span>Loading...</span>
         </div>
       </vue-suggest>
 
