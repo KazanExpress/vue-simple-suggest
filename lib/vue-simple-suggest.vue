@@ -38,9 +38,6 @@ const isObject = (obj) =>
   Object.prototype.toString.apply(obj) === '[object Object]';
 
 function fromPath(obj, path) {
-  if (!path || !(/\w+((\.|\/)\w+)*/.test(path)))
-    return obj;
-
   return path.split('.').reduce((o, i) => isObject(o) ? (o[i] || o) : o, obj);
 }
 
@@ -271,7 +268,7 @@ export default {
         }
 
         if (this.maxSuggestions) {
-          res.splice(0, this.maxSuggestions);
+          res.splice(this.maxSuggestions);
         }
 
         this.$set(this, 'suggestions', res);
