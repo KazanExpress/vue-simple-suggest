@@ -60,7 +60,7 @@ export default {
       type: Boolean,
       default: false
     },
-    inputInterval: {
+    debounce: {
       type: Number,
       default: 500
     },
@@ -120,11 +120,10 @@ export default {
       }
     },
     hideList (ignoreSelection = false) {
-      if (this.hovered && this.text && !ignoreSelection) {
-        this.select(this.hovered)
-      }
-
       if (this.show) {
+        if (this.hovered && this.text && !ignoreSelection) {
+          this.select(this.hovered)
+        }
         this.show = false
         this.$emit('hideList')
       }
@@ -172,22 +171,29 @@ export default {
       this.$emit('blur', e)
     },
     onFocus (e) {
+      this.$emit('focus', e)
       if (this.suggestions.length > 0) {
         this.showList()
       }
-      this.$emit('focus', e)
     },
     onInput (inputEvent) {
       this.text = inputEvent.target.value
       this.$emit('input', this.text)
-      clearTimeout(this.timeoutInstance)
-      this.timeoutInstance = setTimeout(async () => {
+
+      const callback = async () => {
         if (this.canSend) {
           this.canSend = false
           await this.getSuggestions(this.text)
           this.canSend = true
         }
-      }, this.inputInterval)
+      };
+
+      if (this.debounce) {
+        clearTimeout(this.timeoutInstance)
+        this.timeoutInstance = setTimeout(callback, this.debounce)
+      } else {
+        callback();
+      }
     },
     async getSuggestions (value = '') {
       this.selected = null
@@ -197,9 +203,13 @@ export default {
         let res
         try {
           res = (await this.getList(value)) || []
-          this.$emit('requestDone')
+
+          if (!Array.isArray(res))
+            res = [res];
+
+          this.$emit('requestDone', res)
         } catch (e) {
-          this.$emit('requestFailed')
+          this.$emit('requestFailed', e)
         }
 
         this.$set(this, 'suggestions', res.slice(0, this.maxCount))

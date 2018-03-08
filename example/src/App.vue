@@ -7,7 +7,7 @@
         :getList="getList"
         :maxCount="10"
         :minLength="3"
-        :inputInterval="200"
+        :debounce="1000"
         @select="onSuggestSelect"
         @hover="onSuggestHover"
         @focus="onFocus"
@@ -99,10 +99,10 @@
         this.addToLog('hover', JSON.stringify(suggestion));
       },
       getList (inputValue) {
-        return [0,0,0,0,0,0,0,0,0,0,0,0].map((v) => {
+        return Math.random() > 0.2 ? [0,0,0,0,0,0,0,0,0,0,0,0].map((v) => {
           let id = Math.floor(Math.random() * Math.floor(300))
           return { id, title: 'suggest item ' + id };
-        }).filter((v, i, arr) => arr.findIndex(el => el.id === v.id) === i)
+        }).filter((v, i, arr) => arr.findIndex(el => el.id === v.id) === i) : { id: 0, title: 'suggest item 0' }
       }
     }
   }
