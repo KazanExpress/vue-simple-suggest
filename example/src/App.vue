@@ -150,6 +150,7 @@
     flex-direction: column;
     height: 100%;
     min-width: 230px;
+    max-width: 230px;
   }
 
   #app .log {

@@ -94,35 +94,35 @@ export default {
   },
   computed: {
     slotIsComponent () {
-      return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance;
+      return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance
     },
     input () {
-      return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement;
+      return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement
     },
     on () {
-      return this.slotIsComponent ? '$on' : 'addEventListener';
+      return this.slotIsComponent ? '$on' : 'addEventListener'
     },
     off () {
-      return this.slotIsComponent ? '$off' : 'removeEventListener';
+      return this.slotIsComponent ? '$off' : 'removeEventListener'
     },
     hoveredIndex () {
       return this.suggestions.findIndex(el => this.hovered && (this.hovered[this.valueAttribute] == el[this.valueAttribute]))
     }
   },
   mounted () {
-    this.inputElement = this.$refs['inputSlot'].querySelector('input');
+    this.inputElement = this.$refs['inputSlot'].querySelector('input')
     this.input[this.on]('blur', this.onBlur)
     this.input[this.on]('focus', this.onFocus)
   },
   beforeDestroy () {
-    this.input[this.off]('blur', this.onBlur);
-    this.input[this.off]('focus', this.onFocus);
+    this.input[this.off]('blur', this.onBlur)
+    this.input[this.off]('focus', this.onFocus)
   },
   methods: {
     select (item) {
       this.selected = item
       this.$emit('select', item)
-      this.$emit('input', item[this.displayAttribute]);
+      this.$emit('input', item[this.displayAttribute])
       this.hovered = null
     },
     hover (item, elem) {
@@ -155,22 +155,22 @@ export default {
           this.showList()
         }
 
-        const isArrowDown = event.keyCode === 40;
-        const direction = isArrowDown * 2 - 1;
+        const isArrowDown = event.keyCode === 40
+        const direction = isArrowDown * 2 - 1
         const listEdge = isArrowDown ? 0 : this.suggestions.length - 1
-        const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
+        const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0
 
-        let item = null;
+        let item = null
 
         if (!this.hovered) {
-          item = this.selected || this.suggestions[listEdge];
+          item = this.selected || this.suggestions[listEdge]
         } else if (hoversBetweenEdges) {
-          item = this.suggestions[this.hoveredIndex + direction];
+          item = this.suggestions[this.hoveredIndex + direction]
         } else /* if hovers on edge */ {
-          item = this.suggestions[listEdge];
+          item = this.suggestions[listEdge]
         }
 
-        this.hover(item);
+        this.hover(item)
       }
     },
     onListKeyUp (event) {
@@ -192,19 +192,18 @@ export default {
       this.text = inputEvent.target.value
       this.$emit('input', this.text)
 
-      const callback = async () => {
-        if (this.canSend) {
-          this.canSend = false
-          await this.getSuggestions(this.text)
-          this.canSend = true
-        }
-      };
-
       if (this.debounce) {
         clearTimeout(this.timeoutInstance)
-        this.timeoutInstance = setTimeout(callback, this.debounce)
+        this.timeoutInstance = setTimeout(this.debounceCallback, this.debounce)
       } else {
-        callback();
+        this.debounceCallback()
+      }
+    },
+    async debounceCallback () {
+      if (this.canSend) {
+        this.canSend = false
+        await this.getSuggestions(this.text)
+        this.canSend = true
       }
     },
     async getSuggestions (value = '') {
@@ -216,8 +215,9 @@ export default {
         try {
           res = (await this.getList(value)) || []
 
-          if (!Array.isArray(res))
-            res = [res];
+          if (!Array.isArray(res)) {
+            res = [res]
+          }
 
           if (typeof res[0] === 'string' || typeof res[0] === 'number') {
             res = res.map((title, id) => { id, title });
