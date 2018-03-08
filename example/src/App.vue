@@ -27,10 +27,13 @@
         dolore dolores nemo, quia exercitationem voluptatibus facere repellat.</p>
     </div>
     <div class="log-container">
-      <p class="title">Event Log:</p>
-      <div class="log" ref="log">
+      <p class="title">
+        Event Log: (<a href="#clear" @click.prevent="log.splice(0)">clear</a>)
+      </p>
+      <div class="log" ref="log" v-if="log.length > 0">
         <p v-for="(text, i) in log" :key="i" :ref="'p' + i">{{ text }}</p>
       </div>
+      <p v-else>Empty</p>
     </div>
   </div>
 </template>
@@ -94,7 +97,6 @@
     width: 800px;
     height: 374px;
     display: flex;
-    overflow: hidden;
   }
 
   #app .log-container .title {
@@ -111,7 +113,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: 100%;
+    min-width: 230px;
   }
 
   #app .log {

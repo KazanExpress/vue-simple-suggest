@@ -12,8 +12,8 @@
     </div>
     <div class="suggestions" v-if="!!show && suggestions.length > 0" :class="{ designed: !destyled }">
       <div class="suggest-item" v-for="suggest in suggestions"
-        @mouseover="hover(suggest)"
-        @mouseout="hover(null)"
+        @mouseenter="hover(suggest)"
+        @mouseleave="hover(null)"
         :key="suggest[valueAttribute]"
         :class="{
           selected: selected && (suggest[valueAttribute] == selected[valueAttribute]),
