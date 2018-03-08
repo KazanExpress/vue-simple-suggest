@@ -198,6 +198,8 @@ export default {
     onListKeyUp (event) {
       if (this.listShown) {
         this.hideList(event.key === 'Escape');
+      } else if (event.key !== 'Escape') {
+        this.debounceCallback();
       }
     },
     onBlur (e) {
