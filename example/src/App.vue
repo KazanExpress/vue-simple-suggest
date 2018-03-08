@@ -4,22 +4,45 @@
       <p>v-model: {{ model || 'empty' }}</p>
       <vue-suggest class="asdad"
         v-model="model"
-        :getList="getList"
+        :list="getList"
         :maxCount="10"
         :minLength="3"
+        :debounce="200"
+        :filterByQuery="false"
+        ref="suggestComponent"
+        valueAttribute="id"
+        displayAttribute="volumeInfo.title"
         @select="onSuggestSelect"
         @hover="onSuggestHover"
         @focus="onFocus"
         @blur="onBlur"
+        @requestStart="onRequestStart"
+        @requestDone="onRequestDone"
+        @requestFailed="onRequestFailed"
         @showList="onShowList"
         @hideList="onHideList">
-        <!-- <input type="text" v-model="val"> -->
+        <!-- <input type="text"> -->
 
-        <!-- <div class="g"><input type="text" v-model="val"></div> -->
+        <!-- <div class="g"><input type="text"></div> -->
 
-        <test-input v-model="val" />
-        <div slot="suggestionItem" slot-scope="{ suggest }">
-          <div>My {{ suggest.title }}</div>
+        <test-input/>
+
+        <template slot="miscItem-above" slot-scope="{ suggestions, query }">
+          <div class="misc-item">
+            <span>You're searching for {{ query }}.</span>
+          </div>
+          <div class="misc-item">
+            <span>{{ suggestions.length }} suggestions are shown...</span>
+          </div>
+          <hr>
+        </template>
+
+        <!-- <div slot="suggestionItem" slot-scope="{ suggestion }">
+          <div>{{ suggestion.title }}</div>
+        </div> -->
+
+        <div class="misc-item" slot="miscItem-below" slot-scope="{ suggestions }" v-if="loading">
+          <span>Loading...</span>
         </div>
       </vue-suggest>
 
@@ -33,7 +56,7 @@
         Event Log: (<a href="#clear" @click.prevent="log.splice(0)">clear</a>)
       </p>
       <div class="log" ref="log" v-if="log.length > 0">
-        <p v-for="(text, i) in log" :key="i" :ref="'p' + i"><pre>{{ text }}</pre></p>
+        <p v-for="(text, i) in log" :key="'p' + i" :ref="'p' + i"><pre>{{ text }}</pre></p>
       </div>
       <p v-else>Empty</p>
     </div>
@@ -54,7 +77,7 @@
       return {
         selected: null,
         model: '',
-        val: '',
+        loading: false,
         log: []
       }
     },
@@ -65,17 +88,26 @@
           this.$refs.log.scrollTop = this.$refs.log.scrollHeight;
         })
       },
-      onFocus () {
-        this.addToLog('focus')
+      onFocus (e) {
+        this.addToLog('focus', e)
       },
-      onBlur () {
-        this.addToLog('blur')
+      onBlur (e) {
+        this.addToLog('blur', e)
       },
-      onShowList () {
-        this.addToLog('showList')
+      onRequestStart (value) {
+        this.addToLog('requestStart', value)
       },
-      onHideList () {
-        this.addToLog('hideList')
+      onRequestDone (e) {
+        this.addToLog('requestDone', e)
+      },
+      onRequestFailed (e) {
+        this.addToLog('requestFailed', e)
+      },
+      onShowList (e) {
+        this.addToLog('showList', e)
+      },
+      onHideList (e) {
+        this.addToLog('hideList', e)
       },
       onSuggestSelect (suggest) {
         this.addToLog('select', JSON.stringify(suggest))
@@ -86,10 +118,31 @@
         this.addToLog('hover', JSON.stringify(suggestion));
       },
       getList (inputValue) {
-        return [0,0,0,0,0,0,0,0,0,0,0,0].map((v) => {
-          let id = Math.floor(Math.random() * Math.floor(300))
-          return { id, title: 'suggest item ' + id };
-        }).filter((v, i, arr) => arr.findIndex(el => el.id === v.id) === i)
+        return new Promise((resolve, reject) => {
+          let url = `https://www.googleapis.com/books/v1/volumes?printType=books&q=${inputValue}`
+          this.loading = true
+          this.$refs.suggestComponent.clearSuggestions()
+          fetch(url).then(response => {
+            if (!response.ok) {
+              reject()
+            }
+
+            response.json().then(json => {
+              resolve([...(json.items || [])])
+              this.loading = false
+            }).catch(e => {
+              this.loading = false
+              reject(e)
+            })
+          }).catch(error => {
+            this.loading = false
+            reject(error)
+          })
+        })
+        // return Math.random() > 0.2 ? [0,0,0,0,0,0,0,0,0,0,0,0].map((v) => {
+        //   let id = Math.floor(Math.random() * Math.floor(300))
+        //   return { id, title: 'suggest item ' + id };
+        // }).filter((v, i, arr) => arr.findIndex(el => el.id === v.id) === i) : { id: 0, title: 'suggest item 0' }
       }
     }
   }
@@ -122,6 +175,7 @@
     flex-direction: column;
     height: 100%;
     min-width: 230px;
+    max-width: 230px;
   }
 
   #app .log {
