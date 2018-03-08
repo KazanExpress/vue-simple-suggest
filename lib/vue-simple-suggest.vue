@@ -199,7 +199,7 @@ export default {
       if (this.listShown) {
         this.hideList(event.key === 'Escape');
       } else if (event.key !== 'Escape') {
-        this.debounceCallback();
+        this.research();
       }
     },
     onBlur (e) {
@@ -218,12 +218,12 @@ export default {
 
       if (this.debounce) {
         clearTimeout(this.timeoutInstance)
-        this.timeoutInstance = setTimeout(this.debounceCallback, this.debounce)
+        this.timeoutInstance = setTimeout(this.research, this.debounce)
       } else {
-        this.debounceCallback()
+        this.research()
       }
     },
-    async debounceCallback () {
+    async research () {
       if (this.canSend) {
         this.canSend = false
         await this.getSuggestions(this.text)
