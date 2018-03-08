@@ -69,26 +69,26 @@
           this.$refs.log.scrollTop = this.$refs.log.scrollHeight;
         })
       },
-      onFocus () {
-        this.addToLog('focus')
+      onFocus (e) {
+        this.addToLog('focus', e)
       },
-      onBlur () {
-        this.addToLog('blur')
+      onBlur (e) {
+        this.addToLog('blur', e)
       },
       onRequestStart (value) {
         this.addToLog('requestStart', value)
       },
-      onRequestDone () {
-        this.addToLog('requestDone')
+      onRequestDone (e) {
+        this.addToLog('requestDone', e)
       },
-      onRequestFailed () {
-        this.addToLog('requestFailed')
+      onRequestFailed (e) {
+        this.addToLog('requestFailed', e)
       },
-      onShowList () {
-        this.addToLog('showList')
+      onShowList (e) {
+        this.addToLog('showList', e)
       },
-      onHideList () {
-        this.addToLog('hideList')
+      onHideList (e) {
+        this.addToLog('hideList', e)
       },
       onSuggestSelect (suggest) {
         this.addToLog('select', JSON.stringify(suggest))

@@ -3,7 +3,7 @@ var webpack = require('webpack')
 var HtmlWebPackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-  entry: path.resolve(__dirname, './src/main.js'),
+  entry: ['core-js/fn/promise', path.resolve(__dirname, './src/main.js')],
   module: {
     rules: [
       {

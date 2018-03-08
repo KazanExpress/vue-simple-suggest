@@ -143,7 +143,7 @@ export default {
           this.showList()
         }
 
-        const isArrowDown = event.key === 'ArrowDown';
+        const isArrowDown = event.keyCode === 40;
         const direction = isArrowDown * 2 - 1;
         const listEdge = isArrowDown ? 0 : this.suggestions.length - 1
         const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
