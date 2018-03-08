@@ -11,6 +11,9 @@
         @hover="onSuggestHover"
         @focus="onFocus"
         @blur="onBlur"
+        @requestStart="onRequestStart"
+        @requestDone="onRequestDone"
+        @requestFailed="onRequestFailed"
         @showList="onShowList"
         @hideList="onHideList">
         <!-- <input type="text" v-model="val"> -->
@@ -70,6 +73,15 @@
       },
       onBlur () {
         this.addToLog('blur')
+      },
+      onRequestStart (value) {
+        this.addToLog('requestStart', value)
+      },
+      onRequestDone () {
+        this.addToLog('requestDone')
+      },
+      onRequestFailed () {
+        this.addToLog('requestFailed')
       },
       onShowList () {
         this.addToLog('showList')

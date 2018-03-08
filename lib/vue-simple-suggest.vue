@@ -2,7 +2,7 @@
   <div class="vue-simple-suggest">
     <div class="input-wrapper" :class="{ designed: !destyled }"
       @click="onInputClick"
-      @input="getSuggestions"
+      @input="onInput"
       @keydown.up.down.prevent="onArrowKeyDown"
       @keyup.enter.esc.prevent="onListKeyUp"
       ref="inputSlot">
@@ -60,6 +60,10 @@ export default {
       type: Boolean,
       default: false
     },
+    inputInterval: {
+      type: Number,
+      default: 500
+    },
     value: {
       type: String
     }
@@ -71,6 +75,8 @@ export default {
       suggestions: [],
       show: false,
       inputElement: null,
+      canSend: true,
+      timeoutInstance: null,
       text: ''
     }
   },
@@ -171,12 +177,31 @@ export default {
       }
       this.$emit('focus', e)
     },
-    async getSuggestions (inputEvent) {
-      this.selected = null
+    onInput (inputEvent) {
       this.text = inputEvent.target.value
+      this.$emit('input', this.text)
+      clearTimeout(this.timeoutInstance)
+      this.timeoutInstance = setTimeout(async () => {
+        if (this.canSend) {
+          this.canSend = false
+          await this.getSuggestions(this.text)
+          this.canSend = true
+        }
+      }, this.inputInterval)
+    },
+    async getSuggestions (value = '') {
+      this.selected = null
 
-      if (this.text.length >= this.minLength) {
-        let res = (await this.getList(this.text)) || [];
+      if (value.length >= this.minLength) {
+        this.$emit('requestStart', value)
+        let res
+        try {
+          res = (await this.getList(value)) || []
+          this.$emit('requestDone')
+        } catch (e) {
+          this.$emit('requestFailed')
+        }
+
         this.$set(this, 'suggestions', res.slice(0, this.maxCount))
 
         if (!this.show) {
@@ -187,12 +212,12 @@ export default {
           this.hideList()
         }
       /* hide only if 0 text left and got no suggestions, mthrfckr */
-      } else if (this.show && (this.suggestions.length === 0 || !this.text)) {
+      } else if (this.show && (this.suggestions.length === 0 || !value)) {
         this.hideList()
         this.suggestions.splice(0)
       }
 
-      this.$emit('input', this.text)
+      this.$emit('input', value)
     },
     clearSuggestions () {
       this.suggestions.splice(0)
