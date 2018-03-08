@@ -6,7 +6,8 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --mode development --config example/webpack.config.js --open --hot"
+    "dev": "webpack-dev-server --mode development --config example/webpack.config.js --open --hot",
+    "build": "webpack --mode production --config example/webpack.config.js"
   },
   "dependencies": {
     "vue": "^2.5.0"
