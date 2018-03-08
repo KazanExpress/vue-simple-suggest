@@ -243,7 +243,7 @@ export default {
           if (!Array.isArray(res)) {
             res = [res]
           }
-          
+
           if (typeof res[0] === 'object' && !Array.isArray(res[0])) {
             this.isSuggestionConverted = false;
           } else {
@@ -255,7 +255,7 @@ export default {
           }
 
           if (this.filterByQuery) {
-            res = res.filter(el => ~this.displayProperty(el).indexOf(value));
+            res = res.filter(el => ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()));
           }
 
           this.listIsRequest && this.$emit('requestDone', res)
