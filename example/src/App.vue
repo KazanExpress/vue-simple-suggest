@@ -7,7 +7,7 @@
         :getList="getList"
         :maxCount="10"
         :minLength="3"
-        :debounce="1000"
+        :debounce="100"
         @select="onSuggestSelect"
         @hover="onSuggestHover"
         @focus="onFocus"
