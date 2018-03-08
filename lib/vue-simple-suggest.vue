@@ -41,7 +41,7 @@ function fromPath(obj, path) {
   if (!path || !(/\w+((\.|\/)\w+)*/.test(path)))
     return obj;
 
-  return path.split('.').reduce((o, i) => isObject({ value: o }) ? (o[i] || o) : o, obj);
+  return path.split('.').reduce((o, i) => isObject(o) ? (o[i] || o) : o, obj);
 }
 
 export default {
