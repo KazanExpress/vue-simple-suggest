@@ -76,10 +76,6 @@ export default {
       type: Boolean,
       default: false
     },
-    searchBy: {
-      type: Boolean,
-      default: false
-    },
     debounce: {
       type: Number,
       default: 0

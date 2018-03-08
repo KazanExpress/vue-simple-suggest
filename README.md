@@ -55,6 +55,10 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 </vue-simple-suggest>
 ```
 
+-----
+### API definitions
+
+#### Data:
 ```js
 const vueSimpleSuggest = this.$refs.vueSimpleSuggest;
 
@@ -80,11 +84,20 @@ vueSimpleSuggest.canSend               // default: true,
 vueSimpleSuggest.timeoutInstance       // default: null,
 
 // Current input text
-vueSimpleSuggest.text                  // default: vueSimpleSuggest.$props.value prop
-```
+vueSimpleSuggest.text                  // default: vueSimpleSuggest.$props.value
 
------
-### API definitions
+// Whether this current custom input is a vue-component
+vueSimpleSuggest.slotIsComponent
+
+// Whether the list prop is a function
+vueSimpleSuggest.listIsRequest
+
+// A ref to the current input (component or vanilla)
+vueSimpleSuggest.input
+
+// The current hovered element index
+vueSimpleSuggest.hoveredIndex
+```
 
 #### Props:
 | Name                         | Type     | Default  | Description                                                                                                                    |
@@ -112,6 +125,16 @@ vueSimpleSuggest.text                  // default: vueSimpleSuggest.$props.value
 | `requestStart`  | Current input value (query) | Fires each time a `getList` function starts executing.                                                 |
 | `requestDone`   | Resulting suggestions list  | Fires when a `getList` function successfully returns a result and forwards that result as an argument. |
 | `requestFailed` | The interrrupting exception | Fires if an exception occurs during the execution of a `getList` funciton.                             |
+
+-----
+
+#### Methods:
+
+| Name | Arguments | Description |
+|      |           |             |
+|------|-----------|-------------|
+|`select`| `item` to select | Select the passed item (send it's value to input) |
+|`hover`| `item` to hover ||
 
 -----
 
