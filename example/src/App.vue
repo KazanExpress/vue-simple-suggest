@@ -7,8 +7,11 @@
         :list="getList"
         :maxCount="10"
         :minLength="3"
-        :debounce="100"
+        :debounce="200"
         :filterByQuery="false"
+        ref="suggestComponent"
+        valueAttribute="id"
+        displayAttribute="volumeInfo.title"
         @select="onSuggestSelect"
         @hover="onSuggestHover"
         @focus="onFocus"
@@ -20,9 +23,9 @@
         @hideList="onHideList">
         <!-- <input type="text"> -->
 
-        <div class="g"><input type="text" v-model="val"></div>
+        <!-- <div class="g"><input type="text"></div> -->
 
-        <!-- <test-input/> -->
+        <test-input/>
 
         <template slot="miscItem-above" slot-scope="{ suggestions, query }">
           <div class="misc-item">
@@ -31,13 +34,14 @@
           <div class="misc-item">
             <span>{{ suggestions.length }} suggestions are shown...</span>
           </div>
+          <hr>
         </template>
 
-        <div slot="suggestionItem" slot-scope="{ suggestion }">
+        <!-- <div slot="suggestionItem" slot-scope="{ suggestion }">
           <div>{{ suggestion.title }}</div>
-        </div>
+        </div> -->
 
-        <div class="misc-item" slot="miscItem-below" slot-scope="{ suggestions }" v-if="true">
+        <div class="misc-item" slot="miscItem-below" slot-scope="{ suggestions }" v-if="loading">
           <span>Loading...</span>
         </div>
       </vue-suggest>
@@ -73,7 +77,7 @@
       return {
         selected: null,
         model: '',
-        val: '',
+        loading: false,
         log: []
       }
     },
@@ -114,10 +118,31 @@
         this.addToLog('hover', JSON.stringify(suggestion));
       },
       getList (inputValue) {
-        return Math.random() > 0.2 ? [0,0,0,0,0,0,0,0,0,0,0,0].map((v) => {
-          let id = Math.floor(Math.random() * Math.floor(300))
-          return { id, title: 'suggest item ' + id };
-        }).filter((v, i, arr) => arr.findIndex(el => el.id === v.id) === i) : { id: 0, title: 'suggest item 0' }
+        return new Promise((resolve, reject) => {
+          let url = `https://www.googleapis.com/books/v1/volumes?printType=books&q=${inputValue}`
+          this.loading = true
+          this.$refs.suggestComponent.clearSuggestions()
+          fetch(url).then(response => {
+            if (!response.ok) {
+              reject()
+            }
+
+            response.json().then(json => {
+              resolve([...(json.items || [])])
+              this.loading = false
+            }).catch(e => {
+              this.loading = false
+              reject(e)
+            })
+          }).catch(error => {
+            this.loading = false
+            reject(error)
+          })
+        })
+        // return Math.random() > 0.2 ? [0,0,0,0,0,0,0,0,0,0,0,0].map((v) => {
+        //   let id = Math.floor(Math.random() * Math.floor(300))
+        //   return { id, title: 'suggest item ' + id };
+        // }).filter((v, i, arr) => arr.findIndex(el => el.id === v.id) === i) : { id: 0, title: 'suggest item 0' }
       }
     }
   }
