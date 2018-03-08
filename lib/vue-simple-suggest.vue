@@ -109,7 +109,9 @@ export default {
     },
     hover (item) {
       this.hovered = item
-      this.$emit('select', item)
+      if (this.hovered != null) {
+        this.$emit('hover', item)
+      }
     },
     hideList (ignoreSelection = false) {
       if (this.hovered && this.text && !ignoreSelection) {
@@ -139,13 +141,17 @@ export default {
         const listEdge = isArrowDown ? 0 : this.suggestions.length - 1
         const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
 
+        let item = null;
+
         if (!this.hovered) {
-          this.hovered = this.selected || this.suggestions[listEdge];
+          item = this.selected || this.suggestions[listEdge];
         } else if (hoversBetweenEdges) {
-          this.hovered = this.suggestions[this.hoveredIndex + direction];
+          item = this.suggestions[this.hoveredIndex + direction];
         } else /* if hovers on edge */ {
-          this.hovered = this.suggestions[listEdge];
+          item = this.suggestions[listEdge];
         }
+
+        this.hover(item);
       }
     },
     onListKeyUp (event) {
@@ -220,6 +226,7 @@ export default {
   position: absolute;
   left: 0;
   right: 0;
+  top: 100%;
   top: calc(100% + 5px);
   border-radius: 3px;
   border: 1px solid #aaa;
