@@ -7,7 +7,7 @@
       @keyup.enter.esc.prevent="onListKeyUp"
       ref="inputSlot">
       <slot>
-        <input v-bind="$props" :value="selected ? selected[displayAttribute] : text">
+        <input v-bind="$props">
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown" :class="{ designed: !destyled }">
@@ -34,11 +34,8 @@
 <script>
 import Vue from 'vue'
 
-const isObject = (obj) =>
-  Object.prototype.toString.apply(obj) === '[object Object]';
-
 function fromPath(obj, path) {
-  return path.split('.').reduce((o, i) => isObject(o) ? (o[i] || o) : o, obj);
+  return path.split('.').reduce((o, i) => (o === Object(o) ? o[i] : o), obj);
 }
 
 export default {
@@ -134,16 +131,24 @@ export default {
     this.input[this.off]('focus', this.onFocus)
   },
   methods: {
-    displayProperty (suggestion) {
-      return fromPath(suggestion, this.displayAttribute);
+    displayProperty (obj) {
+      return fromPath(obj, this.displayAttribute);
     },
-    valueProperty (suggestion) {
-      return fromPath(suggestion, this.valueAttribute);
+    valueProperty (obj) {
+      return fromPath(obj, this.valueAttribute);
     },
     select (item) {
       this.selected = item
       this.$emit('select', item)
+
+      // Ya know, input stuff
       this.$emit('input', this.displayProperty(item))
+      this.inputElement.value = this.displayProperty(item);
+      this.text = this.displayProperty(item);
+
+      this.inputElement.focus();
+      //
+
       this.hovered = null
     },
     hover (item, elem) {
@@ -282,8 +287,6 @@ export default {
         this.hideList()
         this.suggestions.splice(0)
       }
-
-      this.$emit('input', value)
     },
     clearSuggestions () {
       this.suggestions.splice(0)

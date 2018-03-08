@@ -89,9 +89,9 @@ vueSimpleSuggest.text                  // default: vueSimpleSuggest.$props.value
 #### Props:
 | Name                         | Type     | Default  | Description                                                                                                                    |
 |------------------------------|----------|----------|--------------------------------------------------------------------------------------------------------------------------------|
-| `maxSuggestions`               | Number   | `10`       | The maximum amount of suggestions to display.                                                                                  |
-| `displayAttribute`             | String   | `'title'`  | If a suggestion is an object, the property in a suggestion object to display in a list.                                        |
-| `valueAttribute`               | String   | `'id'`     | If a suggestion is an object, the property in a suggestion object to use as a unique key.                                      |
+| `maxSuggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions.                                                                                 |
+| `displayAttribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths.                                        |
+| `valueAttribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths.                                      |
 | `getList`                      | Funciton | `() => []` | The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function. |
 | `debounce`                     | Number   | `0`        | Determines the getList debounce (a time between the input event and a function execution).                                     |
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list.                                                           |
@@ -102,9 +102,9 @@ vueSimpleSuggest.text                  // default: vueSimpleSuggest.$props.value
 #### Events:
 | Name          | Arguments                   | Description                                                                                            |
 |---------------|-----------------------------|--------------------------------------------------------------------------------------------------------|
-| `input`         | HTML5 input event           | An outward projection of the current input's event.                                                    |
-| `focus`         | HTML5 focus event           | An outward projection of the current input's event.                                                    |
-| `blur`          | HTML5 focus event           | An outward projection of the current input's event.                                                    |
+| `input`         | HTML input event           | An outward projection of the current input's event.                                                    |
+| `focus`         | HTML focus event           | An outward projection of the current input's event.                                                    |
+| `blur`          | HTML focus event           | An outward projection of the current input's event.                                                    |
 | `select`        | Selected suggestion         | Fires on suggestion selection (via a mouse click or enter keypress).                                   |
 | `hover`         | Hovered suggestion          | Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).            |
 | `showList`      | -                           | Fires each time the suggestion list is toggled to be shown.                                            |
@@ -120,6 +120,12 @@ vueSimpleSuggest.text                  // default: vueSimpleSuggest.$props.value
 ##### Custom input (default slot)
 Supports nesting. Input props can be passed to a custom input to avoid their processing by vue-simple-suggest.
 Defaults to a simple input with props passed to vue-simple-suggest.
+
+**Warning:** `v-model` on a custom input IS NOT the same as `v-model` on vue-simple-suggest!
+```html
+<!--  Default HTMLInputElement example:  -->
+<vue-simple-suggest v-model="model" placeholder="Text here" type="search" pattern="[a-z]+"/>
+```
 ```html
 <!--  Vanilla HTMLInputElement example 1:  -->
 <vue-simple-suggest>
@@ -134,8 +140,8 @@ Defaults to a simple input with props passed to vue-simple-suggest.
 ```
 ```html
 <!--  Vanilla HTMLInputElement example 3 (fully equivalent to the second example):  -->
-<vue-simple-suggest>
-  <input v-model="model" placeholder="Text here" type="search">
+<vue-simple-suggest v-model="model">
+  <input placeholder="Text here" type="search">
 </vue-simple-suggest>
 ```
 ```html

@@ -8,7 +8,7 @@
         :maxCount="10"
         :minLength="3"
         :debounce="100"
-        :filterByQuery="true"
+        :filterByQuery="false"
         @select="onSuggestSelect"
         @hover="onSuggestHover"
         @focus="onFocus"
@@ -18,11 +18,11 @@
         @requestFailed="onRequestFailed"
         @showList="onShowList"
         @hideList="onHideList">
-        <!-- <input type="text" v-model="val"> -->
+        <!-- <input type="text"> -->
 
-        <!-- <div class="g"><input type="text" v-model="val"></div> -->
+        <div class="g"><input type="text" v-model="val"></div>
 
-        <test-input v-model="val" />
+        <!-- <test-input/> -->
 
         <template slot="miscItem-above" slot-scope="{ suggestions, query }">
           <div class="misc-item">
@@ -52,7 +52,7 @@
         Event Log: (<a href="#clear" @click.prevent="log.splice(0)">clear</a>)
       </p>
       <div class="log" ref="log" v-if="log.length > 0">
-        <p v-for="(text, i) in log" :key="i" :ref="'p' + i"><pre>{{ text }}</pre></p>
+        <p v-for="(text, i) in log" :key="'p' + i" :ref="'p' + i"><pre>{{ text }}</pre></p>
       </div>
       <p v-else>Empty</p>
     </div>
