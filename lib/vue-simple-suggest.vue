@@ -16,13 +16,13 @@
       <div class="suggest-item" v-for="suggestion in suggestions"
         @mouseenter="hover(suggestion, $event.target)"
         @mouseleave="hover(null, $event.target)"
-        :key="suggestion[valueAttribute]"
+        :key="valueProperty(suggestion)"
         :class="{
-          selected: selected && (suggestion[valueAttribute] == selected[valueAttribute]),
-          hover: hovered && (hovered[valueAttribute] == suggestion[valueAttribute])
+          selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
+          hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
         }">
         <slot name="suggestionItem" :suggestion="suggestion">
-          <span>{{ suggestion[displayAttribute] }}</span>
+          <span>{{ displayProperty(suggestion) }}</span>
         </slot>
       </div>
 
@@ -33,6 +33,13 @@
 
 <script>
 import Vue from 'vue'
+
+function fromPath(obj, path) {
+  if (!path || !(/\w+((\.|\/)\w+)*/.test(path)))
+    return obj;
+
+  return path.split('.').reduce((o, i) => isObject({ value: o }) ? (o[i] || o) : o, obj);
+}
 
 export default {
   name: 'vue-simple-suggest',
@@ -60,8 +67,8 @@ export default {
       type: String,
       default: 'id'
     },
-    getList: {
-      type: Function,
+    list: {
+      type: [Function, Array],
       default: () => []
     },
     destyled: {
@@ -89,12 +96,16 @@ export default {
       inputElement: null,
       canSend: true,
       timeoutInstance: null,
-      text: this.value
+      text: this.value,
+      isSuggestionConverted: false
     }
   },
   computed: {
     slotIsComponent () {
       return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance
+    },
+    listIsRequest() {
+      return !Array.isArray(this.list);
     },
     input () {
       return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement
@@ -119,6 +130,12 @@ export default {
     this.input[this.off]('focus', this.onFocus)
   },
   methods: {
+    displayProperty (suggestion) {
+      return fromPath(suggestion, this.displayAttribute)
+    },
+    valueProperty (suggestion) {
+      return fromPath(suggestion, this.valueAttribute)
+    },
     select (item) {
       this.selected = item
       this.$emit('select', item)
@@ -209,30 +226,48 @@ export default {
     async getSuggestions (value = '') {
       this.selected = null
 
+      let res;
       if (value.length >= this.minLength) {
-        this.$emit('requestStart', value)
-        let res
+        this.listIsRequest && this.$emit('requestStart', value)
         try {
-          res = (await this.getList(value)) || []
+          if (this.listIsRequest) {
+            res = (await this.list(value)) || []
+          } else {
+            res = this.list;
+          }
 
           if (!Array.isArray(res)) {
             res = [res]
           }
-
-          if (typeof res[0] === 'string' || typeof res[0] === 'number') {
-            res = res.map((title, id) => { id, title });
+          
+          if (typeof res[0] === 'object' && !Array.isArray(res[0])) {
+            this.isSuggestionConverted = false;
+          } else {
+            res = res.map((el, i) => ({
+              [this.valueAttribute]: i,
+              [this.displayAttribute]: el
+            }));
+            this.isSuggestionConverted = true;
           }
 
           if (this.filterByQuery) {
-            res = res.filter(el => ~el.title.indexOf(value));
+            res = res.filter(el => ~el[this.displayAttribute].indexOf(value));
           }
 
-          this.$emit('requestDone', res)
+          this.listIsRequest && this.$emit('requestDone', res)
         } catch (e) {
-          this.$emit('requestFailed', e)
+          if (this.listIsRequest) {
+            this.$emit('requestFailed', e)
+          } else {
+            throw e;
+          }
         }
 
-        this.$set(this, 'suggestions', res.slice(0, this.maxSuggestions))
+        if (this.maxSuggestions) {
+          res.splice(0, this.maxSuggestions);
+        }
+
+        this.$set(this, 'suggestions', res);
 
         if (!this.listShown) {
           this.showList()

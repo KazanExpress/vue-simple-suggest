@@ -4,7 +4,7 @@
       <p>v-model: {{ model || 'empty' }}</p>
       <vue-suggest class="asdad"
         v-model="model"
-        :getList="getList"
+        :list="getList"
         :maxCount="10"
         :minLength="3"
         :debounce="100"
@@ -34,7 +34,7 @@
         </template>
 
         <div slot="suggestionItem" slot-scope="{ suggestion }">
-          <div>My {{ suggestion.title }}</div>
+          <div>{{ suggestion.title }}</div>
         </div>
 
         <div class="misc-item" slot="miscItem-below" slot-scope="{ suggestions }" v-if="true">
