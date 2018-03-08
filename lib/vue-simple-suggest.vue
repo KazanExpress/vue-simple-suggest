@@ -34,6 +34,9 @@
 <script>
 import Vue from 'vue'
 
+const isObject = (obj) =>
+  Object.prototype.toString.apply(obj) === '[object Object]';
+
 function fromPath(obj, path) {
   if (!path || !(/\w+((\.|\/)\w+)*/.test(path)))
     return obj;
@@ -79,6 +82,10 @@ export default {
       type: Boolean,
       default: false
     },
+    searchBy: {
+      type: Boolean,
+      default: false
+    },
     debounce: {
       type: Number,
       default: 0
@@ -105,7 +112,7 @@ export default {
       return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance
     },
     listIsRequest() {
-      return !Array.isArray(this.list);
+      return typeof this.list === 'function';
     },
     input () {
       return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement
@@ -131,15 +138,15 @@ export default {
   },
   methods: {
     displayProperty (suggestion) {
-      return fromPath(suggestion, this.displayAttribute)
+      return fromPath(suggestion, this.displayAttribute);
     },
     valueProperty (suggestion) {
-      return fromPath(suggestion, this.valueAttribute)
+      return fromPath(suggestion, this.valueAttribute);
     },
     select (item) {
       this.selected = item
       this.$emit('select', item)
-      this.$emit('input', item[this.displayAttribute])
+      this.$emit('input', this.displayProperty(item))
       this.hovered = null
     },
     hover (item, elem) {
@@ -251,7 +258,7 @@ export default {
           }
 
           if (this.filterByQuery) {
-            res = res.filter(el => ~el[this.displayAttribute].indexOf(value));
+            res = res.filter(el => ~this.displayProperty(el).indexOf(value));
           }
 
           this.listIsRequest && this.$emit('requestDone', res)
