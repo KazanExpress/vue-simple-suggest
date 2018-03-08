@@ -133,8 +133,7 @@ vueSimpleSuggest.hoveredIndex
 | Name | Arguments | Description |
 |      |           |             |
 |------|-----------|-------------|
-|`select`| `item` to select | Select the passed item (send it's value to input) |
-|`hover`| `item` to hover ||
+|``|  |  |
 
 -----
 
