@@ -9,6 +9,8 @@
         :minLength="3"
         @select="onSuggestSelect"
         @hover="onSuggestHover"
+        @focus="onFocus"
+        @blur="onBlur"
         @showList="onShowList"
         @hideList="onHideList">
         <!-- <input type="text" v-model="val"> -->
@@ -62,6 +64,12 @@
         this.$nextTick(() => {
           this.$refs.log.scrollTop = this.$refs.log.scrollHeight;
         })
+      },
+      onFocus () {
+        this.addToLog('focus')
+      },
+      onBlur () {
+        this.addToLog('blur')
       },
       onShowList () {
         this.addToLog('showList')

@@ -161,13 +161,15 @@ export default {
         this.hideList(event.key === 'Escape');
       }
     },
-    onBlur () {
+    onBlur (e) {
       this.hideList()
+      this.$emit('blur', e)
     },
-    onFocus () {
+    onFocus (e) {
       if (this.suggestions.length > 0) {
         this.showList()
       }
+      this.$emit('focus', e)
     },
     async getSuggestions (inputEvent) {
       this.selected = null
