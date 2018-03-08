@@ -31,7 +31,7 @@
         Event Log: (<a href="#clear" @click.prevent="log.splice(0)">clear</a>)
       </p>
       <div class="log" ref="log" v-if="log.length > 0">
-        <p v-for="(text, i) in log" :key="i" :ref="'p' + i">{{ text }}</p>
+        <p v-for="(text, i) in log" :key="i" :ref="'p' + i"><pre>{{ text }}</pre></p>
       </div>
       <p v-else>Empty</p>
     </div>
@@ -117,11 +117,16 @@
   }
 
   #app .log {
-    height: stretch;
+    height: 100%;
     border-radius: 3px;
     border: 1px solid #aaa;
     text-align: right;
     overflow-x: hidden;
     overflow-y: scroll;
+  }
+
+  #app .log pre {
+    white-space: pre-wrap;
+    word-break: break-all;
   }
 </style>

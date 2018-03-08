@@ -118,8 +118,10 @@ export default {
         this.select(this.hovered)
       }
 
-      this.show = false
-      this.$emit('hideList')
+      if (this.show) {
+        this.show = false
+        this.$emit('hideList')
+      }
     },
     showList () {
       this.show = true
