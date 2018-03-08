@@ -180,19 +180,18 @@ export default {
       this.text = inputEvent.target.value
       this.$emit('input', this.text)
 
-      const callback = async () => {
-        if (this.canSend) {
-          this.canSend = false
-          await this.getSuggestions(this.text)
-          this.canSend = true
-        }
-      };
-
       if (this.debounce) {
         clearTimeout(this.timeoutInstance)
-        this.timeoutInstance = setTimeout(callback, this.debounce)
+        this.timeoutInstance = setTimeout(this.debounceCallback, this.debounce)
       } else {
-        callback();
+        this.debounceCallback()
+      }
+    },
+    async debounceCallback () {
+      if (this.canSend) {
+        this.canSend = false
+        await this.getSuggestions(this.text)
+        this.canSend = true
       }
     },
     async getSuggestions (value = '') {
