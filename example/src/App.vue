@@ -7,6 +7,7 @@
         :getList="getList"
         :maxCount="10"
         :minLength="3"
+        :inputInterval="200"
         @select="onSuggestSelect"
         @hover="onSuggestHover"
         @focus="onFocus"
