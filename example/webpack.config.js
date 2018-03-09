@@ -60,5 +60,8 @@ module.exports = {
     new HtmlWebPackPlugin({
       template: path.resolve(__dirname, 'src/index.html')
     })
-  ]
+  ],
+  output: {
+    path: path.resolve(__dirname, "../docs")
+  }
 }
