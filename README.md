@@ -2,6 +2,8 @@
 
 > Suggest component for Vue.js
 
+## 
+
 ## Build Setup
 
 ``` bash
@@ -10,6 +12,9 @@ npm install
 
 # serve example with hot reload at localhost
 npm run dev
+
+# build example for static serving
+npm run build
 ```
 -----
 
@@ -24,11 +29,11 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 -----
 ## Component API
 
-### Example
+### TLDR
 
 ```html
-<vue-simple-suggest ref="vueSimpleSuggest"
-  v-model="model"
+<!-- Ref to access the API, v-model for efficient query binding -->
+<vue-simple-suggest ref="vueSimpleSuggest" v-model="model"
   valueAttribute="id"
   displayAttribute="title"
   :placeholder="placeholder!!!"
@@ -50,54 +55,31 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
   @show-list="onShowList"
   @hide-list="onHideList"
 >
-  <input class="optionalCustomInput">
+  <!-- v-model on input itself is useless -->
+  <input class="optional-custom-input">
+
+  <!-- Appears o top of the list -->
+  <template slot="miscItem-above" slot-scope="{ suggestions, query }">
+    <div class="misc-item">
+      <span>You're searching for {{ query }}.</span>
+    </div>
+    <div class="misc-item">
+      <span>{{ suggestions.length }} suggestions are shown...</span>
+    </div>
+    <hr>
+  </template>
+
   <div slot="suggestionItem" slot-scope="{ suggestion }" class="custom">{{ suggestion.title }}</div>
+
+  <!-- Appears below the list -->
+  <div class="misc-item" slot="miscItem-below" slot-scope="{ suggestions }" v-if="loading">
+    <span>Loading...</span>
+  </div>
 </vue-simple-suggest>
 ```
 
 -----
 ### API definitions
-
-#### Data:
-```js
-const vueSimpleSuggest = this.$refs.vueSimpleSuggest;
-
-// Currently selected element
-vueSimpleSuggest.selected              // default: null,
-
-// Currently hovered element
-vueSimpleSuggest.hovered               // default: null,
-
-// Current suggestions list
-vueSimpleSuggest.suggestions           // default: [],
-
-// Is suggestion list shown
-vueSimpleSuggest.listShown              // default: false,
-
-// Currently used HTMLInputElement
-vueSimpleSuggest.inputElement          // default: null,
-
-// Whether the assigned getListFuncion can be executed
-vueSimpleSuggest.canSend               // default: true,
-
-// The timeout until next getListFunction execution
-vueSimpleSuggest.timeoutInstance       // default: null,
-
-// Current input text
-vueSimpleSuggest.text                  // default: vueSimpleSuggest.$props.value
-
-// Whether this current custom input is a vue-component
-vueSimpleSuggest.slotIsComponent
-
-// Whether the list prop is a function
-vueSimpleSuggest.listIsRequest
-
-// A ref to the current input (component or vanilla)
-vueSimpleSuggest.input
-
-// The current hovered element index
-vueSimpleSuggest.hoveredIndex
-```
 
 #### Props:
 | Name                         | Type     | Default  | Description                                                                                                                    |
@@ -128,12 +110,36 @@ vueSimpleSuggest.hoveredIndex
 
 -----
 
-#### Methods:
+#### Ref Methods (accessed via `$refs.*your ref name here*`):
 
 | Name | Arguments | Description |
-|      |           |             |
 |------|-----------|-------------|
-|``|  |  |
+|`showList`| - | Shows the suggestion list. |
+|`hideList`| - | Hides the suggestion list. |
+|`getSuggestions`| `query`: string | Gets and processes suggestions from the `list` prop. Returns a promise. |
+|`research`| - | Debounced `getSuggestions` on the current input value. |
+|`clearSuggestions`| - | Clears the `suggestions` array. |
+|`select`| item | Selects the passed item. |
+|`hover`| item | Hovers over the passed item. |
+
+-----
+
+#### Ref Data (accessed via `$refs.*your ref name here*`):
+
+| Name | Default | Description |
+|------|-----------|-------------|
+|`selected`| `null` | Currently selected element. |
+|`hovered`| `null` | Currently hovered element. |
+|`suggestions`| `[]` | Current suggestions list. |
+|`listShown`| `false` | Is suggestion list shown. |
+|`inputElement`| `null` | Currently used HTMLInputElement. |
+|`canSend`| `true` | Whether the assigned getListFuncion can be executed. |
+|`timeoutInstance`| `null` | The timeout until next getListFunction execution. |
+|`text`| `vueSimpleSuggest.$props.value` | Current input text. |
+|`slotIsComponent`| `-` | Whether this current custom input is a vue-component. |
+|`listIsRequest`| `-` | Whether the list prop is a function. |
+|`input`| `-` | A ref to the current input (component or vanilla). |
+|`hoveredIndex`| `-` | The current hovered element index. |
 
 -----
 

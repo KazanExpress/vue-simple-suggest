@@ -216,6 +216,11 @@ export default {
       this.text = inputEvent.target.value
       this.$emit('input', this.text)
 
+      if (this.selected) {
+        this.selected = null;
+        this.$emit('select', null);
+      }
+
       if (this.debounce) {
         clearTimeout(this.timeoutInstance)
         this.timeoutInstance = setTimeout(this.research, this.debounce)
@@ -226,9 +231,11 @@ export default {
     async research () {
       if (this.canSend) {
         this.canSend = false
-        await this.getSuggestions(this.text)
+        var result = await this.getSuggestions(this.text)
         this.canSend = true
       }
+
+      return result;
     },
     async getSuggestions (value = '') {
       this.selected = null
@@ -285,6 +292,8 @@ export default {
         this.hideList()
         this.suggestions.splice(0)
       }
+
+      return this.suggestions;
     },
     clearSuggestions () {
       this.suggestions.splice(0)
