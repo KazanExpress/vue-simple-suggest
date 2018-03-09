@@ -1,12 +1,34 @@
 # vue-simple-suggest
 
-> Suggest component for Vue.js
+> Feature-rich autocomplete component for Vue.js
 
-## 
+```bash
+npm install --save vue-simple-suggest
+```
 
-## Build Setup
+## Table of contents
+
+- [Build](#build-setup)
+- [What is it?](#what-is-it)
+- [Component API](#component-api)
+  - [TLDR](#tldr)
+  - [API Definitions](#api-definitions)
+    - [Props](#props)
+    - [Events](#events)
+    - [Ref Methods](#ref-methods)
+    - [Ref Data](#ref-data)
+  - [Slots](#slots)
+    - [Custom input](#custom-input)
+    - [Custom suggestion item](#custom-suggestion-item)
+    - [Custom miscellanious item slots](#custom-miscellanious-item-slots)
+
+## Clone & Build Setup
 
 ``` bash
+# clone the repo
+git clone https://github.com/KazanExpress/vue-simple-suggest.git
+cd ./vue-simple-suggest
+
 # install dependencies
 npm install
 
@@ -110,7 +132,8 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 
 -----
 
-#### Ref Methods (accessed via `$refs.*your ref name here*`):
+#### Ref Methods:
+> accessed via `$refs.*your ref name here*`
 
 | Name | Arguments | Description |
 |------|-----------|-------------|
@@ -124,7 +147,8 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 
 -----
 
-#### Ref Data (accessed via `$refs.*your ref name here*`):
+#### Ref Data:
+> accessed via `$refs.*your ref name here*`
 
 | Name | Default | Description |
 |------|-----------|-------------|
@@ -143,9 +167,13 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 
 -----
 
-#### Slots (all optional):
+### Slots:
 
-##### Custom input (default slot)
+> all optional
+
+##### Custom input
+> default slot
+
 Supports nesting. Input props can be passed to a custom input to avoid their processing by vue-simple-suggest.
 Defaults to a simple input with props passed to vue-simple-suggest.
 
@@ -189,7 +217,8 @@ Defaults to a simple input with props passed to vue-simple-suggest.
 </vue-simple-suggest>
 ```
 
-##### Custom suggestion item (`suggestionItem` slot)
+##### Custom suggestion item 
+> `suggestionItem` slot
 
 Allows custom html-definitons of the suggestion items in a list.
 Defaults to `<span>{{ suggestion[displayAttribute] }}</span>`
@@ -203,7 +232,8 @@ Defaults to `<span>{{ suggestion[displayAttribute] }}</span>`
 </vue-simple-suggest>
 ```
 
-##### Custom miscellanious item slots (`miscItem-above` and `miscItem-below` slots)
+##### Custom miscellanious item slots 
+> `miscItem-above` and `miscItem-below` slots
 
 Allow custom elements to be shown in suggestion list. These elements never dissapear from the list, niether can they be selected nor hovered on.
 

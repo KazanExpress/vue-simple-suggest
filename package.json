@@ -1,14 +1,41 @@
 {
   "name": "vue-simple-suggest",
-  "description": "Suggestion component for Vue.js",
+  "description": "Feature-rich autocomplete component for Vue.js",
   "version": "0.0.0",
   "author": "KazanExpress",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --mode development --config example/webpack.config.js --open --hot",
-    "build": "webpack --mode production --config example/webpack.config.js"
+    "build": "webpack --mode production --config example/webpack.config.js",
+    "postversion": "npm run build",
+    "patch": "npm version patch && npm publish",
+    "minor": "npm version minor && npm publish",
+    "major": "npm version major && npm publish"
   },
+  "keywords": [
+    "Vue",
+    "Vue.js",
+    "Autocomplete",
+    "Suggest",
+    "Suggestion",
+    "REST",
+    "Search",
+    "list",
+    "Webpack",
+    "customizable",
+    "controllable",
+    "component",
+    "hello to tag readers",
+    "feature-rich",
+    "simple",
+    "API",
+    "explained",
+    "comprehensive",
+    "config-less",
+    "JavaScript",
+    "JS"
+  ],
   "dependencies": {
     "vue": "^2.5.0"
   },
@@ -23,7 +50,6 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-3": "^6.24.1",
     "core-js": "^2.5.3",
-    "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.4",
     "html-loader": "^0.5.5",
