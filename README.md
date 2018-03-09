@@ -1,6 +1,8 @@
-# vue-simple-suggest
+# [vue-simple-suggest](https://www.npmjs.com/package/vue-simple-suggest)
 
 > Feature-rich autocomplete component for Vue.js
+
+[Live Demo](https://kazanexpress.github.io/vue-simple-suggest/)
 
 ```bash
 npm install --save vue-simple-suggest
