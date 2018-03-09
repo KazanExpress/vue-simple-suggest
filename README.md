@@ -115,7 +115,7 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 | `maxSuggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions.                                                                                 |
 | `displayAttribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths.                                        |
 | `valueAttribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths.                                      |
-| `getList`                      | Funciton | `() => []` | The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function. |
+| `getList`                      | Funciton or Array | `() => []` | The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function. |
 | `debounce`                     | Number   | `0`        | Determines the getList debounce (a time between the input event and a function execution).                                     |
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list.                                                           |
 | `filterByQuery`                     | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component).                                                           |
