@@ -46,17 +46,14 @@
         </div>
       </vue-suggest>
 
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        Consectetur iusto repellendus recusandae, distinctio ratione voluptate?
-        Doloribus suscipit quibusdam atque perferendis quam consequatur
-        dolore dolores nemo, quia exercitationem voluptatibus facere repellat.</p>
+      <p v-if="selected">Selected element: <pre v-html="selected" class="selected"></pre></p>
     </div>
     <div class="log-container">
       <p class="title">
         Event Log: (<a href="#clear" @click.prevent="log.splice(0)">clear</a>)
       </p>
       <div class="log" ref="log" v-if="log.length > 0">
-        <p v-for="(text, i) in log" :key="'p' + i" :ref="'p' + i"><pre>{{ text }}</pre></p>
+        <p v-for="(text, i) in log" :key="'p' + i" :ref="'p' + i"><pre v-html="text"></pre></p>
       </div>
       <p v-else>Empty</p>
     </div>
@@ -112,7 +109,6 @@
       onSuggestSelect (suggest) {
         this.addToLog('select', JSON.stringify(suggest))
         this.selected = suggest
-        this.val = this.selected.title
       },
       onSuggestHover (suggestion) {
         this.addToLog('hover', JSON.stringify(suggestion));
@@ -164,6 +160,10 @@
     position: sticky;
   }
 
+  #app .example {
+    width: 506px;
+  }
+
   #app .example,
   #app .log-container,
   #app .log {
@@ -190,5 +190,12 @@
   #app .log pre {
     white-space: pre-wrap;
     word-break: break-all;
+  }
+
+  #app pre.selected {
+    width: 506px;
+    height: 295px;
+    overflow-x: scroll;
+    overflow-y: scroll;
   }
 </style>
