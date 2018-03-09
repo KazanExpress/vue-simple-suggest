@@ -65,7 +65,7 @@ npm run build
 |`ArrowDown` | If the suggestions list is hidden - show it.|
 |`ArrowUp`/`ArrowDown` | Cycle (hover) through suggestions.|
 |`Enter` | If the list is shown - chooses the highlighted element, if the list is hidden - refills the suggestions based on current input text.|
-|`Ctrl` + `Space` | Select the first element in the list.|
+|`Ctrl + Space`/`Cmd + Space` | Select the first element in the list.|
 
 -----
 ## Component API

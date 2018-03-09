@@ -6,6 +6,7 @@
       @keydown.up.down.prevent="onArrowKeyDown"
       @keyup.enter.esc.prevent="onListKeyUp"
       @keyup.ctrl.space.prevent="onAutocomplete"
+      @keyup.meta.space.prevent="onAutocomplete"
       ref="inputSlot">
       <slot>
         <input v-bind="$props">
