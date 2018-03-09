@@ -80,7 +80,8 @@
     },
     methods: {
       addToLog (name, e) {
-        this.log.push(name + (e ? ': ' + e.toString() : ''))
+        this.log.push(name)
+        console.log(name, e);
         this.$nextTick(() => {
           this.$refs.log.scrollTop = this.$refs.log.scrollHeight;
         })
@@ -107,11 +108,11 @@
         this.addToLog('hideList', e)
       },
       onSuggestSelect (suggest) {
-        this.addToLog('select', JSON.stringify(suggest))
+        this.addToLog('select', suggest)
         this.selected = suggest
       },
       onSuggestHover (suggestion) {
-        this.addToLog('hover', JSON.stringify(suggestion));
+        this.addToLog('hover', suggestion);
       },
       getList (inputValue) {
         return new Promise((resolve, reject) => {
