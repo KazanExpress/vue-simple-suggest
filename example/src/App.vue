@@ -26,7 +26,7 @@
 
         <!-- <div class="g"><input type="text"></div> -->
 
-        <test-input/>
+        <!-- <test-input/> -->
 
         <template slot="miscItem-above" slot-scope="{ suggestions, query }">
           <div class="misc-item">
