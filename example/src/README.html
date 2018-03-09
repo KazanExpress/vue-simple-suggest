@@ -1,0 +1,423 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <title>vue-simple-suggest</title>
+    <link type="text/css" rel="stylesheet" href="assets/css/github-markdown.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css">
+    <link type="text/css" rel="stylesheet" href="assets/css/hljs-github.min.css"/>
+  </head>
+  <body>
+    <article class="markdown-body"><h1 id="vue-simple-suggest"><a class="header-link" href="#vue-simple-suggest"></a>vue-simple-suggest</h1>
+<blockquote>
+<p>Feature-rich autocomplete component for Vue.js</p>
+</blockquote>
+<p><a href="https://www.npmjs.com/package/vue-simple-suggest"><img src="https://img.shields.io/npm/v/vue-simple-suggest.svg?style=flat-square" alt="npm"></a>
+<a href="https://kazanexpress.github.io/vue-simple-suggest/"><img src="https://img.shields.io/badge/demo-live-brightgreen.svg?style=flat-square" alt="live demo"></a>
+<a href="https://github.com/vuejs/awesome-vue#autocomplete"><img src="https://img.shields.io/badge/very-awesome-orange.svg?style=flat-square" alt=""></a></p>
+<pre class="hljs"><code>npm install --save vue-simple-suggest</code></pre><h2 id="table-of-contents"><a class="header-link" href="#table-of-contents"></a>Table of contents</h2>
+<ul class="list">
+<li><a href="#build-setup">Build</a></li>
+<li><a href="#what-is-it">What is it?</a></li>
+<li><a href="#component-api">Component API</a><ul class="list">
+<li><a href="#tldr">TLDR</a></li>
+<li><a href="#api-definitions">API Definitions</a><ul class="list">
+<li><a href="#props">Props</a></li>
+<li><a href="#events">Events</a></li>
+<li><a href="#ref-methods">Ref Methods</a></li>
+<li><a href="#ref-data">Ref Data</a></li>
+</ul>
+</li>
+<li><a href="#slots">Slots</a><ul class="list">
+<li><a href="#custom-input">Custom input</a></li>
+<li><a href="#custom-suggestion-item">Custom suggestion item</a></li>
+<li><a href="#custom-miscellanious-item-slots">Custom miscellanious item slots</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="clone-&-build-setup"><a class="header-link" href="#clone-&-build-setup"></a>Clone &amp; Build Setup</h2>
+<pre class="hljs"><code><span class="hljs-comment"># clone the repo</span>
+git <span class="hljs-built_in">clone</span> https://github.com/KazanExpress/vue-simple-suggest.git
+<span class="hljs-built_in">cd</span> ./vue-simple-suggest
+
+<span class="hljs-comment"># install dependencies</span>
+npm install
+
+<span class="hljs-comment"># serve example with hot reload at localhost</span>
+npm run dev
+
+<span class="hljs-comment"># build example for static serving</span>
+npm run build</code></pre><hr>
+<h2 id="what-is-it"><a class="header-link" href="#what-is-it"></a>What is it</h2>
+<p>This is a simple yet feature-rich suggestion/autocomplete component for Vue.js.</p>
+<p>It supports v-model, allows custom styling, custom input and suggestion list templates, API calls and more.</p>
+<p>All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.</p>
+<hr>
+<h2 id="component-api"><a class="header-link" href="#component-api"></a>Component API</h2>
+<h3 id="tldr"><a class="header-link" href="#tldr"></a>TLDR</h3>
+<pre class="hljs"><code><span class="hljs-comment">&lt;!-- Ref to access the API, v-model for efficient query binding --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">"vueSimpleSuggest"</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span>
+  <span class="hljs-attr">valueAttribute</span>=<span class="hljs-string">"id"</span>
+  <span class="hljs-attr">displayAttribute</span>=<span class="hljs-string">"title"</span>
+  <span class="hljs-attr">:placeholder</span>=<span class="hljs-string">"placeholder!!!"</span>
+  <span class="hljs-attr">:get-list</span>=<span class="hljs-string">"getListFunction"</span>
+  <span class="hljs-attr">:max-count</span>=<span class="hljs-string">"10"</span>
+  <span class="hljs-attr">:min-length</span>=<span class="hljs-string">"3"</span>
+  <span class="hljs-attr">:debounce</span>=<span class="hljs-string">"100"</span>
+  <span class="hljs-attr">:destyled</span>=<span class="hljs-string">"false"</span>
+  <span class="hljs-attr">:filter-by-query</span>=<span class="hljs-string">"false"</span>
+  <span class="hljs-attr">:value</span>=<span class="hljs-string">"defaultValue"</span>
+  @<span class="hljs-attr">input</span>=<span class="hljs-string">"onInputEvent"</span>
+  @<span class="hljs-attr">select</span>=<span class="hljs-string">"onSuggestSelect"</span>
+  @<span class="hljs-attr">hover</span>=<span class="hljs-string">"onSuggestHover"</span>
+  @<span class="hljs-attr">focus</span>=<span class="hljs-string">"onFocus"</span>
+  @<span class="hljs-attr">blur</span>=<span class="hljs-string">"onBlur"</span>
+  @<span class="hljs-attr">request-start</span>=<span class="hljs-string">"onRequestStart"</span>
+  @<span class="hljs-attr">request-done</span>=<span class="hljs-string">"onRequestDone"</span>
+  @<span class="hljs-attr">request-failed</span>=<span class="hljs-string">"onRequestFailed"</span>
+  @<span class="hljs-attr">show-list</span>=<span class="hljs-string">"onShowList"</span>
+  @<span class="hljs-attr">hide-list</span>=<span class="hljs-string">"onHideList"</span>
+&gt;</span>
+  <span class="hljs-comment">&lt;!-- v-model on input itself is useless --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"optional-custom-input"</span>&gt;</span>
+
+  <span class="hljs-comment">&lt;!-- Appears o top of the list --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"miscItem-above"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions, query }"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>You're searching for {{ query }}.<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>{{ suggestions.length }} suggestions are shown...<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">hr</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestionItem"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestion }"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"custom"</span>&gt;</span>{{ suggestion.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+
+  <span class="hljs-comment">&lt;!-- Appears below the list --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"miscItem-below"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions }"</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"loading"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>Loading...<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><hr>
+<h3 id="api-definitions"><a class="header-link" href="#api-definitions"></a>API definitions</h3>
+<h4 id="props"><a class="header-link" href="#props"></a>Props</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>maxSuggestions</code></td>
+<td>Number</td>
+<td><code>10</code></td>
+<td>The maximum amount of suggestions to display. Set to 0 for infinite suggestions.</td>
+</tr>
+<tr>
+<td><code>displayAttribute</code></td>
+<td>String</td>
+<td><code>&#39;title&#39;</code></td>
+<td>The property in a suggestion object to display in a list. Supports dotted paths.</td>
+</tr>
+<tr>
+<td><code>valueAttribute</code></td>
+<td>String</td>
+<td><code>&#39;id&#39;</code></td>
+<td>The property in a suggestion object to use as a unique key. Supports dotted paths.</td>
+</tr>
+<tr>
+<td><code>getList</code></td>
+<td>Funciton</td>
+<td><code>() =&gt; []</code></td>
+<td>The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function.</td>
+</tr>
+<tr>
+<td><code>debounce</code></td>
+<td>Number</td>
+<td><code>0</code></td>
+<td>Determines the getList debounce (a time between the input event and a function execution).</td>
+</tr>
+<tr>
+<td><code>destyled</code></td>
+<td>Boolean</td>
+<td><code>false</code></td>
+<td>Whether to cancel the default styling of input and suggestions list.</td>
+</tr>
+<tr>
+<td><code>filterByQuery</code></td>
+<td>Boolean</td>
+<td><code>false</code></td>
+<td>Whether to filter the resulting suggestions by input&#39;s text query (make it a search component).</td>
+</tr>
+<tr>
+<td>type, value, pattern, etc...</td>
+<td></td>
+<td></td>
+<td>All of the HTML5 input attributes with their respected default values.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="events"><a class="header-link" href="#events"></a>Events</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>input</code></td>
+<td>HTML input event</td>
+<td>An outward projection of the current input&#39;s event.</td>
+</tr>
+<tr>
+<td><code>focus</code></td>
+<td>HTML focus event</td>
+<td>An outward projection of the current input&#39;s event.</td>
+</tr>
+<tr>
+<td><code>blur</code></td>
+<td>HTML focus event</td>
+<td>An outward projection of the current input&#39;s event.</td>
+</tr>
+<tr>
+<td><code>select</code></td>
+<td>Selected suggestion</td>
+<td>Fires on suggestion selection (via a mouse click or enter keypress).</td>
+</tr>
+<tr>
+<td><code>hover</code></td>
+<td>Hovered suggestion</td>
+<td>Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).</td>
+</tr>
+<tr>
+<td><code>showList</code></td>
+<td>-</td>
+<td>Fires each time the suggestion list is toggled to be shown.</td>
+</tr>
+<tr>
+<td><code>hideList</code></td>
+<td>-</td>
+<td>Fires each time the suggestion list is being hidden.</td>
+</tr>
+<tr>
+<td><code>requestStart</code></td>
+<td>Current input value (query)</td>
+<td>Fires each time a <code>getList</code> function starts executing.</td>
+</tr>
+<tr>
+<td><code>requestDone</code></td>
+<td>Resulting suggestions list</td>
+<td>Fires when a <code>getList</code> function successfully returns a result and forwards that result as an argument.</td>
+</tr>
+<tr>
+<td><code>requestFailed</code></td>
+<td>The interrrupting exception</td>
+<td>Fires if an exception occurs during the execution of a <code>getList</code> funciton.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="ref-methods"><a class="header-link" href="#ref-methods"></a>Ref Methods</h4>
+<blockquote>
+<p>accessed via <code>$refs.*your ref name here*</code></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>showList</code></td>
+<td>-</td>
+<td>Shows the suggestion list.</td>
+</tr>
+<tr>
+<td><code>hideList</code></td>
+<td>-</td>
+<td>Hides the suggestion list.</td>
+</tr>
+<tr>
+<td><code>getSuggestions</code></td>
+<td><code>query</code>: string</td>
+<td>Gets and processes suggestions from the <code>list</code> prop. Returns a promise.</td>
+</tr>
+<tr>
+<td><code>research</code></td>
+<td>-</td>
+<td>Debounced <code>getSuggestions</code> on the current input value.</td>
+</tr>
+<tr>
+<td><code>clearSuggestions</code></td>
+<td>-</td>
+<td>Clears the <code>suggestions</code> array.</td>
+</tr>
+<tr>
+<td><code>select</code></td>
+<td>item</td>
+<td>Selects the passed item.</td>
+</tr>
+<tr>
+<td><code>hover</code></td>
+<td>item</td>
+<td>Hovers over the passed item.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="ref-data"><a class="header-link" href="#ref-data"></a>Ref Data</h4>
+<blockquote>
+<p>accessed via <code>$refs.*your ref name here*</code></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>selected</code></td>
+<td><code>null</code></td>
+<td>Currently selected element.</td>
+</tr>
+<tr>
+<td><code>hovered</code></td>
+<td><code>null</code></td>
+<td>Currently hovered element.</td>
+</tr>
+<tr>
+<td><code>suggestions</code></td>
+<td><code>[]</code></td>
+<td>Current suggestions list.</td>
+</tr>
+<tr>
+<td><code>listShown</code></td>
+<td><code>false</code></td>
+<td>Is suggestion list shown.</td>
+</tr>
+<tr>
+<td><code>inputElement</code></td>
+<td><code>null</code></td>
+<td>Currently used HTMLInputElement.</td>
+</tr>
+<tr>
+<td><code>canSend</code></td>
+<td><code>true</code></td>
+<td>Whether the assigned getListFuncion can be executed.</td>
+</tr>
+<tr>
+<td><code>timeoutInstance</code></td>
+<td><code>null</code></td>
+<td>The timeout until next getListFunction execution.</td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td><code>vueSimpleSuggest.$props.value</code></td>
+<td>Current input text.</td>
+</tr>
+<tr>
+<td><code>slotIsComponent</code></td>
+<td><code>-</code></td>
+<td>Whether this current custom input is a vue-component.</td>
+</tr>
+<tr>
+<td><code>listIsRequest</code></td>
+<td><code>-</code></td>
+<td>Whether the list prop is a function.</td>
+</tr>
+<tr>
+<td><code>input</code></td>
+<td><code>-</code></td>
+<td>A ref to the current input (component or vanilla).</td>
+</tr>
+<tr>
+<td><code>hoveredIndex</code></td>
+<td><code>-</code></td>
+<td>The current hovered element index.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="slots"><a class="header-link" href="#slots"></a>Slots</h3>
+<blockquote>
+<p>all optional</p>
+</blockquote>
+<h5 id="custom-input"><a class="header-link" href="#custom-input"></a>Custom input</h5>
+<blockquote>
+<p>default slot</p>
+</blockquote>
+<p>Supports nesting. Input props can be passed to a custom input to avoid their processing by vue-simple-suggest.
+Defaults to a simple input with props passed to vue-simple-suggest.</p>
+<p><strong>Warning:</strong> <code>v-model</code> on a custom input IS NOT the same as <code>v-model</code> on vue-simple-suggest!</p>
+<pre class="hljs"><code><span class="hljs-comment">&lt;!--  Default HTMLInputElement example:  --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"Text here"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"search"</span> <span class="hljs-attr">pattern</span>=<span class="hljs-string">"[a-z]+"</span>/&gt;</span></code></pre><pre class="hljs"><code><span class="hljs-comment">&lt;!--  Vanilla HTMLInputElement example 1:  --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">pattern</span>=<span class="hljs-string">"[a-z]+"</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><pre class="hljs"><code><span class="hljs-comment">&lt;!--  Vanilla HTMLInputElement example 2:  --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"Text here"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"search"</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><pre class="hljs"><code><span class="hljs-comment">&lt;!--  Vanilla HTMLInputElement example 3 (fully equivalent to the second example):  --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"Text here"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"search"</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><pre class="hljs"><code><span class="hljs-comment">&lt;!--  Vanilla HTMLInputElement example 4 (nested):  --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"email"</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><pre class="hljs"><code><span class="hljs-comment">&lt;!--  Vue component example (also supports nesting):  --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">my-custom-input-somponent</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-custom-input-somponent</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><h5 id="custom-suggestion-item"><a class="header-link" href="#custom-suggestion-item"></a>Custom suggestion item</h5>
+<blockquote>
+<p><code>suggestionItem</code> slot</p>
+</blockquote>
+<p>Allows custom html-definitons of the suggestion items in a list.
+Defaults to <code>&lt;span&gt;{{ suggestion[displayAttribute] }}&lt;/span&gt;</code></p>
+<pre class="hljs"><code><span class="hljs-comment">&lt;!-- Example: --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestionItem"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestion }"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>My {{ suggestion.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><h5 id="custom-miscellanious-item-slots"><a class="header-link" href="#custom-miscellanious-item-slots"></a>Custom miscellanious item slots</h5>
+<blockquote>
+<p><code>miscItem-above</code> and <code>miscItem-below</code> slots</p>
+</blockquote>
+<p>Allow custom elements to be shown in suggestion list. These elements never dissapear from the list, niether can they be selected nor hovered on.</p>
+<p>These can be used for decoration, loaders, error messages and etc.</p>
+<p>Do not have defaults, so are not shown until defined.</p>
+<p>Accept the <code>suggestions</code> array and a <code>query</code> text as a <code>slot-scope</code> attribute values.</p>
+<pre class="hljs"><code><span class="hljs-comment">&lt;!-- Examples: --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"miscItem-above"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions, query }"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>You're searching for {{ query }}.<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>{{ suggestions.length }} suggestions are shown...<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"miscItem-below"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions }"</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"isLoading"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>Loading...<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre>    </article>
+  </body>
+</html>

@@ -6,8 +6,9 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --mode development --config example/webpack.config.js --open --hot",
-    "build": "webpack --mode production --config example/webpack.config.js",
+    "dev": "npm run readme && webpack-dev-server --mode development --config example/webpack.config.js --open --hot",
+    "build": "npm run readme && webpack --mode production --config example/webpack.config.js",
+    "readme": "generate-md --layout github --input ./README.md --output ./example/src",
     "postversion": "npm run build",
     "patch": "npm version patch && npm publish",
     "minor": "npm version minor && npm publish",
@@ -49,15 +50,18 @@
     "babel-loader": "^7.1.4",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-3": "^6.24.1",
+    "copy-webpack-plugin": "^4.5.1",
     "core-js": "^2.5.3",
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.4",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.0.6",
+    "markdown-styles": "^3.1.10",
     "vue-loader": "^14.2.1",
     "vue-template-compiler": "^2.5.0",
     "webpack": "^4.1.1",
     "webpack-cli": "^2.0.8",
-    "webpack-dev-server": "^3.1.0"
+    "webpack-dev-server": "^3.1.0",
+    "whatwg-fetch": "^2.0.3"
   }
 }

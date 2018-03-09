@@ -1,8 +1,11 @@
-# [vue-simple-suggest](https://www.npmjs.com/package/vue-simple-suggest)
+# vue-simple-suggest
 
 > Feature-rich autocomplete component for Vue.js
 
-[Live Demo](https://kazanexpress.github.io/vue-simple-suggest/)
+
+[![npm](https://img.shields.io/npm/v/vue-simple-suggest.svg?style=flat-square)](https://www.npmjs.com/package/vue-simple-suggest)
+[![live demo](https://img.shields.io/badge/demo-live-brightgreen.svg?style=flat-square)](https://kazanexpress.github.io/vue-simple-suggest/)
+[![](https://img.shields.io/badge/very-awesome-orange.svg?style=flat-square)](https://github.com/vuejs/awesome-vue#autocomplete)
 
 ```bash
 npm install --save vue-simple-suggest
@@ -42,7 +45,7 @@ npm run build
 ```
 -----
 
-## What is it?
+## What is it
 
 This is a simple yet feature-rich suggestion/autocomplete component for Vue.js.
 
@@ -105,7 +108,7 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 -----
 ### API definitions
 
-#### Props:
+#### Props
 | Name                         | Type     | Default  | Description                                                                                                                    |
 |------------------------------|----------|----------|--------------------------------------------------------------------------------------------------------------------------------|
 | `maxSuggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions.                                                                                 |
@@ -118,7 +121,7 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 | type, value, pattern, etc... |          |          | All of the HTML5 input attributes with their respected default values.                                                         |
 
 -----
-#### Events:
+#### Events
 | Name          | Arguments                   | Description                                                                                            |
 |---------------|-----------------------------|--------------------------------------------------------------------------------------------------------|
 | `input`         | HTML input event           | An outward projection of the current input's event.                                                    |
@@ -134,7 +137,7 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 
 -----
 
-#### Ref Methods:
+#### Ref Methods
 > accessed via `$refs.*your ref name here*`
 
 | Name | Arguments | Description |
@@ -149,7 +152,7 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 
 -----
 
-#### Ref Data:
+#### Ref Data
 > accessed via `$refs.*your ref name here*`
 
 | Name | Default | Description |
@@ -169,7 +172,7 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 
 -----
 
-### Slots:
+### Slots
 
 > all optional
 
@@ -180,6 +183,7 @@ Supports nesting. Input props can be passed to a custom input to avoid their pro
 Defaults to a simple input with props passed to vue-simple-suggest.
 
 **Warning:** `v-model` on a custom input IS NOT the same as `v-model` on vue-simple-suggest!
+
 ```html
 <!--  Default HTMLInputElement example:  -->
 <vue-simple-suggest v-model="model" placeholder="Text here" type="search" pattern="[a-z]+"/>
