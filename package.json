@@ -1,7 +1,7 @@
 {
   "name": "vue-simple-suggest",
   "description": "Feature-rich autocomplete component for Vue.js",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "KazanExpress",
   "license": "MIT",
   "main": "index.js",
