@@ -14,8 +14,9 @@ npm install --save vue-simple-suggest
 
 ## Table of contents
 
-- [Build](#build-setup)
 - [What is it?](#what-is-it)
+- [Build](#build-setup)
+- [Controls](#default-controls)
 - [Component API](#component-api)
   - [TLDR](#tldr)
   - [API Definitions](#api-definitions)
@@ -27,8 +28,19 @@ npm install --save vue-simple-suggest
     - [Custom input](#custom-input)
     - [Custom suggestion item](#custom-suggestion-item)
     - [Custom miscellanious item slots](#custom-miscellanious-item-slots)
+- [Roadmap](#roadmap)
 
-## Clone & Build Setup
+
+## What is it
+
+This is a simple yet feature-rich suggestion/autocomplete component for Vue.js.
+
+It supports v-model, allows custom styling, custom input and suggestion list templates, API calls and more.
+
+All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.
+
+-----
+## Build Setup
 
 ``` bash
 # clone the repo
@@ -45,14 +57,15 @@ npm run dev
 npm run build
 ```
 -----
+## Default Controls
 
-## What is it
-
-This is a simple yet feature-rich suggestion/autocomplete component for Vue.js.
-
-It supports v-model, allows custom styling, custom input and suggestion list templates, API calls and more.
-
-All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.
+|Key | Description|
+|-|-|
+|`Escape` | If the suggestions list is shown - hide it.|
+|`ArrowDown` | If the suggestions list is hidden - show it.|
+|`ArrowUp`/`ArrowDown` | Cycle (hover) through suggestions.|
+|`Enter` | If the list is shown - chooses the highlighted element, if the list is hidden - refills the suggestions based on current input text.|
+|`Ctrl` + `Space` | Select the first element in the list.|
 
 -----
 ## Component API
@@ -70,6 +83,7 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
   :min-length="3"
   :debounce="100"
   :destyled="false"
+  :removeList="false"
   :filter-by-query="false"
   :value="defaultValue"
   @input="onInputEvent"
@@ -118,6 +132,7 @@ All of the props, events and slots are OPTIONAL for this component, so it can be
 | `getList`                      | Funciton or Array | `() => []` | The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function. |
 | `debounce`                     | Number   | `0`        | Determines the getList debounce (a time between the input event and a function execution).                                     |
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list.                                                           |
+| `removeList`                     | Boolean  | `false`    | If true - the suggestion list will be always hidden.                                                           |
 | `filterByQuery`                     | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component).                                                           |
 | type, value, pattern, etc... |          |          | All of the HTML5 input attributes with their respected default values.                                                         |
 

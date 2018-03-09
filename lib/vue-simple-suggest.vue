@@ -5,12 +5,13 @@
       @input="onInput"
       @keydown.up.down.prevent="onArrowKeyDown"
       @keyup.enter.esc.prevent="onListKeyUp"
+      @keyup.ctrl.space.prevent="onAutocomplete"
       ref="inputSlot">
       <slot>
         <input v-bind="$props">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!listShown" :class="{ designed: !destyled }">
+    <div class="suggestions" v-if="!!listShown && !removeList" :class="{ designed: !destyled }">
       <slot name="miscItem-above" :suggestions="suggestions" :query="text"></slot>
 
       <div class="suggest-item" v-for="suggestion in suggestions"
@@ -67,6 +68,10 @@ export default {
     list: {
       type: [Function, Array],
       default: () => []
+    },
+    removeList: {
+      type: Boolean,
+      default: false
     },
     destyled: {
       type: Boolean,
@@ -201,6 +206,9 @@ export default {
       } else if (event.key !== 'Escape') {
         this.research();
       }
+    },
+    onAutocomplete (event) {
+      this.select(this.suggestions[0]);
     },
     onBlur (e) {
       this.hideList()

@@ -19,8 +19,9 @@
 <a href="https://github.com/vuejs/awesome-vue#autocomplete"><img src="https://img.shields.io/badge/very-awesome-orange.svg?style=flat-square" alt=""></a></p>
 <pre class="hljs"><code>npm install --save vue-simple-suggest</code></pre><h2 id="table-of-contents"><a class="header-link" href="#table-of-contents"></a>Table of contents</h2>
 <ul class="list">
-<li><a href="#build-setup">Build</a></li>
 <li><a href="#what-is-it">What is it?</a></li>
+<li><a href="#build-setup">Build</a></li>
+<li><a href="#default-controls">Controls</a></li>
 <li><a href="#component-api">Component API</a><ul class="list">
 <li><a href="#tldr">TLDR</a></li>
 <li><a href="#api-definitions">API Definitions</a><ul class="list">
@@ -38,8 +39,14 @@
 </li>
 </ul>
 </li>
+<li><a href="#roadmap">Roadmap</a></li>
 </ul>
-<h2 id="clone-&-build-setup"><a class="header-link" href="#clone-&-build-setup"></a>Clone &amp; Build Setup</h2>
+<h2 id="what-is-it"><a class="header-link" href="#what-is-it"></a>What is it</h2>
+<p>This is a simple yet feature-rich suggestion/autocomplete component for Vue.js.</p>
+<p>It supports v-model, allows custom styling, custom input and suggestion list templates, API calls and more.</p>
+<p>All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.</p>
+<hr>
+<h2 id="build-setup"><a class="header-link" href="#build-setup"></a>Build Setup</h2>
 <pre class="hljs"><code><span class="hljs-comment"># clone the repo</span>
 git <span class="hljs-built_in">clone</span> https://github.com/KazanExpress/vue-simple-suggest.git
 <span class="hljs-built_in">cd</span> ./vue-simple-suggest
@@ -52,10 +59,37 @@ npm run dev
 
 <span class="hljs-comment"># build example for static serving</span>
 npm run build</code></pre><hr>
-<h2 id="what-is-it"><a class="header-link" href="#what-is-it"></a>What is it</h2>
-<p>This is a simple yet feature-rich suggestion/autocomplete component for Vue.js.</p>
-<p>It supports v-model, allows custom styling, custom input and suggestion list templates, API calls and more.</p>
-<p>All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.</p>
+<h2 id="default-controls"><a class="header-link" href="#default-controls"></a>Default Controls</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Escape</code></td>
+<td>If the suggestions list is shown - hide it.</td>
+</tr>
+<tr>
+<td><code>ArrowDown</code></td>
+<td>If the suggestions list is hidden - show it.</td>
+</tr>
+<tr>
+<td><code>ArrowUp</code>/<code>ArrowDown</code></td>
+<td>Cycle (hover) through suggestions.</td>
+</tr>
+<tr>
+<td><code>Enter</code></td>
+<td>If the list is shown - chooses the highlighted element, if the list is hidden - refills the suggestions based on current input text.</td>
+</tr>
+<tr>
+<td><code>Ctrl</code> + <code>Space</code></td>
+<td>Select the first element in the list.</td>
+</tr>
+</tbody>
+</table>
 <hr>
 <h2 id="component-api"><a class="header-link" href="#component-api"></a>Component API</h2>
 <h3 id="tldr"><a class="header-link" href="#tldr"></a>TLDR</h3>
@@ -69,6 +103,7 @@ npm run build</code></pre><hr>
   <span class="hljs-attr">:min-length</span>=<span class="hljs-string">"3"</span>
   <span class="hljs-attr">:debounce</span>=<span class="hljs-string">"100"</span>
   <span class="hljs-attr">:destyled</span>=<span class="hljs-string">"false"</span>
+  <span class="hljs-attr">:removeList</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:filter-by-query</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:value</span>=<span class="hljs-string">"defaultValue"</span>
   @<span class="hljs-attr">input</span>=<span class="hljs-string">"onInputEvent"</span>
@@ -150,6 +185,12 @@ npm run build</code></pre><hr>
 <td>Boolean</td>
 <td><code>false</code></td>
 <td>Whether to cancel the default styling of input and suggestions list.</td>
+</tr>
+<tr>
+<td><code>removeList</code></td>
+<td>Boolean</td>
+<td><code>false</code></td>
+<td>If true - the suggestion list will be always hidden.</td>
 </tr>
 <tr>
 <td><code>filterByQuery</code></td>
