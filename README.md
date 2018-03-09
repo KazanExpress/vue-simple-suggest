@@ -191,7 +191,6 @@ Defaults to a simple input with props passed to vue-simple-suggest.
 ```html
 <!--  Vanilla HTMLInputElement example 2:  -->
 <vue-simple-suggest v-model="model" placeholder="Text here" type="search">
-  <input>
 </vue-simple-suggest>
 ```
 ```html
@@ -217,7 +216,7 @@ Defaults to a simple input with props passed to vue-simple-suggest.
 </vue-simple-suggest>
 ```
 
-##### Custom suggestion item 
+##### Custom suggestion item
 > `suggestionItem` slot
 
 Allows custom html-definitons of the suggestion items in a list.
@@ -232,7 +231,7 @@ Defaults to `<span>{{ suggestion[displayAttribute] }}</span>`
 </vue-simple-suggest>
 ```
 
-##### Custom miscellanious item slots 
+##### Custom miscellanious item slots
 > `miscItem-above` and `miscItem-below` slots
 
 Allow custom elements to be shown in suggestion list. These elements never dissapear from the list, niether can they be selected nor hovered on.

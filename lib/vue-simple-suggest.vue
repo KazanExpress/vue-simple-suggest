@@ -336,6 +336,7 @@ export default {
   border-radius: 3px;
   border: 1px solid #aaa;
   background-color: #fff;
+  z-index: 1000;
 }
 
 .vue-simple-suggest .suggestions .suggest-item,

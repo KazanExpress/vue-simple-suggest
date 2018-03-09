@@ -10,6 +10,7 @@
         :debounce="200"
         :filterByQuery="false"
         ref="suggestComponent"
+        placeholder="Search books..."
         valueAttribute="id"
         displayAttribute="volumeInfo.title"
         @select="onSuggestSelect"
@@ -136,10 +137,6 @@
             reject(error)
           })
         })
-        // return Math.random() > 0.2 ? [0,0,0,0,0,0,0,0,0,0,0,0].map((v) => {
-        //   let id = Math.floor(Math.random() * Math.floor(300))
-        //   return { id, title: 'suggest item ' + id };
-        // }).filter((v, i, arr) => arr.findIndex(el => el.id === v.id) === i) : { id: 0, title: 'suggest item 0' }
       }
     }
   }
@@ -153,7 +150,7 @@
     color: #2c3e50;
     margin: 60px auto 0;
     width: 800px;
-    height: 374px;
+    height: 448px;
     display: flex;
   }
 
