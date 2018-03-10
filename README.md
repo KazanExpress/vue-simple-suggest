@@ -86,7 +86,7 @@ npm run docs
   valueAttribute="id"
   displayAttribute="title"
   :placeholder="placeholder!!!"
-  :get-list="getListFunction"
+  :list="getListFunction"
   :max-count="10"
   :min-length="3"
   :debounce="100"
@@ -137,7 +137,7 @@ npm run docs
 | `maxSuggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions. |
 | `displayAttribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths. |
 | `valueAttribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths. |
-| `getList`                      | Funciton or Array | `() => []` | The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function. |
+| `list`                      | Funciton or Array | `() => []` | The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function. |
 | `debounce`                     | Number   | `0`        | Determines the getList debounce (a time between the input event and a function execution). |
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list. |
 | `removeList`                   | Boolean  | `false`    | If true - the suggestion list will be always hidden. |
