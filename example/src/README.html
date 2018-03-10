@@ -11,7 +11,7 @@
   <body>
     <article class="markdown-body"><h1 id="vue-simple-suggest"><a class="header-link" href="#vue-simple-suggest"></a>vue-simple-suggest</h1>
 <blockquote>
-<p>Feature-rich autocomplete component for Vue.js</p>
+<p>Simple yet feature-rich autocomplete component for Vue.js</p>
 </blockquote>
 <p><a href="https://www.npmjs.com/package/vue-simple-suggest"><img src="https://img.shields.io/npm/v/vue-simple-suggest.svg?style=flat-square" alt="npm"></a>
 <a href="https://kazanexpress.github.io/vue-simple-suggest/"><img src="https://img.shields.io/badge/demo-live-brightgreen.svg?style=flat-square" alt="live demo"></a>
@@ -26,8 +26,9 @@
 <li><a href="#tldr">TLDR</a></li>
 <li><a href="#api-definitions">API Definitions</a><ul class="list">
 <li><a href="#props">Props</a></li>
-<li><a href="#events">Events</a></li>
+<li><a href="#emitted-events">Emitted Events</a></li>
 <li><a href="#ref-methods">Ref Methods</a></li>
+<li><a href="#ref-event-handlers">Ref Event Handlers</a></li>
 <li><a href="#ref-data">Ref Data</a></li>
 </ul>
 </li>
@@ -39,11 +40,18 @@
 </li>
 </ul>
 </li>
-<li><a href="#roadmap">Roadmap</a></li>
 </ul>
 <h2 id="what-is-it"><a class="header-link" href="#what-is-it"></a>What is it</h2>
 <p>This is a simple yet feature-rich suggestion/autocomplete component for Vue.js.</p>
 <p>It supports v-model, allows custom styling, custom input and suggestion list templates, API calls and more.</p>
+<p>Actually, it&#39;s so feature rich, that it&#39;s possible to do crazy stuff with it, like</p>
+<ul class="list">
+<li>Imitating drop-downs and drop-down menus</li>
+<li>Turn suggestions list into an actual suggestions table</li>
+<li>Work with ANY type of custom input passed (like type=button, radio and etc.)</li>
+<li>... And many more things</li>
+</ul>
+<p>And, as a bonus, it is very light (&lt;4kb minified).</p>
 <p>All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.</p>
 <hr>
 <h2 id="build-setup"><a class="header-link" href="#build-setup"></a>Build Setup</h2>
@@ -57,8 +65,8 @@ npm install
 <span class="hljs-comment"># serve example with hot reload at localhost</span>
 npm run dev
 
-<span class="hljs-comment"># build example for static serving</span>
-npm run build</code></pre><hr>
+<span class="hljs-comment"># build example &amp; readme for static serving</span>
+npm run docs</code></pre><hr>
 <h2 id="default-controls"><a class="header-link" href="#default-controls"></a>Default Controls</h2>
 <table>
 <thead>
@@ -207,7 +215,7 @@ npm run build</code></pre><hr>
 </tbody>
 </table>
 <hr>
-<h4 id="events"><a class="header-link" href="#events"></a>Events</h4>
+<h4 id="emitted-events"><a class="header-link" href="#emitted-events"></a>Emitted Events</h4>
 <table>
 <thead>
 <tr>
@@ -286,17 +294,17 @@ npm run build</code></pre><hr>
 <tr>
 <td><code>showList</code></td>
 <td>-</td>
-<td>Shows the suggestion list.</td>
+<td>Shows the suggestion list. Emits the respected <a href="#emitted-events">event</a>.</td>
 </tr>
 <tr>
 <td><code>hideList</code></td>
 <td>-</td>
-<td>Hides the suggestion list.</td>
+<td>Hides the suggestion list. Emits the respected <a href="#emitted-events">event</a>.</td>
 </tr>
 <tr>
 <td><code>getSuggestions</code></td>
 <td><code>query</code>: string</td>
-<td>Gets and processes suggestions from the <code>list</code> prop. Returns a promise.</td>
+<td>Gets and processes suggestions from the <code>list</code> prop. Returns a promise. Emits the <code>requestStart</code>, <code>requestDone</code> and <code>requestFailed</code> <a href="#emitted-events">events</a>.</td>
 </tr>
 <tr>
 <td><code>research</code></td>
@@ -310,13 +318,75 @@ npm run build</code></pre><hr>
 </tr>
 <tr>
 <td><code>select</code></td>
-<td>item</td>
-<td>Selects the passed item.</td>
+<td>suggestion</td>
+<td>Selects the passed suggestion. Emits the respected <a href="#emitted-events">event</a>.</td>
 </tr>
 <tr>
 <td><code>hover</code></td>
-<td>item</td>
-<td>Hovers over the passed item.</td>
+<td>suggestion</td>
+<td>Hovers over the passed suggestion. Emits the respected <a href="#emitted-events">event</a>.</td>
+</tr>
+<tr>
+<td><code>displayProperty</code></td>
+<td>suggestion</td>
+<td>Returns the displayed property of a suggestion.</td>
+</tr>
+<tr>
+<td><code>valueProperty</code></td>
+<td>suggestion</td>
+<td>Returns the value property of a suggestion.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h4 id="ref-event-handlers"><a class="header-link" href="#ref-event-handlers"></a>Ref Event Handlers</h4>
+<blockquote>
+<p>accessed via <code>$refs.*your ref name here*</code></p>
+</blockquote>
+<p>You can use these to imitate come of the component&#39;s behaviours.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>onInputClick</code></td>
+<td>HTML click event</td>
+<td>Fires whenever the input is being clicked.</td>
+</tr>
+<tr>
+<td><code>onInput</code></td>
+<td>HTML input event</td>
+<td>Fires whenever the input text is changed. Emits the <a href="#emitted-events"><code>input</code></a> event.</td>
+</tr>
+<tr>
+<td><code>onFocus</code></td>
+<td>HTML focus event</td>
+<td>Fires whenever the input comes into focus, emits the <a href="#emitted-events"><code>focus</code></a> event.</td>
+</tr>
+<tr>
+<td><code>onBlur</code></td>
+<td>HTML focus event</td>
+<td>Antonym to <code>onFocus</code>.</td>
+</tr>
+<tr>
+<td><code>onAutocomplete</code></td>
+<td>-</td>
+<td>Fires when the autocomplete <a href="#default-controls">keyboard shortcut</a> is pressed. Selects the first suggestion.</td>
+</tr>
+<tr>
+<td><code>onListKeyUp</code></td>
+<td>HTML keyup event</td>
+<td>Fires on component keyup. Internally used for hiding the list.</td>
+</tr>
+<tr>
+<td><code>onArrowKeyDown</code></td>
+<td>HTML keydown event</td>
+<td>Fires on component keydown. Internally used for arrow-key-based selections.</td>
 </tr>
 </tbody>
 </table>
@@ -376,31 +446,29 @@ npm run build</code></pre><hr>
 </tr>
 <tr>
 <td><code>slotIsComponent</code></td>
-<td><code>-</code></td>
+<td>-</td>
 <td>Whether this current custom input is a vue-component.</td>
 </tr>
 <tr>
 <td><code>listIsRequest</code></td>
-<td><code>-</code></td>
+<td>-</td>
 <td>Whether the list prop is a function.</td>
 </tr>
 <tr>
 <td><code>input</code></td>
-<td><code>-</code></td>
+<td>-</td>
 <td>A ref to the current input (component or vanilla).</td>
 </tr>
 <tr>
 <td><code>hoveredIndex</code></td>
-<td><code>-</code></td>
+<td>-</td>
 <td>The current hovered element index.</td>
 </tr>
 </tbody>
 </table>
 <hr>
 <h3 id="slots"><a class="header-link" href="#slots"></a>Slots</h3>
-<blockquote>
 <p>all optional</p>
-</blockquote>
 <h5 id="custom-input"><a class="header-link" href="#custom-input"></a>Custom input</h5>
 <blockquote>
 <p>default slot</p>
@@ -432,13 +500,37 @@ Defaults to a simple input with props passed to vue-simple-suggest.</p>
 <p><code>suggestionItem</code> slot</p>
 </blockquote>
 <p>Allows custom html-definitons of the suggestion items in a list.
-Defaults to <code>&lt;span&gt;{{ suggestion[displayAttribute] }}&lt;/span&gt;</code></p>
+Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</code></p>
+<p>Accepts the <code>suggestion</code> object and a <code>query</code> text as a <code>slot-scope</code> attribute values.</p>
 <pre class="hljs"><code><span class="hljs-comment">&lt;!-- Example: --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestionItem"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestion }"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestionItem"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestion, query }"</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>My {{ suggestion.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><h5 id="custom-miscellanious-item-slots"><a class="header-link" href="#custom-miscellanious-item-slots"></a>Custom miscellanious item slots</h5>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><p>In cooperation with <a href="#ref-methods">ref fields</a> can be used to drastically transform the suggestion list behaviour.</p>
+<p>One of the simplest examples - highlighting the query text in the results:</p>
+<pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestionItem"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"scope"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-html</span>=<span class="hljs-string">"boldenSuggestion(scope)"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre><pre class="hljs"><code>boldenSuggestion({ suggestion, query }) {
+  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">this</span>.$refs.vueSimpleSuggest.displayProperty(suggestion);
+
+  <span class="hljs-keyword">if</span> (!query) <span class="hljs-keyword">return</span> result;
+
+  <span class="hljs-keyword">const</span> texts = query.split(<span class="hljs-regexp">/[\s-_/\\|\.]/gm</span>) || [<span class="hljs-string">''</span>];
+  <span class="hljs-keyword">const</span> capitalize = <span class="hljs-function"><span class="hljs-params">s</span> =&gt;</span> s[<span class="hljs-number">0</span>].toUpperCase() + s.substr(<span class="hljs-number">1</span>);
+  <span class="hljs-keyword">const</span> replace = <span class="hljs-function"><span class="hljs-params">str</span> =&gt;</span> (result = result.replace(str, str.bold()));
+
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> text <span class="hljs-keyword">of</span> texts) {
+    replace(text);
+    replace(capitalize(text));
+    replace(text.toLowerCase());
+    replace(text.toUpperCase());
+  }
+
+  <span class="hljs-keyword">return</span> result;
+}</code></pre><p>Result:</p>
+<p class="img-container"><img src="assets/screenshot.jpg" alt=""></p>
+<h5 id="custom-miscellanious-item-slots"><a class="header-link" href="#custom-miscellanious-item-slots"></a>Custom miscellanious item slots</h5>
 <blockquote>
 <p><code>miscItem-above</code> and <code>miscItem-below</code> slots</p>
 </blockquote>

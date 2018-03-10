@@ -1,6 +1,6 @@
 # vue-simple-suggest
 
-> Feature-rich autocomplete component for Vue.js
+> Simple yet feature-rich autocomplete component for Vue.js
 
 
 [![npm](https://img.shields.io/npm/v/vue-simple-suggest.svg?style=flat-square)](https://www.npmjs.com/package/vue-simple-suggest)
@@ -21,14 +21,14 @@ npm install --save vue-simple-suggest
   - [TLDR](#tldr)
   - [API Definitions](#api-definitions)
     - [Props](#props)
-    - [Events](#events)
+    - [Emitted Events](#emitted-events)
     - [Ref Methods](#ref-methods)
+    - [Ref Event Handlers](#ref-event-handlers)
     - [Ref Data](#ref-data)
   - [Slots](#slots)
     - [Custom input](#custom-input)
     - [Custom suggestion item](#custom-suggestion-item)
     - [Custom miscellanious item slots](#custom-miscellanious-item-slots)
-- [Roadmap](#roadmap)
 
 
 ## What is it
@@ -36,6 +36,14 @@ npm install --save vue-simple-suggest
 This is a simple yet feature-rich suggestion/autocomplete component for Vue.js.
 
 It supports v-model, allows custom styling, custom input and suggestion list templates, API calls and more.
+
+Actually, it's so feature rich, that it's possible to do crazy stuff with it, like
+  - Imitating drop-downs and drop-down menus
+  - Turn suggestions list into an actual suggestions table
+  - Work with ANY type of custom input passed (like type=button, radio and etc.)
+  - ... And many more things
+
+And, as a bonus, it is very light (<4kb minified).
 
 All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.
 
@@ -53,8 +61,8 @@ npm install
 # serve example with hot reload at localhost
 npm run dev
 
-# build example for static serving
-npm run build
+# build example & readme for static serving
+npm run docs
 ```
 -----
 ## Default Controls
@@ -124,25 +132,25 @@ npm run build
 ### API definitions
 
 #### Props
-| Name                         | Type     | Default  | Description                                                                                                                    |
-|------------------------------|----------|----------|--------------------------------------------------------------------------------------------------------------------------------|
-| `maxSuggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions.                                                                                 |
-| `displayAttribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths.                                        |
-| `valueAttribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths.                                      |
+| Name                           | Type     | Default  | Description         |
+|--------------------------------|----------|----------|--------------------------------------------------------------|
+| `maxSuggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions. |
+| `displayAttribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths. |
+| `valueAttribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths. |
 | `getList`                      | Funciton or Array | `() => []` | The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function. |
-| `debounce`                     | Number   | `0`        | Determines the getList debounce (a time between the input event and a function execution).                                     |
-| `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list.                                                           |
-| `removeList`                     | Boolean  | `false`    | If true - the suggestion list will be always hidden.                                                           |
-| `filterByQuery`                     | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component).                                                           |
-| type, value, pattern, etc... |          |          | All of the HTML5 input attributes with their respected default values.                                                         |
+| `debounce`                     | Number   | `0`        | Determines the getList debounce (a time between the input event and a function execution). |
+| `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list. |
+| `removeList`                   | Boolean  | `false`    | If true - the suggestion list will be always hidden. |
+| `filterByQuery`                | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component). |
+| type, value, pattern, etc...   |          |            | All of the HTML5 input attributes with their respected default values. |
 
 -----
-#### Events
-| Name          | Arguments                   | Description                                                                                            |
-|---------------|-----------------------------|--------------------------------------------------------------------------------------------------------|
-| `input`         | HTML input event           | An outward projection of the current input's event.                                                    |
-| `focus`         | HTML focus event           | An outward projection of the current input's event.                                                    |
-| `blur`          | HTML focus event           | An outward projection of the current input's event.                                                    |
+#### Emitted Events
+| Name            | Arguments                   | Description                                                                                            |
+|-----------------|-----------------------------|--------------------------------------------------------------------------------------------------------|
+| `input`         | HTML input event            | An outward projection of the current input's event.                                                    |
+| `focus`         | HTML focus event            | An outward projection of the current input's event.                                                    |
+| `blur`          | HTML focus event            | An outward projection of the current input's event.                                                    |
 | `select`        | Selected suggestion         | Fires on suggestion selection (via a mouse click or enter keypress).                                   |
 | `hover`         | Hovered suggestion          | Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).            |
 | `showList`      | -                           | Fires each time the suggestion list is toggled to be shown.                                            |
@@ -158,13 +166,32 @@ npm run build
 
 | Name | Arguments | Description |
 |------|-----------|-------------|
-|`showList`| - | Shows the suggestion list. |
-|`hideList`| - | Hides the suggestion list. |
-|`getSuggestions`| `query`: string | Gets and processes suggestions from the `list` prop. Returns a promise. |
+|`showList`| - | Shows the suggestion list. Emits the respected [event](#emitted-events). |
+|`hideList`| - | Hides the suggestion list. Emits the respected [event](#emitted-events). |
+|`getSuggestions`| `query`: string | Gets and processes suggestions from the `list` prop. Returns a promise. Emits the `requestStart`, `requestDone` and `requestFailed` [events](#emitted-events). |
 |`research`| - | Debounced `getSuggestions` on the current input value. |
 |`clearSuggestions`| - | Clears the `suggestions` array. |
-|`select`| item | Selects the passed item. |
-|`hover`| item | Hovers over the passed item. |
+|`select`| suggestion | Selects the passed suggestion. Emits the respected [event](#emitted-events). |
+|`hover`| suggestion | Hovers over the passed suggestion. Emits the respected [event](#emitted-events). |
+|`displayProperty`| suggestion | Returns the displayed property of a suggestion. |
+|`valueProperty`| suggestion | Returns the value property of a suggestion. |
+
+-----
+
+#### Ref Event Handlers
+> accessed via `$refs.*your ref name here*`
+
+You can use these to imitate come of the component's behaviours.
+
+| Name | Arguments | Description |
+|------|-----------|-------------|
+|`onInputClick`| HTML click event | Fires whenever the input is being clicked. |
+|`onInput`| HTML input event | Fires whenever the input text is changed. Emits the [`input`](#emitted-events) event. |
+|`onFocus`| HTML focus event | Fires whenever the input comes into focus, emits the [`focus`](#emitted-events) event. |
+|`onBlur`| HTML focus event | Antonym to `onFocus`. |
+|`onAutocomplete`| - | Fires when the autocomplete [keyboard shortcut](#default-controls) is pressed. Selects the first suggestion. |
+|`onListKeyUp`| HTML keyup event | Fires on component keyup. Internally used for hiding the list. |
+|`onArrowKeyDown`| HTML keydown event | Fires on component keydown. Internally used for arrow-key-based selections. |
 
 -----
 
@@ -181,16 +208,15 @@ npm run build
 |`canSend`| `true` | Whether the assigned getListFuncion can be executed. |
 |`timeoutInstance`| `null` | The timeout until next getListFunction execution. |
 |`text`| `vueSimpleSuggest.$props.value` | Current input text. |
-|`slotIsComponent`| `-` | Whether this current custom input is a vue-component. |
-|`listIsRequest`| `-` | Whether the list prop is a function. |
-|`input`| `-` | A ref to the current input (component or vanilla). |
-|`hoveredIndex`| `-` | The current hovered element index. |
+|`slotIsComponent`| - | Whether this current custom input is a vue-component. |
+|`listIsRequest`| - | Whether the list prop is a function. |
+|`input`| - | A ref to the current input (component or vanilla). |
+|`hoveredIndex`| - | The current hovered element index. |
 
 -----
 
 ### Slots
-
-> all optional
+all optional
 
 ##### Custom input
 > default slot
@@ -242,16 +268,51 @@ Defaults to a simple input with props passed to vue-simple-suggest.
 > `suggestionItem` slot
 
 Allows custom html-definitons of the suggestion items in a list.
-Defaults to `<span>{{ suggestion[displayAttribute] }}</span>`
+Defaults to `<span>{{ displayAttribute(suggestion) }}</span>`
+
+Accepts the `suggestion` object and a `query` text as a `slot-scope` attribute values.
 
 ```html
 <!-- Example: -->
 <vue-simple-suggest>
-  <div slot="suggestionItem" slot-scope="{ suggestion }">
+  <div slot="suggestionItem" slot-scope="{ suggestion, query }">
     <div>My {{ suggestion.title }}</div>
   </div>
 </vue-simple-suggest>
 ```
+
+In cooperation with [ref fields](#ref-methods) can be used to drastically transform the suggestion list behaviour.
+
+One of the simplest examples - highlighting the query text in the results:
+
+```html
+<div slot="suggestionItem" slot-scope="scope">
+  <span v-html="boldenSuggestion(scope)"></span>
+</div>
+```
+
+```js
+boldenSuggestion({ suggestion, query }) {
+  let result = this.$refs.vueSimpleSuggest.displayProperty(suggestion);
+
+  if (!query) return result;
+
+  const replace = str => (result = result.replace(str, str.bold()));
+  const texts = query.split(/[\s-_/\\|\.]/gm).filter(t => !!t) || [''];
+  const processors = [
+    s => s[0].toUpperCase() + s.substr(1),
+    s => s.toLowerCase(),
+    s => s.toUpperCase(),
+    s => s
+  ];
+  texts.forEach(text => processors.forEach(processor => replace(processor(text))));
+
+  return result;
+}
+```
+Result:
+
+![](assets/screenshot.jpg)
 
 ##### Custom miscellanious item slots
 > `miscItem-above` and `miscItem-below` slots

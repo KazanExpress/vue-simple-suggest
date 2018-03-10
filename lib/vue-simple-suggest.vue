@@ -13,7 +13,10 @@
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown && !removeList" :class="{ designed: !destyled }">
-      <slot name="miscItem-above" :suggestions="suggestions" :query="text"></slot>
+      <slot name="miscItem-above"
+        :suggestions="suggestions"
+        :query="text"
+      ></slot>
 
       <div class="suggest-item" v-for="suggestion in suggestions"
         @mouseenter="hover(suggestion, $event.target)"
@@ -23,12 +26,17 @@
           selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
           hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
         }">
-        <slot name="suggestionItem" :suggestion="suggestion">
+        <slot name="suggestionItem"
+          :suggestion="suggestion"
+          :query="text">
           <span>{{ displayProperty(suggestion) }}</span>
         </slot>
       </div>
 
-      <slot name="miscItem-below" :suggestions="suggestions" :query="text"></slot>
+      <slot name="miscItem-below"
+        :suggestions="suggestions"
+        :query="text"
+      ></slot>
     </div>
   </div>
 </template>

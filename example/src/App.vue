@@ -28,9 +28,9 @@
 
         <!-- <test-input/> -->
 
-        <template slot="miscItem-above" slot-scope="{ suggestions, query }">
+        <template slot="miscItem-above" slot-scope="{ suggestions, query }" v-if="suggestions.length > 0">
           <div class="misc-item">
-            <span>You're searching for {{ query }}.</span>
+            <span>You're searching for '{{ query }}'.</span>
           </div>
           <div class="misc-item">
             <span>{{ suggestions.length }} suggestions are shown...</span>
@@ -38,9 +38,9 @@
           <hr>
         </template>
 
-        <!-- <div slot="suggestionItem" slot-scope="{ suggestion }">
-          <div>{{ suggestion.title }}</div>
-        </div> -->
+        <div slot="suggestionItem" slot-scope="scope">
+          <span v-html="boldenSuggestion(scope)"></span>
+        </div>
 
         <div class="misc-item" slot="miscItem-below" slot-scope="{ suggestions }" v-if="loading">
           <span>Loading...</span>
@@ -53,10 +53,9 @@
       <p class="title">
         Event Log: (<a href="#clear" @click.prevent="log.splice(0)">clear</a>)
       </p>
-      <div class="log" ref="log" v-if="log.length > 0">
+      <div class="log" ref="log">
         <p v-for="(text, i) in log" :key="'p' + i" :ref="'p' + i"><pre v-html="text"></pre></p>
       </div>
-      <p v-else>Empty</p>
     </div>
   </div>
 </template>
@@ -80,6 +79,23 @@
       }
     },
     methods: {
+      boldenSuggestion({ suggestion, query }) {
+        let result = this.$refs.suggestComponent.displayProperty(suggestion);
+
+        if (!query) return result;
+
+        const replace = str => (result = result.replace(str, str.bold()));
+        const texts = query.split(/[\s-_/\\|\.]/gm).filter(t => !!t) || [''];
+        const procs = [
+          s => s[0].toUpperCase() + s.substr(1),
+          s => s.toLowerCase(),
+          s => s.toUpperCase(),
+          s => s
+        ];
+
+        texts.forEach(t => procs.forEach(p => replace(p(t))));
+        return result;
+      },
       addToLog (name, e) {
         this.log.push(name)
         console.log(name, e);
