@@ -67,13 +67,30 @@ npm run docs
 -----
 ## Default Controls
 
-|Key | Description|
+These are default keyboard shortcuts.
+
+Can be customized with the [`controls` prop](#props).
+
+Default scheme:
+
+|Key (key code) | Description|
 |-|-|
-|`Escape` | If the suggestions list is shown - hide it.|
-|`ArrowDown` | If the suggestions list is hidden - show it.|
-|`ArrowUp`/`ArrowDown` | Cycle (hover) through suggestions.|
-|`Enter` | If the list is shown - chooses the highlighted element, if the list is hidden - refills the suggestions based on current input text.|
-|`Ctrl + Space`/`Cmd + Space` | Select the first element in the list.|
+|`Escape` (27) | If the suggestions list is shown - hide it. Defined by `hideList` property. |
+|`ArrowDown` (40) | If the suggestions list is hidden - show it.  Defined by `selectionUp` property. |
+|`ArrowUp` (38) / `ArrowDown` (40) | Cycle (hover) through suggestions.  Defined by `selectionUp``selectionDown` properties respectfully. |
+|`Enter` (13) | If the list is shown - chooses the highlighted element, if the list is hidden - refills the suggestions based on current input text.  Defined by `select` property.|
+|`(Ctrl/⌘) + Space` (32) | Select the first element in the list.  Defined by `autocomplete` property. Works with `Ctrl` modifier key (windows) or `⌘` modifier key (mac). |
+
+JS object:
+```js
+{
+  selectionUp: [38],
+  selectionDown: [40],
+  select: [13],
+  hideList: [27],
+  autocomplete: [32]
+}
+```
 
 -----
 ## Component API
@@ -94,6 +111,13 @@ npm run docs
   :removeList="false"
   :filter-by-query="false"
   :value="defaultValue"
+  :controls="{
+    selectionUp: [38, 33],
+    selectionDown: [40, 34],
+    select: [13, 36],
+    hideList: [27, 35],
+    autocomplete: [32, 13],
+  }"
   @input="onInputEvent"
   @select="onSuggestSelect"
   @hover="onSuggestHover"
@@ -134,6 +158,7 @@ npm run docs
 #### Props
 | Name                           | Type     | Default  | Description         |
 |--------------------------------|----------|----------|--------------------------------------------------------------|
+| `controls`                     | Object   | See [default controls](#default-controls)  | Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: `selectionUp`, `selectionDown`, `select`, `hideList` and `autocomplete`. |
 | `maxSuggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions. |
 | `displayAttribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths. |
 | `valueAttribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths. |
@@ -312,7 +337,7 @@ boldenSuggestion({ suggestion, query }) {
 ```
 Result:
 
-![](assets/screenshot.jpg)
+![](/assets/screenshot.jpg)
 
 ##### Custom miscellanious item slots
 > `miscItem-above` and `miscItem-below` slots

@@ -4,6 +4,10 @@
   "version": "1.2.0",
   "author": "KazanExpress",
   "license": "MIT",
+  "repository": "KazanExpress/vue-simple-suggest",
+  "bugs": {
+    "url": "https://github.com/KazanExpress/vue-simple-suggest/issues"
+  },
   "main": "index.js",
   "scripts": {
     "dev": "npm run readme && webpack-dev-server --mode development --config example/webpack.config.js --open --hot",

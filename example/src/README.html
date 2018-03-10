@@ -68,37 +68,47 @@ npm run dev
 <span class="hljs-comment"># build example &amp; readme for static serving</span>
 npm run docs</code></pre><hr>
 <h2 id="default-controls"><a class="header-link" href="#default-controls"></a>Default Controls</h2>
+<p>These are default keyboard shortcuts.</p>
+<p>Can be customized with the <a href="#props"><code>controls</code> prop</a>.</p>
+<p>Default scheme:</p>
 <table>
 <thead>
 <tr>
-<th>Key</th>
+<th>Key (key code)</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>Escape</code></td>
-<td>If the suggestions list is shown - hide it.</td>
+<td><code>Escape</code> (27)</td>
+<td>If the suggestions list is shown - hide it. Defined by <code>hideList</code> property.</td>
 </tr>
 <tr>
-<td><code>ArrowDown</code></td>
-<td>If the suggestions list is hidden - show it.</td>
+<td><code>ArrowDown</code> (40)</td>
+<td>If the suggestions list is hidden - show it.  Defined by <code>selectionUp</code> property.</td>
 </tr>
 <tr>
-<td><code>ArrowUp</code>/<code>ArrowDown</code></td>
-<td>Cycle (hover) through suggestions.</td>
+<td><code>ArrowUp</code> (38) / <code>ArrowDown</code> (40)</td>
+<td>Cycle (hover) through suggestions.  Defined by <code>selectionUp`</code>selectionDown` properties respectfully.</td>
 </tr>
 <tr>
-<td><code>Enter</code></td>
-<td>If the list is shown - chooses the highlighted element, if the list is hidden - refills the suggestions based on current input text.</td>
+<td><code>Enter</code> (13)</td>
+<td>If the list is shown - chooses the highlighted element, if the list is hidden - refills the suggestions based on current input text.  Defined by <code>select</code> property.</td>
 </tr>
 <tr>
-<td><code>Ctrl + Space</code>/<code>Cmd + Space</code></td>
-<td>Select the first element in the list.</td>
+<td><code>(Ctrl/⌘) + Space</code> (32)</td>
+<td>Select the first element in the list.  Defined by <code>autocomplete</code> property. Works with <code>Ctrl</code> modifier key (windows) or <code>⌘</code> modifier key (mac).</td>
 </tr>
 </tbody>
 </table>
-<hr>
+<p>JS object:</p>
+<pre class="hljs"><code>{
+  <span class="hljs-attr">selectionUp</span>: [<span class="hljs-number">38</span>],
+  <span class="hljs-attr">selectionDown</span>: [<span class="hljs-number">40</span>],
+  <span class="hljs-attr">select</span>: [<span class="hljs-number">13</span>],
+  <span class="hljs-attr">hideList</span>: [<span class="hljs-number">27</span>],
+  <span class="hljs-attr">autocomplete</span>: [<span class="hljs-number">32</span>]
+}</code></pre><hr>
 <h2 id="component-api"><a class="header-link" href="#component-api"></a>Component API</h2>
 <h3 id="tldr"><a class="header-link" href="#tldr"></a>TLDR</h3>
 <pre class="hljs"><code><span class="hljs-comment">&lt;!-- Ref to access the API, v-model for efficient query binding --&gt;</span>
@@ -114,6 +124,13 @@ npm run docs</code></pre><hr>
   <span class="hljs-attr">:removeList</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:filter-by-query</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:value</span>=<span class="hljs-string">"defaultValue"</span>
+  <span class="hljs-attr">:controls</span>=<span class="hljs-string">"{
+    selectionUp: [38, 33],
+    selectionDown: [40, 34],
+    select: [13, 36],
+    hideList: [27, 35],
+    autocomplete: [32, 13],
+  }"</span>
   @<span class="hljs-attr">input</span>=<span class="hljs-string">"onInputEvent"</span>
   @<span class="hljs-attr">select</span>=<span class="hljs-string">"onSuggestSelect"</span>
   @<span class="hljs-attr">hover</span>=<span class="hljs-string">"onSuggestHover"</span>
@@ -158,6 +175,12 @@ npm run docs</code></pre><hr>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>controls</code></td>
+<td>Object</td>
+<td>See <a href="#default-controls">default controls</a></td>
+<td>Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: <code>selectionUp</code>, <code>selectionDown</code>, <code>select</code>, <code>hideList</code> and <code>autocomplete</code>.</td>
+</tr>
 <tr>
 <td><code>maxSuggestions</code></td>
 <td>Number</td>
@@ -528,7 +551,7 @@ Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</c
 
   <span class="hljs-keyword">return</span> result;
 }</code></pre><p>Result:</p>
-<p class="img-container"><img src="assets/screenshot.jpg" alt=""></p>
+<p class="img-container"><img src="/assets/screenshot.jpg" alt=""></p>
 <h5 id="custom-miscellanious-item-slots"><a class="header-link" href="#custom-miscellanious-item-slots"></a>Custom miscellanious item slots</h5>
 <blockquote>
 <p><code>miscItem-above</code> and <code>miscItem-below</code> slots</p>

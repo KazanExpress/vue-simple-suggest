@@ -3,10 +3,8 @@
     <div class="input-wrapper" :class="{ designed: !destyled }"
       @click="onInputClick"
       @input="onInput"
-      @keydown.up.down.prevent="onArrowKeyDown"
-      @keyup.enter.esc.prevent="onListKeyUp"
-      @keyup.ctrl.space.prevent="onAutocomplete"
-      @keyup.meta.space.prevent="onAutocomplete"
+      @keydown="onArrowKeyDown"
+      @keyup="onListKeyUp($event), onAutocomplete($event)"
       ref="inputSlot">
       <slot>
         <input v-bind="$props">
@@ -57,6 +55,16 @@ export default {
     type: {
       type: String,
       default: 'text'
+    },
+    controls: {
+      type: Object,
+      default: () => ({
+        selectionUp: [38],
+        selectionDown: [40],
+        select: [13],
+        hideList: [27],
+        autocomplete: [32]
+      })
     },
     minLength: {
       type: Number,
@@ -141,6 +149,16 @@ export default {
     this.input[this.off]('focus', this.onFocus)
   },
   methods: {
+    hasKeyCode(arr, event) {
+      if (arr.length <= 0) return false;
+
+      const has = arr => arr.some(code => code === event.keyCode);
+      if (Array.isArray(arr[0])) {
+        return arr.some(array => has(array));
+      } else {
+        return has(arr);
+      }
+    },
     displayProperty (obj) {
       return fromPath(obj, this.displayAttribute);
     },
@@ -186,12 +204,15 @@ export default {
       }
     },
     onArrowKeyDown (event) {
-      if (this.suggestions.length > 0) {
+      if (this.suggestions.length > 0
+        && this.hasKeyCode([this.controls.selectionUp, this.controls.selectionDown], event)
+      ) {
+        event.preventDefault();
         if (!this.listShown) {
           this.showList()
         }
 
-        const isArrowDown = event.keyCode === 40
+        const isArrowDown = this.hasKeyCode(this.controls.selectionDown, event)
         const direction = isArrowDown * 2 - 1
         const listEdge = isArrowDown ? 0 : this.suggestions.length - 1
         const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0
@@ -210,14 +231,26 @@ export default {
       }
     },
     onListKeyUp (event) {
-      if (this.listShown) {
-        this.hideList(event.key === 'Escape');
-      } else if (event.key !== 'Escape') {
-        this.research();
+      const select = this.controls.select,
+          hideList = this.controls.hideList;
+
+      if (this.hasKeyCode([select, hideList], event)) {
+        event.preventDefault();
+        if (this.listShown) {
+          this.hideList(this.hasKeyCode(hideList, event));
+        } else if (this.hasKeyCode(select, event)) {
+          this.research();
+        }
       }
     },
     onAutocomplete (event) {
-      this.select(this.suggestions[0]);
+      if (this.hasKeyCode(this.controls.autocomplete, event)
+        && (event.ctrlKey || event.metaKey)
+      ) {
+        event.preventDefault();
+        this.select(this.suggestions[0]);
+        this.hover(this.suggestions[0]);
+      }
     },
     onBlur (e) {
       this.hideList()
