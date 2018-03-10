@@ -58,12 +58,14 @@ module.exports = {
     hints: false
   },
   plugins: [
+    new CopyWebpackPlugin([
+      { from: path.resolve(__dirname, '../assets'), to: path.resolve(__dirname, 'src/assets') },
+      { from: path.resolve(__dirname, '../assets'), to: path.resolve(__dirname, '../docs/assets') },
+      { from: path.resolve(__dirname, 'src/assets'), to: path.resolve(__dirname, '../docs/assets') }
+    ]),
     new HtmlWebPackPlugin({
       template: path.resolve(__dirname, './src/index.ejs')
     }),
-    new CopyWebpackPlugin([
-      { from: path.resolve(__dirname, 'src/assets'), to: path.resolve(__dirname, '../docs/assets') }
-    ])
   ],
   output: {
     path: path.resolve(__dirname, "../docs")
