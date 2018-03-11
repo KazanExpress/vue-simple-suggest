@@ -13,8 +13,7 @@
           selectionUp: [38, 33],
           selectionDown: [40, 34],
           select: [13, 36],
-          hideList: [27, 35],
-          autocomplete: [32, 13]
+          hideList: [27, 35]
         }"
         ref="suggestComponent"
         placeholder="Search books..."

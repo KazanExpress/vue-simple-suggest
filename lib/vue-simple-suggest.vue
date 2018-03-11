@@ -40,11 +40,11 @@
 </template>
 
 <script>
-import Vue from 'vue'
-
-function fromPath(obj, path) {
-  return path.split('.').reduce((o, i) => (o === Object(o) ? o[i] : o), obj);
-}
+import {
+  defaultControls,
+  fromPath,
+  hasKeyCode
+} from './misc'
 
 export default {
   name: 'vue-simple-suggest',
@@ -58,13 +58,7 @@ export default {
     },
     controls: {
       type: Object,
-      default: () => ({
-        selectionUp: [38],
-        selectionDown: [40],
-        select: [13],
-        hideList: [27],
-        autocomplete: [32]
-      })
+      default: () => defaultControls
     },
     minLength: {
       type: Number,
@@ -116,7 +110,8 @@ export default {
       canSend: true,
       timeoutInstance: null,
       text: this.value,
-      isSuggestionConverted: false
+      isSuggestionConverted: false,
+      controlScheme: {}
     }
   },
   computed: {
@@ -139,6 +134,9 @@ export default {
       return this.suggestions.findIndex(el => this.hovered && (this.hovered[this.valueAttribute] == el[this.valueAttribute]))
     }
   },
+  created() {
+    this.controlScheme = Object.assign({}, defaultControls, this.controls);
+  },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
     this.input[this.on]('blur', this.onBlur)
@@ -149,16 +147,6 @@ export default {
     this.input[this.off]('focus', this.onFocus)
   },
   methods: {
-    hasKeyCode(arr, event) {
-      if (arr.length <= 0) return false;
-
-      const has = arr => arr.some(code => code === event.keyCode);
-      if (Array.isArray(arr[0])) {
-        return arr.some(array => has(array));
-      } else {
-        return has(arr);
-      }
-    },
     displayProperty (obj) {
       return fromPath(obj, this.displayAttribute);
     },
@@ -195,8 +183,10 @@ export default {
       }
     },
     showList () {
-      this.listShown = true
-      this.$emit('showList')
+      if (!this.listShown) {
+        this.listShown = true
+        this.$emit('showList')
+      }
     },
     onInputClick (event) {
       if (!this.listShown && this.suggestions.length > 0) {
@@ -205,14 +195,14 @@ export default {
     },
     onArrowKeyDown (event) {
       if (this.suggestions.length > 0
-        && this.hasKeyCode([this.controls.selectionUp, this.controls.selectionDown], event)
+        && hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)
       ) {
         event.preventDefault();
         if (!this.listShown) {
           this.showList()
         }
 
-        const isArrowDown = this.hasKeyCode(this.controls.selectionDown, event)
+        const isArrowDown = hasKeyCode(this.controlScheme.selectionDown, event)
         const direction = isArrowDown * 2 - 1
         const listEdge = isArrowDown ? 0 : this.suggestions.length - 1
         const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0
@@ -231,21 +221,21 @@ export default {
       }
     },
     onListKeyUp (event) {
-      const select = this.controls.select,
-          hideList = this.controls.hideList;
+      const select = this.controlScheme.select,
+          hideList = this.controlScheme.hideList;
 
-      if (this.hasKeyCode([select, hideList], event)) {
+      if (hasKeyCode([select, hideList], event)) {
         event.preventDefault();
         if (this.listShown) {
-          this.hideList(this.hasKeyCode(hideList, event));
-        } else if (this.hasKeyCode(select, event)) {
+          this.hideList(hasKeyCode(hideList, event));
+        } else if (hasKeyCode(select, event)) {
           this.research();
         }
       }
     },
     onAutocomplete (event) {
-      if (this.hasKeyCode(this.controls.autocomplete, event)
-        && (event.ctrlKey || event.metaKey)
+      if (hasKeyCode(this.controlScheme.autocomplete, event)
+        && (event.ctrlKey || event.shiftKey)
       ) {
         event.preventDefault();
         this.select(this.suggestions[0]);
@@ -283,6 +273,8 @@ export default {
         this.canSend = false
         var result = await this.getSuggestions(this.text)
         this.canSend = true
+      } else {
+        result = this.suggestions;
       }
 
       return result;
@@ -387,6 +379,11 @@ export default {
   border: 1px solid #aaa;
   background-color: #fff;
   z-index: 1000;
+}
+
+.vue-simple-suggest .suggestions .suggest-item {
+  cursor: pointer;
+  user-select: none;
 }
 
 .vue-simple-suggest .suggestions .suggest-item,
