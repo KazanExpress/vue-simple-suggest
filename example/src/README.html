@@ -69,7 +69,7 @@ npm run dev
 npm run docs</code></pre><hr>
 <h2 id="default-controls"><a class="header-link" href="#default-controls"></a>Default Controls</h2>
 <p>These are default keyboard shortcuts.</p>
-<p>Can be customized with the <a href="#props"><code>controls</code> prop</a>.</p>
+<p>Can be customized with the <a href="#props"><code>controls</code> prop</a>. All fields in this <code>controls</code> object are optional.</p>
 <p>Default scheme:</p>
 <table>
 <thead>
@@ -85,19 +85,23 @@ npm run docs</code></pre><hr>
 </tr>
 <tr>
 <td><code>ArrowDown</code> (40)</td>
-<td>If the suggestions list is hidden - show it.  Defined by <code>selectionUp</code> property.</td>
+<td>If the suggestions list is hidden - show it.  Defined by <code>selectionDown</code> property.</td>
 </tr>
 <tr>
 <td><code>ArrowUp</code> (38) / <code>ArrowDown</code> (40)</td>
-<td>Cycle (hover) through suggestions.  Defined by <code>selectionUp`</code>selectionDown` properties respectfully.</td>
+<td>Cycle (hover) through suggestions.  Defined by <code>selectionUp</code>/<code>selectionDown</code> properties respectfully.</td>
 </tr>
 <tr>
 <td><code>Enter</code> (13)</td>
 <td>If the list is shown - chooses the highlighted element, if the list is hidden - refills the suggestions based on current input text.  Defined by <code>select</code> property.</td>
 </tr>
 <tr>
-<td><code>(Ctrl/⌘) + Space</code> (32)</td>
-<td>Select the first element in the list.  Defined by <code>autocomplete</code> property. Works with <code>Ctrl</code> modifier key (windows) or <code>⌘</code> modifier key (mac).</td>
+<td><code>(Ctrl/Shift) + Space</code> (32)</td>
+<td>Select the first element in the list.  Defined by <code>autocomplete</code> property. Works with <code>Ctrl</code> modifier key or <code>Shift</code> modifier key.</td>
+</tr>
+<tr>
+<td><code>(Ctrl/Shift) + Enter</code> (13)</td>
+<td>Same as previous, but also hides the suggestions list.</td>
 </tr>
 </tbody>
 </table>
@@ -107,7 +111,7 @@ npm run docs</code></pre><hr>
   <span class="hljs-attr">selectionDown</span>: [<span class="hljs-number">40</span>],
   <span class="hljs-attr">select</span>: [<span class="hljs-number">13</span>],
   <span class="hljs-attr">hideList</span>: [<span class="hljs-number">27</span>],
-  <span class="hljs-attr">autocomplete</span>: [<span class="hljs-number">32</span>]
+  <span class="hljs-attr">autocomplete</span>: [<span class="hljs-number">32</span>, <span class="hljs-number">13</span>]
 }</code></pre><hr>
 <h2 id="component-api"><a class="header-link" href="#component-api"></a>Component API</h2>
 <h3 id="tldr"><a class="header-link" href="#tldr"></a>TLDR</h3>
@@ -179,7 +183,7 @@ npm run docs</code></pre><hr>
 <td><code>controls</code></td>
 <td>Object</td>
 <td>See <a href="#default-controls">default controls</a></td>
-<td>Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: <code>selectionUp</code>, <code>selectionDown</code>, <code>select</code>, <code>hideList</code> and <code>autocomplete</code>.</td>
+<td>Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: <code>selectionUp</code>, <code>selectionDown</code>, <code>select</code>, <code>hideList</code> and <code>autocomplete</code>, all of which are optional.</td>
 </tr>
 <tr>
 <td><code>maxSuggestions</code></td>
@@ -209,7 +213,7 @@ npm run docs</code></pre><hr>
 <td><code>debounce</code></td>
 <td>Number</td>
 <td><code>0</code></td>
-<td>Determines the getList debounce (a time between the input event and a function execution).</td>
+<td>Determines the <code>list</code> debounce (a time between the input event and a function execution).</td>
 </tr>
 <tr>
 <td><code>destyled</code></td>
@@ -286,17 +290,17 @@ npm run docs</code></pre><hr>
 <tr>
 <td><code>requestStart</code></td>
 <td>Current input value (query)</td>
-<td>Fires each time a <code>getList</code> function starts executing.</td>
+<td>Fires each time a <code>list</code> function starts executing.</td>
 </tr>
 <tr>
 <td><code>requestDone</code></td>
 <td>Resulting suggestions list</td>
-<td>Fires when a <code>getList</code> function successfully returns a result and forwards that result as an argument.</td>
+<td>Fires when a <code>list</code> function successfully returns a result and forwards that result as an argument.</td>
 </tr>
 <tr>
 <td><code>requestFailed</code></td>
 <td>The interrrupting exception</td>
-<td>Fires if an exception occurs during the execution of a <code>getList</code> funciton.</td>
+<td>Fires if an exception occurs during the execution of a <code>list</code> funciton.</td>
 </tr>
 </tbody>
 </table>
@@ -486,6 +490,11 @@ npm run docs</code></pre><hr>
 <td><code>hoveredIndex</code></td>
 <td>-</td>
 <td>The current hovered element index.</td>
+</tr>
+<tr>
+<td><code>controlScheme</code></td>
+<td><a href="#default-controls">Default Controls</a></td>
+<td>The current controls scheme.</td>
 </tr>
 </tbody>
 </table>

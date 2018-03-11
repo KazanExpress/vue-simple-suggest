@@ -69,17 +69,18 @@ npm run docs
 
 These are default keyboard shortcuts.
 
-Can be customized with the [`controls` prop](#props).
+Can be customized with the [`controls` prop](#props). All fields in this `controls` object are optional.
 
 Default scheme:
 
 |Key (key code) | Description|
 |-|-|
 |`Escape` (27) | If the suggestions list is shown - hide it. Defined by `hideList` property. |
-|`ArrowDown` (40) | If the suggestions list is hidden - show it.  Defined by `selectionUp` property. |
-|`ArrowUp` (38) / `ArrowDown` (40) | Cycle (hover) through suggestions.  Defined by `selectionUp``selectionDown` properties respectfully. |
+|`ArrowDown` (40) | If the suggestions list is hidden - show it.  Defined by `selectionDown` property. |
+|`ArrowUp` (38) / `ArrowDown` (40) | Cycle (hover) through suggestions.  Defined by `selectionUp`/`selectionDown` properties respectfully. |
 |`Enter` (13) | If the list is shown - chooses the highlighted element, if the list is hidden - refills the suggestions based on current input text.  Defined by `select` property.|
-|`(Ctrl/⌘) + Space` (32) | Select the first element in the list.  Defined by `autocomplete` property. Works with `Ctrl` modifier key (windows) or `⌘` modifier key (mac). |
+|`(Ctrl/Shift) + Space` (32) | Select the first element in the list.  Defined by `autocomplete` property. Works with `Ctrl` modifier key or `Shift` modifier key. |
+|`(Ctrl/Shift) + Enter` (13) | Same as previous, but also hides the suggestions list. |
 
 JS object:
 ```js
@@ -88,7 +89,7 @@ JS object:
   selectionDown: [40],
   select: [13],
   hideList: [27],
-  autocomplete: [32]
+  autocomplete: [32, 13]
 }
 ```
 
@@ -158,12 +159,12 @@ JS object:
 #### Props
 | Name                           | Type     | Default  | Description         |
 |--------------------------------|----------|----------|--------------------------------------------------------------|
-| `controls`                     | Object   | See [default controls](#default-controls)  | Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: `selectionUp`, `selectionDown`, `select`, `hideList` and `autocomplete`. |
+| `controls`                     | Object   | See [default controls](#default-controls)  | Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: `selectionUp`, `selectionDown`, `select`, `hideList` and `autocomplete`, all of which are optional. |
 | `maxSuggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions. |
 | `displayAttribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths. |
 | `valueAttribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths. |
 | `list`                      | Funciton or Array | `() => []` | The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function. |
-| `debounce`                     | Number   | `0`        | Determines the getList debounce (a time between the input event and a function execution). |
+| `debounce`                     | Number   | `0`        | Determines the `list` debounce (a time between the input event and a function execution). |
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list. |
 | `removeList`                   | Boolean  | `false`    | If true - the suggestion list will be always hidden. |
 | `filterByQuery`                | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component). |
@@ -180,9 +181,9 @@ JS object:
 | `hover`         | Hovered suggestion          | Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).            |
 | `showList`      | -                           | Fires each time the suggestion list is toggled to be shown.                                            |
 | `hideList`      | -                           | Fires each time the suggestion list is being hidden.                                                   |
-| `requestStart`  | Current input value (query) | Fires each time a `getList` function starts executing.                                                 |
-| `requestDone`   | Resulting suggestions list  | Fires when a `getList` function successfully returns a result and forwards that result as an argument. |
-| `requestFailed` | The interrrupting exception | Fires if an exception occurs during the execution of a `getList` funciton.                             |
+| `requestStart`  | Current input value (query) | Fires each time a `list` function starts executing.                                                 |
+| `requestDone`   | Resulting suggestions list  | Fires when a `list` function successfully returns a result and forwards that result as an argument. |
+| `requestFailed` | The interrrupting exception | Fires if an exception occurs during the execution of a `list` funciton.                             |
 
 -----
 
@@ -237,6 +238,7 @@ You can use these to imitate come of the component's behaviours.
 |`listIsRequest`| - | Whether the list prop is a function. |
 |`input`| - | A ref to the current input (component or vanilla). |
 |`hoveredIndex`| - | The current hovered element index. |
+|`controlScheme`| [Default Controls](#default-controls) | The current controls scheme. |
 
 -----
 
