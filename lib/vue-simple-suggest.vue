@@ -175,7 +175,7 @@ export default {
     },
     hideList (ignoreSelection = false) {
       if (this.listShown) {
-        if (this.hovered && this.text && !ignoreSelection) {
+        if (this.hovered && !ignoreSelection) {
           this.select(this.hovered)
         }
         this.listShown = false
@@ -188,7 +188,11 @@ export default {
         this.$emit('showList')
       }
     },
-    onInputClick (event) {
+    async onInputClick (event) {
+      if (this.minLength === 0 && !this.text) {
+        await this.research();
+      }
+
       if (!this.listShown && this.suggestions.length > 0) {
         this.showList()
       }
