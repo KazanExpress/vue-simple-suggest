@@ -88,8 +88,6 @@
       boldenSuggestion({ suggestion, query }) {
         let result = this.$refs.suggestComponent.displayProperty(suggestion);
 
-        console.warn(query);
-
         if (!query) return result;
 
         const replace = str => (result = result ? result.replace(str, str.bold()) : result);
