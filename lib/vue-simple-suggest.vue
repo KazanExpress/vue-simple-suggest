@@ -287,7 +287,7 @@ export default {
       this.selected = null
 
       let res;
-      if (value.length >= this.minLength) {
+      if ((this.minLength === 0) || value.length >= this.minLength) {
         this.listIsRequest && this.$emit('requestStart', value)
         try {
           if (this.listIsRequest) {
@@ -311,7 +311,7 @@ export default {
           }
 
           if (this.filterByQuery) {
-            res = res.filter(el => ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()));
+            res = res.filter(el => value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true);
           }
 
           this.listIsRequest && this.$emit('requestDone', res)
