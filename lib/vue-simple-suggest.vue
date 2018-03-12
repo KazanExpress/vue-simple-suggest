@@ -131,7 +131,7 @@ export default {
       return this.slotIsComponent ? '$off' : 'removeEventListener'
     },
     hoveredIndex () {
-      return this.suggestions.findIndex(el => this.hovered && (this.valueAttribute(this.hovered) == this.valueAttribute(el)))
+      return this.suggestions.findIndex(el => this.hovered && (this.valueProperty(this.hovered) == this.valueProperty(el)))
     }
   },
   created() {
