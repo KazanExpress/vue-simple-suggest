@@ -161,14 +161,21 @@ export default {
     valueProperty (obj) {
       return fromPath(obj, this.valueAttribute);
     },
+    realItem(item) {
+      return this.isSuggestionConverted ? this.displayProperty(item) : item;
+    },
     select (item) {
       this.selected = item
-      this.$emit('select', item)
+
+      // Get current item regardless of internal structure
+      const _item = this.realItem(item);
+      
+      this.$emit('select', _item)
 
       // Ya know, input stuff
-      this.$emit('input', this.displayProperty(item))
-      this.inputElement.value = this.displayProperty(item);
-      this.text = this.displayProperty(item);
+      this.$emit('input', this.displayProperty(_item))
+      this.inputElement.value = this.displayProperty(_item);
+      this.text = this.displayProperty(_item);
 
       this.inputElement.focus();
       //
@@ -178,7 +185,8 @@ export default {
     hover (item, elem) {
       this.hovered = item
       if (this.hovered != null) {
-        this.$emit('hover', item, elem)
+        // Send current item regardless of internal structure
+        this.$emit('hover', this.realItem(item), elem)
       }
     },
     hideList (ignoreSelection = false) {
