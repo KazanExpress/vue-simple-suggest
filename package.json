@@ -42,7 +42,7 @@
     "JavaScript",
     "JS"
   ],
-  "dependencies": {
+  "peerDependencies": {
     "vue": "^2.5.0"
   },
   "browserslist": [
