@@ -305,18 +305,15 @@ export default {
       }
     },
     async getSuggestions (value = '') {
-      /* hide and stop if 0 text left, mthrfckr */
       if (this.listShown && !value) {
         this.hideList()
         this.suggestions.splice(0)
-        return [];
+        return this.suggestions
       }
 
       if ((this.minLength > 0) && value.length < this.minLength) {
         return this.suggestions
       }
-
-      let result = [];
 
       this.selected = null
 
@@ -328,12 +325,9 @@ export default {
         this.$emit('requestStart', value)
       }
 
+      let result = [];
       try {
-        if (this.listIsRequest) {
-          result = (await this.list(value)) || []
-        } else {
-          result = this.list;
-        }
+        result = this.listIsRequest ? (await this.list(value)) || [] : this.list;
 
         // IFF the result is not an array (just in case!) - make it an array
         if (!Array.isArray(result)) { result = [result] }
@@ -377,7 +371,6 @@ export default {
         }
 
         this.$set(this, 'suggestions', result);
-
         this.showList()
 
         return this.suggestions;
