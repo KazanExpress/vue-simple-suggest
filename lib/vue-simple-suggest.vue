@@ -179,12 +179,18 @@ export default {
           this.select(this.hovered)
         }
         this.listShown = false
+        this.$emit('hide-list')
+
+        // TODO: Deprecated, remove in the next minor update
         this.$emit('hideList')
       }
     },
     showList () {
       if (!this.listShown) {
         this.listShown = true
+        this.$emit('show-list')
+
+        // TODO: Deprecated, remove in the next minor update
         this.$emit('showList')
       }
     },
@@ -287,7 +293,10 @@ export default {
       this.selected = null
 
       let res;
-      if (value.length >= this.minLength) {
+      if ((this.minLength === 0) || value.length >= this.minLength) {
+        this.listIsRequest && this.$emit('request-start', value)
+
+        // TODO: Deprecated, remove in the next minor update
         this.listIsRequest && this.$emit('requestStart', value)
         try {
           if (this.listIsRequest) {
@@ -311,12 +320,18 @@ export default {
           }
 
           if (this.filterByQuery) {
-            res = res.filter(el => ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()));
+            res = res.filter(el => value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true);
           }
 
+          this.listIsRequest && this.$emit('request-done', res)
+
+          // TODO: Deprecated, remove in the next minor update
           this.listIsRequest && this.$emit('requestDone', res)
         } catch (e) {
           if (this.listIsRequest) {
+            this.$emit('request-failed', e)
+
+            // TODO: Deprecated, remove in the next minor update
             this.$emit('requestFailed', e)
           } else {
             throw e;

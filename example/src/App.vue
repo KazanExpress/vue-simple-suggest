@@ -5,10 +5,10 @@
       <vue-suggest class="asdad"
         v-model="model"
         :list="getList"
-        :maxCount="10"
-        :minLength="3"
+        :max-count="10"
+        :min-length="3"
         :debounce="200"
-        :filterByQuery="false"
+        :filter-by-query="false"
         :controls="{
           selectionUp: [38, 33],
           selectionDown: [40, 34],
@@ -17,17 +17,17 @@
         }"
         ref="suggestComponent"
         placeholder="Search books..."
-        valueAttribute="id"
-        displayAttribute="volumeInfo.title"
+        value-attribute="id"
+        display-attribute="volumeInfo.title"
         @select="onSuggestSelect"
         @hover="onSuggestHover"
         @focus="onFocus"
         @blur="onBlur"
-        @requestStart="onRequestStart"
-        @requestDone="onRequestDone"
-        @requestFailed="onRequestFailed"
-        @showList="onShowList"
-        @hideList="onHideList">
+        @requests-tart="onRequestStart"
+        @request-done="onRequestDone"
+        @request-failed="onRequestFailed"
+        @show-list="onShowList"
+        @hide-list="onHideList">
         <!-- <input type="text"> -->
 
         <!-- <div class="g"><input type="text"></div> -->
@@ -116,19 +116,19 @@
         this.addToLog('blur', e)
       },
       onRequestStart (value) {
-        this.addToLog('requestStart', value)
+        this.addToLog('request-start', value)
       },
       onRequestDone (e) {
-        this.addToLog('requestDone', e)
+        this.addToLog('request-done', e)
       },
       onRequestFailed (e) {
-        this.addToLog('requestFailed', e)
+        this.addToLog('request-failed', e)
       },
       onShowList (e) {
-        this.addToLog('showList', e)
+        this.addToLog('show-list', e)
       },
       onHideList (e) {
-        this.addToLog('hideList', e)
+        this.addToLog('hide-list', e)
       },
       onSuggestSelect (suggest) {
         this.addToLog('select', suggest)

@@ -101,15 +101,15 @@ JS object:
 ```html
 <!-- Ref to access the API, v-model for efficient query binding -->
 <vue-simple-suggest ref="vueSimpleSuggest" v-model="model"
-  valueAttribute="id"
-  displayAttribute="title"
+  value-attribute="id"
+  display-attribute="title"
   :placeholder="placeholder!!!"
   :list="getListFunction"
   :max-count="10"
   :min-length="3"
   :debounce="100"
   :destyled="false"
-  :removeList="false"
+  :remove-list="false"
   :filter-by-query="false"
   :value="defaultValue"
   :controls="{
@@ -160,14 +160,14 @@ JS object:
 | Name                           | Type     | Default  | Description         |
 |--------------------------------|----------|----------|--------------------------------------------------------------|
 | `controls`                     | Object   | See [default controls](#default-controls)  | Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: `selectionUp`, `selectionDown`, `select`, `hideList` and `autocomplete`, all of which are optional. |
-| `maxSuggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions. |
-| `displayAttribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths. |
-| `valueAttribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths. |
+| `max-suggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions. |
+| `display-attribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths. |
+| `value-attribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths. |
 | `list`                      | Funciton or Array | `() => []` | The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function. |
 | `debounce`                     | Number   | `0`        | Determines the `list` debounce (a time between the input event and a function execution). |
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list. |
-| `removeList`                   | Boolean  | `false`    | If true - the suggestion list will be always hidden. |
-| `filterByQuery`                | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component). |
+| `remove-list`                   | Boolean  | `false`    | If true - the suggestion list will be always hidden. |
+| `filter-by-query`                | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component). |
 | type, value, pattern, etc...   |          |            | All of the HTML5 input attributes with their respected default values. |
 
 -----
@@ -179,11 +179,11 @@ JS object:
 | `blur`          | HTML focus event            | An outward projection of the current input's event.                                                    |
 | `select`        | Selected suggestion         | Fires on suggestion selection (via a mouse click or enter keypress).                                   |
 | `hover`         | Hovered suggestion          | Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).            |
-| `showList`      | -                           | Fires each time the suggestion list is toggled to be shown.                                            |
-| `hideList`      | -                           | Fires each time the suggestion list is being hidden.                                                   |
-| `requestStart`  | Current input value (query) | Fires each time a `list` function starts executing.                                                 |
-| `requestDone`   | Resulting suggestions list  | Fires when a `list` function successfully returns a result and forwards that result as an argument. |
-| `requestFailed` | The interrrupting exception | Fires if an exception occurs during the execution of a `list` funciton.                             |
+| `show-list`      | -                           | Fires each time the suggestion list is toggled to be shown.                                            |
+| `hide-list`      | -                           | Fires each time the suggestion list is being hidden.                                                   |
+| `request-start`  | Current input value (query) | Fires each time a `list` function starts executing.                                                 |
+| `request-done`   | Resulting suggestions list  | Fires when a `list` function successfully returns a result and forwards that result as an argument. |
+| `request-failed` | The interrrupting exception | Fires if an exception occurs during the execution of a `list` funciton.                             |
 
 -----
 
