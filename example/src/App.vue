@@ -23,7 +23,7 @@
         @hover="onSuggestHover"
         @focus="onFocus"
         @blur="onBlur"
-        @requests-tart="onRequestStart"
+        @request-start="onRequestStart"
         @request-done="onRequestDone"
         @request-failed="onRequestFailed"
         @show-list="onShowList"

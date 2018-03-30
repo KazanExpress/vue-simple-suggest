@@ -16,10 +16,10 @@
         :query="text"
       ></slot>
 
-      <div class="suggest-item" v-for="suggestion in suggestions"
+      <div class="suggest-item" v-for="(suggestion, index) in suggestions"
         @mouseenter="hover(suggestion, $event.target)"
         @mouseleave="hover(null, $event.target)"
-        :key="valueProperty(suggestion)"
+        :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
         :class="{
           selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
           hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
@@ -118,7 +118,7 @@ export default {
       canSend: true,
       timeoutInstance: null,
       text: this.value,
-      isSuggestionConverted: false,
+      isPlainSuggestion: false,
       controlScheme: {}
     }
   },
@@ -156,26 +156,21 @@ export default {
   },
   methods: {
     displayProperty (obj) {
-      return fromPath(obj, this.displayAttribute);
+      return this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute);
     },
     valueProperty (obj) {
-      return fromPath(obj, this.valueAttribute);
-    },
-    realItem(item) {
-      return this.isSuggestionConverted ? this.displayProperty(item) : item;
+      return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
     },
     select (item) {
       this.selected = item
 
       // Get current item regardless of internal structure
-      const _item = this.realItem(item);
-      
-      this.$emit('select', _item)
+      this.$emit('select', item)
 
       // Ya know, input stuff
-      this.$emit('input', this.displayProperty(_item))
-      this.inputElement.value = this.displayProperty(_item);
-      this.text = this.displayProperty(_item);
+      this.$emit('input', this.displayProperty(item))
+      this.inputElement.value = this.displayProperty(item);
+      this.text = this.displayProperty(item);
 
       this.inputElement.focus();
       //
@@ -186,7 +181,7 @@ export default {
       this.hovered = item
       if (this.hovered != null) {
         // Send current item regardless of internal structure
-        this.$emit('hover', this.realItem(item), elem)
+        this.$emit('hover', item, elem)
       }
     },
     hideList (ignoreSelection = false) {
@@ -341,13 +336,9 @@ export default {
         if (!Array.isArray(result)) { result = [result] }
 
         if (typeof result[0] === 'object' && !Array.isArray(result[0])) {
-          this.isSuggestionConverted = false;
+          this.isPlainSuggestion = false;
         } else {
-          result = result.map((el, i) => ({
-            [this.valueAttribute]: i,
-            [this.displayAttribute]: el
-          }));
-          this.isSuggestionConverted = true;
+          this.isPlainSuggestion = true;
         }
 
         if (this.filterByQuery) {
