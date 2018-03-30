@@ -180,12 +180,18 @@ export default {
         }
         this.listShown = false
         this.$emit('hide-list')
+
+        // TODO: Deprecated, remove in the next minor update
+        this.$emit('hideList')
       }
     },
     showList () {
       if (!this.listShown) {
         this.listShown = true
         this.$emit('show-list')
+
+        // TODO: Deprecated, remove in the next minor update
+        this.$emit('showList')
       }
     },
     async onInputClick (event) {
@@ -288,8 +294,10 @@ export default {
 
       let res;
       if ((this.minLength === 0) || value.length >= this.minLength) {
-        this.listIsRequest && this.$emit('requestStart', value)
         this.listIsRequest && this.$emit('request-start', value)
+
+        // TODO: Deprecated, remove in the next minor update
+        this.listIsRequest && this.$emit('requestStart', value)
         try {
           if (this.listIsRequest) {
             res = (await this.list(value)) || []
@@ -316,9 +324,15 @@ export default {
           }
 
           this.listIsRequest && this.$emit('request-done', res)
+
+          // TODO: Deprecated, remove in the next minor update
+          this.listIsRequest && this.$emit('requestDone', res)
         } catch (e) {
           if (this.listIsRequest) {
             this.$emit('request-failed', e)
+
+            // TODO: Deprecated, remove in the next minor update
+            this.$emit('requestFailed', e)
           } else {
             throw e;
           }
