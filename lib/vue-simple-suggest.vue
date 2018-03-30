@@ -179,13 +179,13 @@ export default {
           this.select(this.hovered)
         }
         this.listShown = false
-        this.$emit('hideList')
+        this.$emit('hide-list')
       }
     },
     showList () {
       if (!this.listShown) {
         this.listShown = true
-        this.$emit('showList')
+        this.$emit('show-list')
       }
     },
     async onInputClick (event) {
@@ -289,6 +289,7 @@ export default {
       let res;
       if ((this.minLength === 0) || value.length >= this.minLength) {
         this.listIsRequest && this.$emit('requestStart', value)
+        this.listIsRequest && this.$emit('request-start', value)
         try {
           if (this.listIsRequest) {
             res = (await this.list(value)) || []
@@ -314,10 +315,10 @@ export default {
             res = res.filter(el => value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true);
           }
 
-          this.listIsRequest && this.$emit('requestDone', res)
+          this.listIsRequest && this.$emit('request-done', res)
         } catch (e) {
           if (this.listIsRequest) {
-            this.$emit('requestFailed', e)
+            this.$emit('request-failed', e)
           } else {
             throw e;
           }

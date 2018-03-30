@@ -117,15 +117,15 @@ npm run docs</code></pre><hr>
 <h3 id="tldr"><a class="header-link" href="#tldr"></a>TLDR</h3>
 <pre class="hljs"><code><span class="hljs-comment">&lt;!-- Ref to access the API, v-model for efficient query binding --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">"vueSimpleSuggest"</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span>
-  <span class="hljs-attr">valueAttribute</span>=<span class="hljs-string">"id"</span>
-  <span class="hljs-attr">displayAttribute</span>=<span class="hljs-string">"title"</span>
+  <span class="hljs-attr">value-attribute</span>=<span class="hljs-string">"id"</span>
+  <span class="hljs-attr">display-attribute</span>=<span class="hljs-string">"title"</span>
   <span class="hljs-attr">:placeholder</span>=<span class="hljs-string">"placeholder!!!"</span>
   <span class="hljs-attr">:list</span>=<span class="hljs-string">"getListFunction"</span>
   <span class="hljs-attr">:max-count</span>=<span class="hljs-string">"10"</span>
   <span class="hljs-attr">:min-length</span>=<span class="hljs-string">"3"</span>
   <span class="hljs-attr">:debounce</span>=<span class="hljs-string">"100"</span>
   <span class="hljs-attr">:destyled</span>=<span class="hljs-string">"false"</span>
-  <span class="hljs-attr">:removeList</span>=<span class="hljs-string">"false"</span>
+  <span class="hljs-attr">:remove-list</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:filter-by-query</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:value</span>=<span class="hljs-string">"defaultValue"</span>
   <span class="hljs-attr">:controls</span>=<span class="hljs-string">"{
@@ -183,22 +183,22 @@ npm run docs</code></pre><hr>
 <td><code>controls</code></td>
 <td>Object</td>
 <td>See <a href="#default-controls">default controls</a></td>
-<td>Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: <code>selectionUp</code>, <code>selectionDown</code>, <code>select</code>, <code>hideList</code> and <code>autocomplete</code>, all of which are optional.</td>
+<td>Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: <code>selectionUp</code>, <code>selection-down</code>, <code>select</code>, <code>hideList</code> and <code>autocomplete</code>, all of which are optional.</td>
 </tr>
 <tr>
-<td><code>maxSuggestions</code></td>
+<td><code>max-suggestions</code></td>
 <td>Number</td>
 <td><code>10</code></td>
 <td>The maximum amount of suggestions to display. Set to 0 for infinite suggestions.</td>
 </tr>
 <tr>
-<td><code>displayAttribute</code></td>
+<td><code>display-attribute</code></td>
 <td>String</td>
 <td><code>&#39;title&#39;</code></td>
 <td>The property in a suggestion object to display in a list. Supports dotted paths.</td>
 </tr>
 <tr>
-<td><code>valueAttribute</code></td>
+<td><code>value-attribute</code></td>
 <td>String</td>
 <td><code>&#39;id&#39;</code></td>
 <td>The property in a suggestion object to use as a unique key. Supports dotted paths.</td>
@@ -222,13 +222,13 @@ npm run docs</code></pre><hr>
 <td>Whether to cancel the default styling of input and suggestions list.</td>
 </tr>
 <tr>
-<td><code>removeList</code></td>
+<td><code>remove-list</code></td>
 <td>Boolean</td>
 <td><code>false</code></td>
 <td>If true - the suggestion list will be always hidden.</td>
 </tr>
 <tr>
-<td><code>filterByQuery</code></td>
+<td><code>filter-by-query</code></td>
 <td>Boolean</td>
 <td><code>false</code></td>
 <td>Whether to filter the resulting suggestions by input&#39;s text query (make it a search component).</td>
@@ -278,27 +278,27 @@ npm run docs</code></pre><hr>
 <td>Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).</td>
 </tr>
 <tr>
-<td><code>showList</code></td>
+<td><code>show-list</code></td>
 <td>-</td>
 <td>Fires each time the suggestion list is toggled to be shown.</td>
 </tr>
 <tr>
-<td><code>hideList</code></td>
+<td><code>hide-list</code></td>
 <td>-</td>
 <td>Fires each time the suggestion list is being hidden.</td>
 </tr>
 <tr>
-<td><code>requestStart</code></td>
+<td><code>request-start</code></td>
 <td>Current input value (query)</td>
 <td>Fires each time a <code>list</code> function starts executing.</td>
 </tr>
 <tr>
-<td><code>requestDone</code></td>
+<td><code>request-done</code></td>
 <td>Resulting suggestions list</td>
 <td>Fires when a <code>list</code> function successfully returns a result and forwards that result as an argument.</td>
 </tr>
 <tr>
-<td><code>requestFailed</code></td>
+<td><code>request-failed</code></td>
 <td>The interrrupting exception</td>
 <td>Fires if an exception occurs during the execution of a <code>list</code> funciton.</td>
 </tr>
