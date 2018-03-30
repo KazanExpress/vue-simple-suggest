@@ -92,6 +92,14 @@ export default {
       type: Boolean,
       default: false
     },
+
+    // TODO: Document this!
+    filter: {
+      type: Function,
+      default: el => value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true
+    },
+    //
+
     debounce: {
       type: Number,
       default: 0
@@ -207,10 +215,8 @@ export default {
       if (this.suggestions.length > 0
         && hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)
       ) {
-        event.preventDefault();
-        if (!this.listShown) {
-          this.showList()
-        }
+        event.preventDefault()
+        this.showList()
 
         const isArrowDown = hasKeyCode(this.controlScheme.selectionDown, event)
         const direction = isArrowDown * 2 - 1
@@ -279,82 +285,103 @@ export default {
       }
     },
     async research () {
-      if (this.canSend) {
-        this.canSend = false
-        var result = await this.getSuggestions(this.text)
-        this.canSend = true
-      } else {
-        result = this.suggestions;
+      try {
+        if (this.canSend) {
+          this.canSend = false
+          var result = await this.getSuggestions(this.text)
+          this.canSend = true
+        } else {
+          result = this.suggestions;
+        }
       }
 
-      return result;
+      catch (e) {
+        result = [];
+        throw e;
+      }
+
+      finally {
+        return result;
+      }
     },
     async getSuggestions (value = '') {
-      this.selected = null
-
-      let res;
-      if ((this.minLength === 0) || value.length >= this.minLength) {
-        this.listIsRequest && this.$emit('request-start', value)
-
-        // TODO: Deprecated, remove in the next minor update
-        this.listIsRequest && this.$emit('requestStart', value)
-        try {
-          if (this.listIsRequest) {
-            res = (await this.list(value)) || []
-          } else {
-            res = this.list;
-          }
-
-          if (!Array.isArray(res)) {
-            res = [res]
-          }
-
-          if (typeof res[0] === 'object' && !Array.isArray(res[0])) {
-            this.isSuggestionConverted = false;
-          } else {
-            res = res.map((el, i) => ({
-              [this.valueAttribute]: i,
-              [this.displayAttribute]: el
-            }));
-            this.isSuggestionConverted = true;
-          }
-
-          if (this.filterByQuery) {
-            res = res.filter(el => value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true);
-          }
-
-          this.listIsRequest && this.$emit('request-done', res)
-
-          // TODO: Deprecated, remove in the next minor update
-          this.listIsRequest && this.$emit('requestDone', res)
-        } catch (e) {
-          if (this.listIsRequest) {
-            this.$emit('request-failed', e)
-
-            // TODO: Deprecated, remove in the next minor update
-            this.$emit('requestFailed', e)
-          } else {
-            throw e;
-          }
-        }
-
-        if (this.maxSuggestions) {
-          res.splice(this.maxSuggestions);
-        }
-
-        this.$set(this, 'suggestions', res);
-
-        if (!this.listShown) {
-          this.showList()
-        }
-      }
-      /* hide only if 0 text left, mthrfckr */
-      else if (this.listShown && !value) {
+      /* hide and stop if 0 text left, mthrfckr */
+      if (this.listShown && !value) {
         this.hideList()
         this.suggestions.splice(0)
+        return [];
       }
 
-      return this.suggestions;
+      if ((this.minLength > 0) && value.length < this.minLength) {
+        return this.suggestions
+      }
+
+      let result = [];
+
+      this.selected = null
+
+      // Start request if can
+      if (this.listIsRequest) {
+        this.$emit('request-start', value)
+
+        // TODO: Deprecated, remove in the next minor update
+        this.$emit('requestStart', value)
+      }
+
+      try {
+        if (this.listIsRequest) {
+          result = (await this.list(value)) || []
+        } else {
+          result = this.list;
+        }
+
+        // IFF the result is not an array (just in case!) - make it an array
+        if (!Array.isArray(result)) { result = [result] }
+
+        if (typeof result[0] === 'object' && !Array.isArray(result[0])) {
+          this.isSuggestionConverted = false;
+        } else {
+          result = result.map((el, i) => ({
+            [this.valueAttribute]: i,
+            [this.displayAttribute]: el
+          }));
+          this.isSuggestionConverted = true;
+        }
+
+        if (this.filterByQuery) {
+          result = result.filter(this.filter);
+        }
+
+        if (this.listIsRequest) {
+          this.$emit('request-done', result)
+
+          // TODO: Deprecated, remove in the next minor update
+          this.$emit('requestDone', result)
+        }
+      }
+
+      catch (e) {
+        if (this.listIsRequest) {
+          this.$emit('request-failed', e)
+
+          // TODO: Deprecated, remove in the next minor update
+          this.$emit('requestFailed', e)
+        } else {
+          throw e;
+        }
+      }
+
+      finally {
+        if (this.maxSuggestions) {
+          result.splice(this.maxSuggestions);
+        }
+
+        this.$set(this, 'suggestions', result);
+
+        this.showList()
+
+        return this.suggestions;
+      }
     },
     clearSuggestions () {
       this.suggestions.splice(0)
