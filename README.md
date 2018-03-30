@@ -159,7 +159,7 @@ JS object:
 #### Props
 | Name                           | Type     | Default  | Description         |
 |--------------------------------|----------|----------|--------------------------------------------------------------|
-| `controls`                     | Object   | See [default controls](#default-controls)  | Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: `selectionUp`, `selection-down`, `select`, `hideList` and `autocomplete`, all of which are optional. |
+| `controls`                     | Object   | See [default controls](#default-controls)  | Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: `selectionUp`, `selectionDown`, `select`, `hideList` and `autocomplete`, all of which are optional. |
 | `max-suggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions. |
 | `display-attribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths. |
 | `value-attribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths. |
