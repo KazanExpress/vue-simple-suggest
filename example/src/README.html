@@ -20,6 +20,7 @@
 <pre class="hljs"><code>npm install --save vue-simple-suggest</code></pre><h2 id="table-of-contents"><a class="header-link" href="#table-of-contents"></a>Table of contents</h2>
 <ul class="list">
 <li><a href="#what-is-it">What is it?</a></li>
+<li><a href="#simple-example">Simple example</a></li>
 <li><a href="#build-setup">Build</a></li>
 <li><a href="#default-controls">Controls</a></li>
 <li><a href="#component-api">Component API</a><ul class="list">
@@ -54,6 +55,45 @@
 <p>And, as a bonus, it is very light (&lt;4kb minified).</p>
 <p>All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.</p>
 <hr>
+<h2 id="simple-example"><a class="header-link" href="#simple-example"></a>Simple example</h2>
+<p>To use the component just install via NPM:</p>
+<p><code>npm install --save vue-simple-suggest</code></p>
+<p>Then, in your Vue.js component/page:</p>
+<pre class="hljs"><code><span class="hljs-comment">&lt;!-- Some component.vue --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">vue-suggest</span>
+    <span class="hljs-attr">v-model</span>=<span class="hljs-string">"chosen"</span>
+    <span class="hljs-attr">:list</span>=<span class="hljs-string">"simpleSuggestionList"</span>
+  &gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">vue-suggest</span>&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
+
+  <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Chosen element: {{ chosen }}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+  <span class="hljs-keyword">import</span> VueSuggest <span class="hljs-keyword">from</span> <span class="hljs-string">'vue-simple-suggest'</span>
+
+  <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+    <span class="hljs-attr">components</span>: {
+      VueSuggest
+    },
+    data() {
+      <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">chosen</span>: <span class="hljs-string">''</span>
+      }
+    },
+    <span class="hljs-attr">methods</span>: {
+      simpleSuggestionList() {
+        <span class="hljs-keyword">return</span> [
+          <span class="hljs-string">'Vue.js'</span>,
+          <span class="hljs-string">'React.js'</span>,
+          <span class="hljs-string">'Angular.js'</span>
+        ]
+      }
+    }
+  }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre><hr>
 <h2 id="build-setup"><a class="header-link" href="#build-setup"></a>Build Setup</h2>
 <pre class="hljs"><code><span class="hljs-comment"># clone the repo</span>
 git <span class="hljs-built_in">clone</span> https://github.com/KazanExpress/vue-simple-suggest.git
