@@ -5,6 +5,7 @@
   "author": "KazanExpress",
   "license": "MIT",
   "repository": "KazanExpress/vue-simple-suggest",
+  "homepage": "https://kazanexpress.github.io/vue-simple-suggest/",
   "bugs": {
     "url": "https://github.com/KazanExpress/vue-simple-suggest/issues"
   },
