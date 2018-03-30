@@ -15,6 +15,7 @@ npm install --save vue-simple-suggest
 ## Table of contents
 
 - [What is it?](#what-is-it)
+- [Simple example](#simple-example)
 - [Build](#build-setup)
 - [Controls](#default-controls)
 - [Component API](#component-api)
@@ -48,6 +49,56 @@ And, as a bonus, it is very light (<4kb minified).
 All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.
 
 -----
+
+## Simple example
+
+To use the component just install via NPM:
+
+`npm install --save vue-simple-suggest`
+
+Then, in your Vue.js component/page:
+
+```html
+<!-- Some component.vue -->
+<template>
+  <vue-suggest
+    v-model="chosen"
+    :list="simpleSuggestionList"
+  ></vue-suggest>
+
+  <br>
+
+  <p>Chosen element: {{ chosen }}</p>
+</template>
+
+<script>
+  import VueSuggest from 'vue-simple-suggest'
+
+  export default {
+    components: {
+      VueSuggest
+    },
+    data() {
+      return {
+        chosen: ''
+      }
+    },
+    methods: {
+      simpleSuggestionList() {
+        return [
+          'Vue.js',
+          'React.js',
+          'Angular.js'
+        ]
+      }
+    }
+  }
+</script>
+```
+
+
+-----
+
 ## Build Setup
 
 ``` bash
