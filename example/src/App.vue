@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="example">
-      <p>v-model: {{ model || 'empty' }}</p>
+      <p>v-model: <span v-html="model || 'empty'"></span></p>
       <vue-suggest class="asdad"
         v-model="model"
         :list="getList"
@@ -15,6 +15,7 @@
           select: [13, 36],
           hideList: [27, 35]
         }"
+        :mode="mode"
         ref="suggestComponent"
         placeholder="Search books..."
         value-attribute="id"
@@ -80,6 +81,7 @@
       return {
         selected: null,
         model: '',
+        mode: 'input',
         loading: false,
         log: []
       }

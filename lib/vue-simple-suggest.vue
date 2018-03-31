@@ -7,7 +7,7 @@
       @keyup="onListKeyUp($event), onAutocomplete($event)"
       ref="inputSlot">
       <slot>
-        <input v-bind="$props">
+        <input v-bind="$props" :value="mode === 'input' ? value : text">
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown && !removeList" :class="{ designed: !destyled }">
@@ -42,12 +42,21 @@
 <script>
 import {
   defaultControls,
+  modes,
   fromPath,
   hasKeyCode
 } from './misc'
 
+let event = 'input'
+
 export default {
   name: 'vue-simple-suggest',
+  model: {
+    prop: 'value',
+    get event() {
+      return event;
+    }
+  },
   props: {
     placeholder: {
       type: String
@@ -105,9 +114,18 @@ export default {
       default: 0
     },
     value: {
-      type: String
+      type: Object.values(modes),
+      validator: (value) => value.constructor.name === modes[event].name
+    },
+    mode: {
+      type: String,
+      default: event,
+      validator: (value) => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
   },
+  // Handle run-time mode changes:
+  watch: { mode: v => event = v },
+  //
   data () {
     return {
       selected: null,
@@ -118,7 +136,11 @@ export default {
       canSend: true,
       timeoutInstance: null,
       text: this.value,
+
+      // TODO: Document this!
       isPlainSuggestion: false,
+      //
+
       controlScheme: {}
     }
   },
@@ -144,6 +166,7 @@ export default {
   },
   created() {
     this.controlScheme = Object.assign({}, defaultControls, this.controls);
+    event = this.mode;
   },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
@@ -169,10 +192,10 @@ export default {
 
       // Ya know, input stuff
       this.$emit('input', this.displayProperty(item))
-      this.inputElement.value = this.displayProperty(item);
-      this.text = this.displayProperty(item);
+      this.inputElement.value = this.displayProperty(item)
+      this.text = this.displayProperty(item)
 
-      this.inputElement.focus();
+      this.inputElement.focus()
       //
 
       this.hovered = null
@@ -191,18 +214,12 @@ export default {
         }
         this.listShown = false
         this.$emit('hide-list')
-
-        // TODO: Deprecated, remove in the next minor update
-        this.$emit('hideList')
       }
     },
     showList () {
       if (!this.listShown) {
         this.listShown = true
         this.$emit('show-list')
-
-        // TODO: Deprecated, remove in the next minor update
-        this.$emit('showList')
       }
     },
     async onInputClick (event) {
@@ -323,9 +340,6 @@ export default {
       // Start request if can
       if (this.listIsRequest) {
         this.$emit('request-start', value)
-
-        // TODO: Deprecated, remove in the next minor update
-        this.$emit('requestStart', value)
       }
 
       let result = [];
@@ -347,18 +361,12 @@ export default {
 
         if (this.listIsRequest) {
           this.$emit('request-done', result)
-
-          // TODO: Deprecated, remove in the next minor update
-          this.$emit('requestDone', result)
         }
       }
 
       catch (e) {
         if (this.listIsRequest) {
           this.$emit('request-failed', e)
-
-          // TODO: Deprecated, remove in the next minor update
-          this.$emit('requestFailed', e)
         } else {
           throw e;
         }
