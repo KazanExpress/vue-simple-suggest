@@ -188,7 +188,7 @@ JS object:
   <input class="optional-custom-input">
 
   <!-- Appears o top of the list -->
-  <template slot="miscItem-above" slot-scope="{ suggestions, query }">
+  <template slot="misc-item-above" slot-scope="{ suggestions, query }">
     <div class="misc-item">
       <span>You're searching for {{ query }}.</span>
     </div>
@@ -201,7 +201,7 @@ JS object:
   <div slot="suggestionItem" slot-scope="{ suggestion }" class="custom">{{ suggestion.title }}</div>
 
   <!-- Appears below the list -->
-  <div class="misc-item" slot="miscItem-below" slot-scope="{ suggestions }" v-if="loading">
+  <div class="misc-item" slot="misc-item-below" slot-scope="{ suggestions }" v-if="loading">
     <span>Loading...</span>
   </div>
 </vue-simple-suggest>
@@ -397,7 +397,7 @@ Result:
 ![](/assets/screenshot.jpg)
 
 ##### Custom miscellanious item slots
-> `miscItem-above` and `miscItem-below` slots
+> `misc-item-above` and `misc-item-below` slots
 
 Allow custom elements to be shown in suggestion list. These elements never dissapear from the list, niether can they be selected nor hovered on.
 
@@ -410,7 +410,7 @@ Accept the `suggestions` array and a `query` text as a `slot-scope` attribute va
 ```html
 <!-- Examples: -->
 <vue-simple-suggest>
-  <template slot="miscItem-above" slot-scope="{ suggestions, query }">
+  <template slot="misc-item-above" slot-scope="{ suggestions, query }">
     <div class="misc-item">
       <span>You're searching for {{ query }}.</span>
     </div>
@@ -419,7 +419,7 @@ Accept the `suggestions` array and a `query` text as a `slot-scope` attribute va
     </div>
   </template>
 
-  <div slot="miscItem-below" slot-scope="{ suggestions }" v-if="isLoading" class="misc-item">
+  <div slot="misc-item-below" slot-scope="{ suggestions }" v-if="isLoading" class="misc-item">
     <span>Loading...</span>
   </div>
 </vue-simple-suggest>
