@@ -198,7 +198,7 @@ JS object:
     <hr>
   </template>
 
-  <div slot="suggestionItem" slot-scope="{ suggestion }" class="custom">{{ suggestion.title }}</div>
+  <div slot="suggestion-item" slot-scope="{ suggestion }" class="custom">{{ suggestion.title }}</div>
 
   <!-- Appears below the list -->
   <div class="misc-item" slot="misc-item-below" slot-scope="{ suggestions }" v-if="loading">
@@ -347,7 +347,7 @@ Defaults to a simple input with props passed to vue-simple-suggest.
 ```
 
 ##### Custom suggestion item
-> `suggestionItem` slot
+> `suggestion-item` slot
 
 Allows custom html-definitons of the suggestion items in a list.
 Defaults to `<span>{{ displayAttribute(suggestion) }}</span>`
@@ -357,7 +357,7 @@ Accepts the `suggestion` object and a `query` text as a `slot-scope` attribute v
 ```html
 <!-- Example: -->
 <vue-simple-suggest>
-  <div slot="suggestionItem" slot-scope="{ suggestion, query }">
+  <div slot="suggestion-item" slot-scope="{ suggestion, query }">
     <div>My {{ suggestion.title }}</div>
   </div>
 </vue-simple-suggest>
@@ -368,7 +368,7 @@ In cooperation with [ref fields](#ref-methods) can be used to drastically transf
 One of the simplest examples - highlighting the query text in the results:
 
 ```html
-<div slot="suggestionItem" slot-scope="scope">
+<div slot="suggestion-item" slot-scope="scope">
   <span v-html="boldenSuggestion(scope)"></span>
 </div>
 ```
