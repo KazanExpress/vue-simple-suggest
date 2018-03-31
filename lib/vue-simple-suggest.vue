@@ -184,13 +184,6 @@ export default {
     valueProperty (obj) {
       return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
     },
-    // itemByMode (item) {
-    //   switch (this.mode.toLowerCase()) {
-    //     case 'object': return item;
-    //     case 'string': return this.displayProperty(item);
-    //     case 'number': return this.suggestions.indexOf(item);
-    //   }
-    // },
     select (item) {
       this.selected = item
 
@@ -221,18 +214,12 @@ export default {
         }
         this.listShown = false
         this.$emit('hide-list')
-
-        // TODO: Deprecated, remove in the next minor update
-        this.$emit('hideList')
       }
     },
     showList () {
       if (!this.listShown) {
         this.listShown = true
         this.$emit('show-list')
-
-        // TODO: Deprecated, remove in the next minor update
-        this.$emit('showList')
       }
     },
     async onInputClick (event) {
@@ -353,9 +340,6 @@ export default {
       // Start request if can
       if (this.listIsRequest) {
         this.$emit('request-start', value)
-
-        // TODO: Deprecated, remove in the next minor update
-        this.$emit('requestStart', value)
       }
 
       let result = [];
@@ -377,18 +361,12 @@ export default {
 
         if (this.listIsRequest) {
           this.$emit('request-done', result)
-
-          // TODO: Deprecated, remove in the next minor update
-          this.$emit('requestDone', result)
         }
       }
 
       catch (e) {
         if (this.listIsRequest) {
           this.$emit('request-failed', e)
-
-          // TODO: Deprecated, remove in the next minor update
-          this.$emit('requestFailed', e)
         } else {
           throw e;
         }
