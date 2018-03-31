@@ -10,7 +10,7 @@
         <input v-bind="$props" :value="mode === 'input' ? value : text">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!listShown && !removeList" :class="{ designed: !destyled }">
+    <div class="suggestions" v-if="!!listShown && !removeList && (suggestions && suggestions.length)" :class="{ designed: !destyled }">
       <slot name="miscItem-above"
         :suggestions="suggestions"
         :query="text"
