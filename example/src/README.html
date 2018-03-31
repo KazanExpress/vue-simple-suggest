@@ -22,7 +22,7 @@
 <li><a href="#what-is-it">What is it?</a></li>
 <li><a href="#simple-example">Simple example</a></li>
 <li><a href="#build-setup">Build</a></li>
-<li><a href="#default-controls">Controls</a></li>
+<li><a href="#default-controls">Controls <sup><a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.2.0">v1.2.0</a></sup></a></li>
 <li><a href="#component-api">Component API</a><ul class="list">
 <li><a href="#tldr">TLDR</a></li>
 <li><a href="#api-definitions">API Definitions</a><ul class="list">
@@ -108,6 +108,9 @@ npm run dev
 <span class="hljs-comment"># build example &amp; readme for static serving</span>
 npm run docs</code></pre><hr>
 <h2 id="default-controls"><a class="header-link" href="#default-controls"></a>Default Controls</h2>
+<blockquote>
+<p>New in <a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.2.0">v1.2.0</a></p>
+</blockquote>
 <p>These are default keyboard shortcuts.</p>
 <p>Can be customized with the <a href="#props"><code>controls</code> prop</a>. All fields in this <code>controls</code> object are optional.</p>
 <p>Default scheme:</p>
@@ -159,6 +162,7 @@ npm run docs</code></pre><hr>
 <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">ref</span>=<span class="hljs-string">"vueSimpleSuggest"</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span>
   <span class="hljs-attr">value-attribute</span>=<span class="hljs-string">"id"</span>
   <span class="hljs-attr">display-attribute</span>=<span class="hljs-string">"title"</span>
+  <span class="hljs-attr">mode</span>=<span class="hljs-string">"input"</span>
   <span class="hljs-attr">:placeholder</span>=<span class="hljs-string">"placeholder!!!"</span>
   <span class="hljs-attr">:list</span>=<span class="hljs-string">"getListFunction"</span>
   <span class="hljs-attr">:max-count</span>=<span class="hljs-string">"10"</span>
@@ -168,7 +172,6 @@ npm run docs</code></pre><hr>
   <span class="hljs-attr">:remove-list</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:filter-by-query</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:value</span>=<span class="hljs-string">"defaultValue"</span>
-  <span class="hljs-attr">:mode</span>=<span class="hljs-string">"string"</span>
   <span class="hljs-attr">:controls</span>=<span class="hljs-string">"{
     selectionUp: [38, 33],
     selectionDown: [40, 34],
@@ -221,7 +224,7 @@ npm run docs</code></pre><hr>
 </thead>
 <tbody>
 <tr>
-<td><code>controls</code></td>
+<td><code>controls</code> <sup><a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.2.0">v1.2.0</a></sup></td>
 <td>Object</td>
 <td>See <a href="#default-controls">default controls</a></td>
 <td>Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: <code>selectionUp</code>, <code>selectionDown</code>, <code>select</code>, <code>hideList</code> and <code>autocomplete</code>, all of which are optional.</td>
@@ -275,13 +278,13 @@ npm run docs</code></pre><hr>
 <td>Whether to filter the resulting suggestions by input&#39;s text query (make it a search component).</td>
 </tr>
 <tr>
-<td><code>mode</code></td>
+<td><code>mode</code> <sup><a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0">v1.4.0</a></sup></td>
 <td>String</td>
-<td>&#39;string&#39;</td>
-<td>The <code>v-model</code> mode. Determines the type of <code>v-model</code>&#39;s value - can be one of <code>&#39;string&#39;</code>, <code>&#39;object&#39;</code> or <code>&#39;number&#39;</code>, where the <code>&#39;number&#39;</code> binds an item&#39;s index to v-model.</td>
+<td><code>&#39;input&#39;</code></td>
+<td>The <code>v-model</code> event. Determines the event, that triggers <code>v-model</code>. Can be one of <code>&#39;input&#39;</code> (<code>v-model</code> binds a displayed property) or <code>&#39;select&#39;</code> (<code>v-model</code> binds a selected item).</td>
 </tr>
 <tr>
-<td>type, value, pattern, etc...</td>
+<td><code>type</code>, <code>value</code>, <code>pattern</code>, etc...</td>
 <td></td>
 <td></td>
 <td>All of the HTML5 input attributes with their respected default values.</td>

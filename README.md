@@ -17,7 +17,7 @@ npm install --save vue-simple-suggest
 - [What is it?](#what-is-it)
 - [Simple example](#simple-example)
 - [Build](#build-setup)
-- [Controls](#default-controls)
+- [Controls <sup>[v1.2.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.2.0)</sup>](#default-controls)
 - [Component API](#component-api)
   - [TLDR](#tldr)
   - [API Definitions](#api-definitions)
@@ -118,6 +118,8 @@ npm run docs
 -----
 ## Default Controls
 
+> New in [v1.2.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.2.0)
+
 These are default keyboard shortcuts.
 
 Can be customized with the [`controls` prop](#props). All fields in this `controls` object are optional.
@@ -154,6 +156,7 @@ JS object:
 <vue-simple-suggest ref="vueSimpleSuggest" v-model="model"
   value-attribute="id"
   display-attribute="title"
+  mode="input"
   :placeholder="placeholder!!!"
   :list="getListFunction"
   :max-count="10"
@@ -163,7 +166,6 @@ JS object:
   :remove-list="false"
   :filter-by-query="false"
   :value="defaultValue"
-  :mode="string"
   :controls="{
     selectionUp: [38, 33],
     selectionDown: [40, 34],
@@ -211,7 +213,7 @@ JS object:
 #### Props
 | Name                           | Type     | Default  | Description         |
 |--------------------------------|----------|----------|--------------------------------------------------------------|
-| `controls`                     | Object   | See [default controls](#default-controls)  | Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: `selectionUp`, `selectionDown`, `select`, `hideList` and `autocomplete`, all of which are optional. |
+| `controls` <sup>[v1.2.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.2.0)</sup>                    | Object   | See [default controls](#default-controls)  | Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: `selectionUp`, `selectionDown`, `select`, `hideList` and `autocomplete`, all of which are optional. |
 | `max-suggestions`               | Number   | `10`       | The maximum amount of suggestions to display. Set to 0 for infinite suggestions. |
 | `display-attribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths. |
 | `value-attribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths. |
@@ -220,8 +222,8 @@ JS object:
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list. |
 | `remove-list`                   | Boolean  | `false`    | If true - the suggestion list will be always hidden. |
 | `filter-by-query`                | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component). |
-| `mode`                         | String | 'string' | The `v-model` mode. Determines the type of `v-model`'s value - can be one of `'string'`, `'object'` or `'number'`, where the `'number'` binds an item's index to v-model. |
-| type, value, pattern, etc...   |          |            | All of the HTML5 input attributes with their respected default values. |
+| `mode` <sup>[v1.4.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)</sup>                         | String | `'input'` | The `v-model` event. Determines the event, that triggers `v-model`. Can be one of `'input'` (`v-model` binds a displayed property) or `'select'` (`v-model` binds a selected item). |
+| `type`, `value`, `pattern`, etc...   |          |            | All of the HTML5 input attributes with their respected default values. |
 
 -----
 #### Emitted Events
