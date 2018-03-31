@@ -11,7 +11,7 @@
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown && !removeList" :class="{ designed: !destyled }">
-      <slot name="miscItem-above"
+      <slot name="misc-item-above"
         :suggestions="suggestions"
         :query="text"
       ></slot>
@@ -24,14 +24,14 @@
           selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
           hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
         }">
-        <slot name="suggestionItem"
+        <slot name="suggestion-item"
           :suggestion="suggestion"
           :query="text">
           <span>{{ displayProperty(suggestion) }}</span>
         </slot>
       </div>
 
-      <slot name="miscItem-below"
+      <slot name="misc-item-below"
         :suggestions="suggestions"
         :query="text"
       ></slot>

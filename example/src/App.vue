@@ -35,21 +35,28 @@
 
         <!-- <test-input/> -->
 
-        <template slot="miscItem-above" slot-scope="{ suggestions, query }" v-if="suggestions.length > 0">
-          <div class="misc-item">
-            <span>You're searching for '{{ query }}'.</span>
-          </div>
-          <div class="misc-item">
-            <span>{{ suggestions.length }} suggestions are shown...</span>
-          </div>
-          <hr>
+        <template slot="misc-item-above" slot-scope="{ suggestions, query }">
+          <template v-if="suggestions.length > 0">
+            <div class="misc-item">
+              <span>You're searching for '{{ query }}'.</span>
+            </div>
+            <div class="misc-item">
+              <span>{{ suggestions.length }} suggestions are shown...</span>
+            </div>
+            <hr>
+          </template>
+          <template v-else-if="!loading">
+            <div class="misc-item">
+              <span>No result</span>
+            </div>
+          </template>
         </template>
 
-        <div slot="suggestionItem" slot-scope="scope">
+        <div slot="suggestion-item" slot-scope="scope">
           <span v-html="boldenSuggestion(scope)"></span>
         </div>
 
-        <div class="misc-item" slot="miscItem-below" slot-scope="{ suggestions }" v-if="loading">
+        <div class="misc-item" slot="misc-item-below" slot-scope="{ suggestions }" v-if="loading">
           <span>Loading...</span>
         </div>
       </vue-suggest>
