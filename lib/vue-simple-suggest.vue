@@ -217,7 +217,16 @@ export default {
       }
     },
     showList () {
-      let slotsAreEmpty = !this.$scopedSlots['misc-item-above'](this) && !this.$scopedSlots['misc-item-above'](this)
+      const slotsToCheck = ['misc-item-above', 'misc-item-below']
+      let isFunctions = true
+
+      slotsToCheck.forEach(slotName => {
+        isFunctions = isFunctions && (this.$scopedSlots[slotName] && typeof this.$scopedSlots[slotName] === 'function')
+      })
+
+      let slotsAreEmpty = isFunctions
+        ? (!this.$scopedSlots['misc-item-above'](this) && !this.$scopedSlots['misc-item-below'](this))
+        : (!this.$scopedSlots['misc-item-above'] && !this.$scopedSlots['misc-item-below'])
       if (!this.listShown) {
         if (!slotsAreEmpty || (this.suggestions.length > 0 && this.text.length >= this.minLength)) {
           this.listShown = true
