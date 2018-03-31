@@ -16,10 +16,10 @@
         :query="text"
       ></slot>
 
-      <div class="suggest-item" v-for="suggestion in suggestions"
+      <div class="suggest-item" v-for="(suggestion, index) in suggestions"
         @mouseenter="hover(suggestion, $event.target)"
         @mouseleave="hover(null, $event.target)"
-        :key="valueProperty(suggestion)"
+        :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
         :class="{
           selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
           hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
@@ -118,7 +118,7 @@ export default {
       canSend: true,
       timeoutInstance: null,
       text: this.value,
-      isSuggestionConverted: false,
+      isPlainSuggestion: false,
       controlScheme: {}
     }
   },
@@ -126,7 +126,7 @@ export default {
     slotIsComponent () {
       return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance
     },
-    listIsRequest() {
+    listIsRequest () {
       return typeof this.list === 'function';
     },
     input () {
@@ -156,13 +156,15 @@ export default {
   },
   methods: {
     displayProperty (obj) {
-      return fromPath(obj, this.displayAttribute);
+      return this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute);
     },
     valueProperty (obj) {
-      return fromPath(obj, this.valueAttribute);
+      return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
     },
     select (item) {
       this.selected = item
+
+      // Get current item regardless of internal structure
       this.$emit('select', item)
 
       // Ya know, input stuff
@@ -178,6 +180,7 @@ export default {
     hover (item, elem) {
       this.hovered = item
       if (this.hovered != null) {
+        // Send current item regardless of internal structure
         this.$emit('hover', item, elem)
       }
     },
@@ -333,13 +336,9 @@ export default {
         if (!Array.isArray(result)) { result = [result] }
 
         if (typeof result[0] === 'object' && !Array.isArray(result[0])) {
-          this.isSuggestionConverted = false;
+          this.isPlainSuggestion = false;
         } else {
-          result = result.map((el, i) => ({
-            [this.valueAttribute]: i,
-            [this.displayAttribute]: el
-          }));
-          this.isSuggestionConverted = true;
+          this.isPlainSuggestion = true;
         }
 
         if (this.filterByQuery) {
