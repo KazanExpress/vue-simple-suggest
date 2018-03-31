@@ -148,7 +148,7 @@ export default {
     slotIsComponent () {
       return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance
     },
-    listIsRequest() {
+    listIsRequest () {
       return typeof this.list === 'function';
     },
     input () {
