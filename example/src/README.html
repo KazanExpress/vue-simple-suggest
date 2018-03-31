@@ -168,6 +168,7 @@ npm run docs</code></pre><hr>
   <span class="hljs-attr">:remove-list</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:filter-by-query</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:value</span>=<span class="hljs-string">"defaultValue"</span>
+  <span class="hljs-attr">:mode</span>=<span class="hljs-string">"string"</span>
   <span class="hljs-attr">:controls</span>=<span class="hljs-string">"{
     selectionUp: [38, 33],
     selectionDown: [40, 34],
@@ -272,6 +273,12 @@ npm run docs</code></pre><hr>
 <td>Boolean</td>
 <td><code>false</code></td>
 <td>Whether to filter the resulting suggestions by input&#39;s text query (make it a search component).</td>
+</tr>
+<tr>
+<td><code>mode</code></td>
+<td>String</td>
+<td>&#39;string&#39;</td>
+<td>The <code>v-model</code> mode. Determines the type of <code>v-model</code>&#39;s value - can be one of <code>&#39;string&#39;</code>, <code>&#39;object&#39;</code> or <code>&#39;number&#39;</code>, where the <code>&#39;number&#39;</code> binds an item&#39;s index to v-model.</td>
 </tr>
 <tr>
 <td>type, value, pattern, etc...</td>

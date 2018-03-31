@@ -42,6 +42,7 @@
 <script>
 import {
   defaultControls,
+  modes,
   fromPath,
   hasKeyCode
 } from './misc'
@@ -105,7 +106,12 @@ export default {
       default: 0
     },
     value: {
-      type: String
+      type: modes
+    },
+    mode: {
+      type: Function,
+      default: String,
+      validator: (value) => !!~modes.indexOf(value)
     }
   },
   data () {
@@ -118,7 +124,11 @@ export default {
       canSend: true,
       timeoutInstance: null,
       text: this.value,
+
+      // TODO: Document this!
       isPlainSuggestion: false,
+      //
+
       controlScheme: {}
     }
   },
@@ -161,6 +171,13 @@ export default {
     valueProperty (obj) {
       return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
     },
+    itemByMode (item) {
+      switch (this.mode) {
+        case Object: return item;
+        case String: return this.displayProperty(item);
+        case Number: return this.suggestions.indexOf(item);
+      }
+    },
     select (item) {
       this.selected = item
 
@@ -168,11 +185,11 @@ export default {
       this.$emit('select', item)
 
       // Ya know, input stuff
-      this.$emit('input', this.displayProperty(item))
-      this.inputElement.value = this.displayProperty(item);
-      this.text = this.displayProperty(item);
+      this.$emit('input', this.itemByMode(item))
+      this.inputElement.value = this.displayProperty(item)
+      this.text = this.displayProperty(item)
 
-      this.inputElement.focus();
+      this.inputElement.focus()
       //
 
       this.hovered = null

@@ -163,6 +163,7 @@ JS object:
   :remove-list="false"
   :filter-by-query="false"
   :value="defaultValue"
+  :mode="string"
   :controls="{
     selectionUp: [38, 33],
     selectionDown: [40, 34],
@@ -219,6 +220,7 @@ JS object:
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list. |
 | `remove-list`                   | Boolean  | `false`    | If true - the suggestion list will be always hidden. |
 | `filter-by-query`                | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component). |
+| `mode`                         | String | 'string' | The `v-model` mode. Determines the type of `v-model`'s value - can be one of `'string'`, `'object'` or `'number'`, where the `'number'` binds an item's index to v-model. |
 | type, value, pattern, etc...   |          |            | All of the HTML5 input attributes with their respected default values. |
 
 -----

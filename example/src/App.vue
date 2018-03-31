@@ -1,13 +1,14 @@
 <template>
   <div id="app">
     <div class="example">
-      <p>v-model: {{ model || 'empty' }}</p>
+      <p>v-model: <span v-html="model || 'empty'"></span></p>
       <vue-suggest class="asdad"
         v-model="model"
         :list="getList"
         :max-count="10"
         :min-length="3"
         :debounce="200"
+        :mode="Object"
         :filter-by-query="false"
         :controls="{
           selectionUp: [38, 33],
