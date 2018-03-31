@@ -8,8 +8,7 @@
 
 
 
-## **If the current behavior is a bug, please provide the steps to reproduce and if possible a minimal demo of the problem** via
-https://plnkr.co or similar (you can use this template as a starting point: http://plnkr.co/edit/tpl:AvJOMERrnz94ekVua0u5).
+## **If the current behavior is a bug, please provide the steps to reproduce and if possible a minimal demo of the problem**
 
 
 
