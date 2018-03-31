@@ -35,7 +35,7 @@
 
         <!-- <test-input/> -->
 
-        <template slot="misc-item-above" slot-scope="{ suggestions, query }">
+        <template slot="misc-item-above" slot-scope="{ suggestions, query }" v-if="query">
           <template v-if="suggestions.length > 0">
             <div class="misc-item">
               <span>You're searching for '{{ query }}'.</span>

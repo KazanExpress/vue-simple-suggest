@@ -217,9 +217,14 @@ export default {
       }
     },
     showList () {
+      let slotsAreEmpty = !this.$scopedSlots['misc-item-above'](this) && !this.$scopedSlots['misc-item-above'](this)
       if (!this.listShown) {
-        this.listShown = true
-        this.$emit('show-list')
+        if (!slotsAreEmpty || (this.suggestions.length > 0 && this.text.length >= this.minLength)) {
+          this.listShown = true
+          this.$emit('show-list')
+        } else {
+          this.hideList(true)
+        }
       }
     },
     async onInputClick (event) {
@@ -227,13 +232,12 @@ export default {
         await this.research();
       }
 
-      if (!this.listShown && this.suggestions.length > 0) {
+      if (!this.listShown) {
         this.showList()
       }
     },
     onArrowKeyDown (event) {
-      if (this.suggestions.length > 0
-        && hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)
+      if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)
       ) {
         event.preventDefault()
         this.showList()
@@ -284,9 +288,7 @@ export default {
     },
     onFocus (e) {
       this.$emit('focus', e)
-      if (this.suggestions.length > 0) {
-        this.showList()
-      }
+      this.showList()
     },
     onInput (inputEvent) {
       this.text = inputEvent.target.value
@@ -378,6 +380,7 @@ export default {
         }
 
         this.$set(this, 'suggestions', result);
+
         this.showList()
 
         return this.suggestions;
