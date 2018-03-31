@@ -8,7 +8,6 @@
         :max-count="10"
         :min-length="3"
         :debounce="200"
-        :mode="Object"
         :filter-by-query="false"
         :controls="{
           selectionUp: [38, 33],
@@ -16,6 +15,7 @@
           select: [13, 36],
           hideList: [27, 35]
         }"
+        :mode="mode"
         ref="suggestComponent"
         placeholder="Search books..."
         value-attribute="id"
@@ -81,6 +81,7 @@
       return {
         selected: null,
         model: '',
+        mode: 'input',
         loading: false,
         log: []
       }

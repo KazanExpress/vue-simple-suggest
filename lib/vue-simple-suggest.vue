@@ -7,7 +7,7 @@
       @keyup="onListKeyUp($event), onAutocomplete($event)"
       ref="inputSlot">
       <slot>
-        <input v-bind="$props">
+        <input v-bind="$props" :value="mode === 'input' ? value : text">
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown && !removeList" :class="{ designed: !destyled }">
@@ -47,8 +47,16 @@ import {
   hasKeyCode
 } from './misc'
 
+let event = 'input'
+
 export default {
   name: 'vue-simple-suggest',
+  model: {
+    prop: 'value',
+    get event() {
+      return event;
+    }
+  },
   props: {
     placeholder: {
       type: String
@@ -106,14 +114,18 @@ export default {
       default: 0
     },
     value: {
-      type: modes
+      type: Object.values(modes),
+      validator: (value) => value.constructor.name === modes[event].name
     },
     mode: {
-      type: Function,
-      default: String,
-      validator: (value) => !!~modes.indexOf(value)
+      type: String,
+      default: event,
+      validator: (value) => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
   },
+  // Handle run-time mode changes:
+  watch: { mode: v => event = v },
+  //
   data () {
     return {
       selected: null,
@@ -154,6 +166,7 @@ export default {
   },
   created() {
     this.controlScheme = Object.assign({}, defaultControls, this.controls);
+    event = this.mode;
   },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
@@ -171,13 +184,13 @@ export default {
     valueProperty (obj) {
       return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
     },
-    itemByMode (item) {
-      switch (this.mode) {
-        case Object: return item;
-        case String: return this.displayProperty(item);
-        case Number: return this.suggestions.indexOf(item);
-      }
-    },
+    // itemByMode (item) {
+    //   switch (this.mode.toLowerCase()) {
+    //     case 'object': return item;
+    //     case 'string': return this.displayProperty(item);
+    //     case 'number': return this.suggestions.indexOf(item);
+    //   }
+    // },
     select (item) {
       this.selected = item
 
@@ -185,7 +198,7 @@ export default {
       this.$emit('select', item)
 
       // Ya know, input stuff
-      this.$emit('input', this.itemByMode(item))
+      this.$emit('input', this.displayProperty(item))
       this.inputElement.value = this.displayProperty(item)
       this.text = this.displayProperty(item)
 
