@@ -10,7 +10,7 @@
         <input v-bind="$props" :value="mode === 'input' ? value : text">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!listShown && !removeList" :class="{ designed: !destyled }">
+    <div class="suggestions" v-if="showDropdown  && suggestions.length>0" :class="{ designed: !destyled }">
       <slot name="miscItem-above"
         :suggestions="suggestions"
         :query="text"
@@ -36,6 +36,12 @@
         :query="text"
       ></slot>
     </div>
+  <div class="suggestions" v-if="showDropdown && suggestions.length==0 && hasNoResultsSlot" :class="{ designed: !destyled }">
+            <slot name="no-results"
+                  :query="text"
+            ></slot>
+        </div>
+
   </div>
 </template>
 
@@ -145,6 +151,12 @@ export default {
     }
   },
   computed: {
+    showDropdown() {
+       return !!this.listShown && !this.removeList;
+    },
+    hasNoResultsSlot() {
+       return !!this.$scopedSlots['no-results'];
+    },
     slotIsComponent () {
       return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance
     },
