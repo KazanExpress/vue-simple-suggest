@@ -17,7 +17,7 @@ npm install --save vue-simple-suggest
 - [What is it?](#what-is-it)
 - [Simple example](#simple-example)
 - [Build](#build-setup)
-- [Controls <sup>[v1.2.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.2.0)</sup>](#default-controls)
+- [Controls](#default-controls)
 - [Component API](#component-api)
   - [TLDR](#tldr)
   - [API Definitions](#api-definitions)
