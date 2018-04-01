@@ -7,11 +7,11 @@
       @keyup="onListKeyUp($event), onAutocomplete($event)"
       ref="inputSlot">
       <slot>
-        <input v-bind="$props" :value="mode === 'input' ? value : text">
+        <input v-bind="$props" :value="text || ''">
       </slot>
     </div>
-    <div class="suggestions" v-if="listShown && !removeList" :class="{ designed: !destyled }">
-      <slot name="miscItem-above"
+    <div class="suggestions" v-if="!!listShown && !removeList && !miscSlotsAreEmpty()" :class="{ designed: !destyled }">
+      <slot name="misc-item-above"
         :suggestions="suggestions"
         :query="text"
       ></slot>
@@ -24,14 +24,14 @@
           selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
           hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
         }">
-        <slot name="suggestionItem"
+        <slot name="suggestion-item"
           :suggestion="suggestion"
           :query="text">
           <span>{{ displayProperty(suggestion) }}</span>
         </slot>
       </div>
 
-      <slot name="miscItem-below"
+      <slot name="misc-item-below"
         :suggestions="suggestions"
         :query="text"
       ></slot>
@@ -53,9 +53,7 @@ export default {
   name: 'vue-simple-suggest',
   model: {
     prop: 'value',
-    get event() {
-      return event;
-    }
+    get event() { return event }
   },
   props: {
     placeholder: {
@@ -113,18 +111,17 @@ export default {
       type: Number,
       default: 0
     },
-    value: {
-      type: Object.values(modes),
-      validator: (value) => value.constructor.name === modes[event].name
-    },
+    value: {},
     mode: {
       type: String,
       default: event,
-      validator: (value) => !!~Object.keys(modes).indexOf(value.toLowerCase())
+      validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
   },
   // Handle run-time mode changes:
-  watch: { mode: v => event = v },
+  watch: {
+    mode: v => event = v
+  },
   //
   data () {
     return {
@@ -149,7 +146,7 @@ export default {
       return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance
     },
     listIsRequest () {
-      return typeof this.list === 'function';
+      return typeof this.list === 'function'
     },
     input () {
       return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement
@@ -165,8 +162,8 @@ export default {
     }
   },
   created() {
-    this.controlScheme = Object.assign({}, defaultControls, this.controls);
-    event = this.mode;
+    this.controlScheme = Object.assign({}, defaultControls, this.controls)
+    event = this.mode
   },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
@@ -178,16 +175,22 @@ export default {
     this.input[this.off]('focus', this.onFocus)
   },
   methods: {
+    miscSlotsAreEmpty () {
+      const slot = name => this.$scopedSlots['misc-item-' + name]
+      const isFunction = slotName => slot(slotName) && typeof slot(slotName) === 'function'
+
+      return ['above', 'below'].some(slotName => isFunction(slotName) ? !slot(slotName)(this) : !slot(slotName))
+    },
     displayProperty (obj) {
-      return this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute);
+      return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + ''
     },
     valueProperty (obj) {
-      return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
+      return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute)
     },
     select (item) {
+      this.hovered = null
       this.selected = item
 
-      // Get current item regardless of internal structure
       this.$emit('select', item)
 
       // Ya know, input stuff
@@ -196,14 +199,10 @@ export default {
       this.text = this.displayProperty(item)
 
       this.inputElement.focus()
-      //
-
-      this.hovered = null
     },
     hover (item, elem) {
       this.hovered = item
       if (this.hovered != null) {
-        // Send current item regardless of internal structure
         this.$emit('hover', item, elem)
       }
     },
@@ -217,24 +216,22 @@ export default {
       }
     },
     showList () {
-      if (!this.listShown) {
-        this.listShown = true
-        this.$emit('show-list')
+      if (!this.listShown && this.text && this.text.length >= this.minLength) {
+        if (this.suggestions.length > 0) {
+          this.listShown = true
+          this.$emit('show-list')
+        }
       }
     },
     async onInputClick (event) {
       if (this.minLength === 0 && !this.text) {
-        await this.research();
+        await this.research()
       }
 
-      if (!this.listShown && this.suggestions.length > 0) {
-        this.showList()
-      }
+      this.showList()
     },
     onArrowKeyDown (event) {
-      if (this.suggestions.length > 0
-        && hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)
-      ) {
+      if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)) {
         event.preventDefault()
         this.showList()
 
@@ -258,14 +255,14 @@ export default {
     },
     onListKeyUp (event) {
       const select = this.controlScheme.select,
-          hideList = this.controlScheme.hideList;
+          hideList = this.controlScheme.hideList
 
       if (hasKeyCode([select, hideList], event)) {
-        event.preventDefault();
+        event.preventDefault()
         if (this.listShown) {
-          this.hideList(hasKeyCode(hideList, event));
+          this.hideList(hasKeyCode(hideList, event))
         } else if (hasKeyCode(select, event)) {
-          this.research();
+          this.research()
         }
       }
     },
@@ -273,9 +270,9 @@ export default {
       if (hasKeyCode(this.controlScheme.autocomplete, event)
         && (event.ctrlKey || event.shiftKey)
       ) {
-        event.preventDefault();
-        this.select(this.suggestions[0]);
-        this.hover(this.suggestions[0]);
+        event.preventDefault()
+        this.select(this.suggestions[0])
+        this.hover(this.suggestions[0])
       }
     },
     onBlur (e) {
@@ -284,17 +281,15 @@ export default {
     },
     onFocus (e) {
       this.$emit('focus', e)
-      if (this.suggestions.length > 0) {
-        this.showList()
-      }
+      this.showList()
     },
     onInput (inputEvent) {
       this.text = inputEvent.target.value
       this.$emit('input', this.text)
 
       if (this.selected) {
-        this.selected = null;
-        this.$emit('select', null);
+        this.selected = null
+        this.$emit('select', null)
       }
 
       if (this.debounce) {
@@ -308,20 +303,26 @@ export default {
       try {
         if (this.canSend) {
           this.canSend = false
-          var result = await this.getSuggestions(this.text)
+          this.$set(this, 'suggestions', await this.getSuggestions(this.text))
           this.canSend = true
-        } else {
-          result = this.suggestions;
         }
       }
 
       catch (e) {
-        result = [];
-        throw e;
+        this.suggestions.splice(0);
+        throw e
       }
 
       finally {
-        return result;
+        this.$nextTick(() => {
+          if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
+            this.hideList(true)
+          } else {
+            this.showList()
+          }
+        })
+
+        return this.suggestions
       }
     },
     async getSuggestions (value = '') {
@@ -342,21 +343,21 @@ export default {
         this.$emit('request-start', value)
       }
 
-      let result = [];
+      let result = []
       try {
-        result = this.listIsRequest ? (await this.list(value)) || [] : this.list;
+        result = this.listIsRequest ? (await this.list(value)) || [] : this.list
 
         // IFF the result is not an array (just in case!) - make it an array
         if (!Array.isArray(result)) { result = [result] }
 
         if (typeof result[0] === 'object' && !Array.isArray(result[0])) {
-          this.isPlainSuggestion = false;
+          this.isPlainSuggestion = false
         } else {
-          this.isPlainSuggestion = true;
+          this.isPlainSuggestion = true
         }
 
         if (this.filterByQuery) {
-          result = result.filter(this.filter);
+          result = result.filter(this.filter)
         }
 
         if (this.listIsRequest) {
@@ -368,19 +369,16 @@ export default {
         if (this.listIsRequest) {
           this.$emit('request-failed', e)
         } else {
-          throw e;
+          throw e
         }
       }
 
       finally {
         if (this.maxSuggestions) {
-          result.splice(this.maxSuggestions);
+          result.splice(this.maxSuggestions)
         }
 
-        this.$set(this, 'suggestions', result);
-        this.showList()
-
-        return this.suggestions;
+        return result;
       }
     },
     clearSuggestions () {

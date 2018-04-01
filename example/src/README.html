@@ -64,7 +64,9 @@
   <span class="hljs-tag">&lt;<span class="hljs-name">vue-suggest</span>
     <span class="hljs-attr">v-model</span>=<span class="hljs-string">"chosen"</span>
     <span class="hljs-attr">:list</span>=<span class="hljs-string">"simpleSuggestionList"</span>
-  &gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">vue-suggest</span>&gt;</span>
+    <span class="hljs-attr">:filter-by-query</span>=<span class="hljs-string">"true"</span>&gt;</span>
+<span class="hljs-comment">&lt;!-- Filter by query to only show the filtered results --&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">vue-suggest</span>&gt;</span>
 
   <span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
 
@@ -194,7 +196,7 @@ npm run docs</code></pre><hr>
   <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"optional-custom-input"</span>&gt;</span>
 
   <span class="hljs-comment">&lt;!-- Appears o top of the list --&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"miscItem-above"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions, query }"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"misc-item-above"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions, query }"</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>You're searching for {{ query }}.<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
@@ -204,10 +206,10 @@ npm run docs</code></pre><hr>
     <span class="hljs-tag">&lt;<span class="hljs-name">hr</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
 
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestionItem"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestion }"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"custom"</span>&gt;</span>{{ suggestion.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestion-item"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestion }"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"custom"</span>&gt;</span>{{ suggestion.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 
   <span class="hljs-comment">&lt;!-- Appears below the list --&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"miscItem-below"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions }"</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"loading"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"misc-item-below"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions }"</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"loading"</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>Loading...<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><hr>
@@ -291,7 +293,17 @@ npm run docs</code></pre><hr>
 </tr>
 </tbody>
 </table>
-<hr>
+<h5 id="mode"><a class="header-link" href="#mode"></a>mode</h5>
+<blockquote>
+<p>New in <a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0">v1.4.0</a></p>
+</blockquote>
+<p>Determines the event, that triggers <code>v-model</code>. Can be one of <code>&#39;input&#39;</code> (default) or <code>&#39;select&#39;</code>.</p>
+<p>For example, if <code>&#39;input&#39;</code> is chosen - then v-model will update the value each time an <a href="#emitted-events"><code>input</code></a> event is fired, setting the input&#39;s string.</p>
+<p>Same is for <code>&#39;select&#39;</code> - v-model changes only when something is selected from the list, setting the selected value (string, object or whatever) to its argument.</p>
+<p>A proper use-case for it being when one wants to use the component only for selection binding and custom input for text binding:</p>
+<pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"selected"</span> <span class="hljs-attr">mode</span>=<span class="hljs-string">"select"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"text"</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><hr>
 <h4 id="emitted-events"><a class="header-link" href="#emitted-events"></a>Emitted Events</h4>
 <table>
 <thead>
@@ -420,7 +432,7 @@ npm run docs</code></pre><hr>
 <blockquote>
 <p>accessed via <code>$refs.*your ref name here*</code></p>
 </blockquote>
-<p>You can use these to imitate come of the component&#39;s behaviours.</p>
+<p>You can use these to imitate some of the component&#39;s behaviours.</p>
 <table>
 <thead>
 <tr>
@@ -518,12 +530,12 @@ npm run docs</code></pre><hr>
 </tr>
 <tr>
 <td><code>text</code></td>
-<td><code>vueSimpleSuggest.$props.value</code></td>
+<td><code>$props.value</code></td>
 <td>Current input text.</td>
 </tr>
 <tr>
 <td><code>slotIsComponent</code></td>
-<td>-</td>
+<td><code>false</code></td>
 <td>Whether this current custom input is a vue-component.</td>
 </tr>
 <tr>
@@ -579,19 +591,19 @@ Defaults to a simple input with props passed to vue-simple-suggest.</p>
   <span class="hljs-tag">&lt;<span class="hljs-name">my-custom-input-somponent</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-custom-input-somponent</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><h5 id="custom-suggestion-item"><a class="header-link" href="#custom-suggestion-item"></a>Custom suggestion item</h5>
 <blockquote>
-<p><code>suggestionItem</code> slot</p>
+<p><code>suggestion-item</code> slot</p>
 </blockquote>
 <p>Allows custom html-definitons of the suggestion items in a list.
 Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</code></p>
 <p>Accepts the <code>suggestion</code> object and a <code>query</code> text as a <code>slot-scope</code> attribute values.</p>
 <pre class="hljs"><code><span class="hljs-comment">&lt;!-- Example: --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestionItem"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestion, query }"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestion-item"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestion, query }"</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>My {{ suggestion.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><p>In cooperation with <a href="#ref-methods">ref fields</a> can be used to drastically transform the suggestion list behaviour.</p>
 <p>One of the simplest examples - highlighting the query text in the results:</p>
-<pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestionItem"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"scope"</span>&gt;</span>
+<pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestion-item"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"scope"</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-html</span>=<span class="hljs-string">"boldenSuggestion(scope)"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre><pre class="hljs"><code>boldenSuggestion({ suggestion, query }) {
   <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">this</span>.$refs.vueSimpleSuggest.displayProperty(suggestion);
@@ -610,10 +622,10 @@ Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</c
 
   <span class="hljs-keyword">return</span> result;
 }</code></pre><p>Result:</p>
-<p class="img-container"><img src="/assets/screenshot.jpg" alt=""></p>
+<p class="img-container"><img src="assets/screenshot.jpg" alt=""></p>
 <h5 id="custom-miscellanious-item-slots"><a class="header-link" href="#custom-miscellanious-item-slots"></a>Custom miscellanious item slots</h5>
 <blockquote>
-<p><code>miscItem-above</code> and <code>miscItem-below</code> slots</p>
+<p><code>misc-item-above</code> and <code>misc-item-below</code> slots</p>
 </blockquote>
 <p>Allow custom elements to be shown in suggestion list. These elements never dissapear from the list, niether can they be selected nor hovered on.</p>
 <p>These can be used for decoration, loaders, error messages and etc.</p>
@@ -621,7 +633,7 @@ Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</c
 <p>Accept the <code>suggestions</code> array and a <code>query</code> text as a <code>slot-scope</code> attribute values.</p>
 <pre class="hljs"><code><span class="hljs-comment">&lt;!-- Examples: --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"miscItem-above"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions, query }"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"misc-item-above"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions, query }"</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>You're searching for {{ query }}.<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
@@ -630,9 +642,31 @@ Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</c
     <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
 
-  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"miscItem-below"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions }"</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"isLoading"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"misc-item-below"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions }"</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"isLoading"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>Loading...<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre>    </article>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><p>These slots can also be used to handle empty results, like this:</p>
+<pre class="hljs"><code><span class="hljs-comment">&lt;!-- Main slot template --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"misc-item-above"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestions, query }"</span>&gt;</span>
+
+  <span class="hljs-comment">&lt;!-- Sub-template if have any suggestions --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">v-if</span>=<span class="hljs-string">"suggestions.length &gt; 0"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>You're searching for '{{ query }}'.<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>{{ suggestions.length }} suggestions are shown...<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">hr</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+  <span class="hljs-comment">&lt;!-- Show "No result" otherwise, if not loading new ones --&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">template</span> <span class="hljs-attr">v-else-if</span>=<span class="hljs-string">"!loading"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>No results<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></code></pre>    </article>
   </body>
 </html>
