@@ -17,14 +17,18 @@
 <a href="https://kazanexpress.github.io/vue-simple-suggest/"><img src="https://img.shields.io/badge/demo-live-brightgreen.svg?style=flat-square" alt="live demo"></a>
 <a href="https://github.com/KazanExpress/vue-simple-suggest"><img src="https://img.shields.io/badge/github-repo-lightgray.svg?style=flat-square" alt=""></a>
 <a href="https://github.com/vuejs/awesome-vue#autocomplete"><img src="https://img.shields.io/badge/very-awesome-orange.svg?style=flat-square" alt=""></a> <a href="https://www.npmjs.com/package/vue-simple-suggest"><img src="https://img.shields.io/npm/dt/vue-simple-suggest.svg?style=flat-square" alt="npm"></a></p>
-<pre class="hljs"><code>npm install --save vue-simple-suggest</code></pre><h2 id="table-of-contents"><a class="header-link" href="#table-of-contents"></a>Table of contents</h2>
+<h2 id="install"><a class="header-link" href="#install"></a>Install</h2>
+<pre class="hljs"><code>npm install --save vue-simple-suggest</code></pre><p>See <a href="#installation">installation guide</a> for more options.</p>
+<h2 id="table-of-contents"><a class="header-link" href="#table-of-contents"></a>Table of contents</h2>
 <ul class="list">
 <li><a href="#what-is-it">What is it?</a></li>
 <li><a href="#simple-example">Simple example</a></li>
+<li><a href="#installation">Installation</a></li>
 <li><a href="#build-setup">Build</a></li>
 <li><a href="#default-controls">Controls</a></li>
 <li><a href="#component-api">Component API</a><ul class="list">
 <li><a href="#tldr">TLDR</a></li>
+<li><a href="#css-class-structure">CSS class structure</a></li>
 <li><a href="#api-definitions">API Definitions</a><ul class="list">
 <li><a href="#props">Props</a></li>
 <li><a href="#emitted-events">Emitted Events</a></li>
@@ -44,7 +48,6 @@
 </ul>
 <h2 id="what-is-it"><a class="header-link" href="#what-is-it"></a>What is it</h2>
 <p>This is a simple yet feature-rich suggestion/autocomplete component for Vue.js.</p>
-<p>It supports v-model, allows custom styling, custom input and suggestion list templates, API calls and more.</p>
 <p>Actually, it&#39;s so feature rich, that it&#39;s possible to do crazy stuff with it, like</p>
 <ul class="list">
 <li>Imitating drop-downs and drop-down menus</li>
@@ -52,8 +55,23 @@
 <li>Work with ANY type of custom input passed (like type=button, radio and etc.)</li>
 <li>... And many more things</li>
 </ul>
-<p>And, as a bonus, it is very light (&lt;4kb minified).</p>
+<p>And, as a bonus, it is very light.</p>
+<h3 id="features"><a class="header-link" href="#features"></a>Features</h3>
+<ul class="list">
+<li><code>v-model</code> support.</li>
+<li>Switching <code>v-model</code> type (select/input).</li>
+<li><a href="#custom-input">Custom input</a> element through default slot.</li>
+<li><a href="#custom-suggestion-item">Custom list items</a> through named scoped slots.</li>
+<li>All HTML5-valid props for default input element are provided (<code>type</code>, <code>tabindex</code> and etc...).</li>
+<li>Customizable <a href="#default-controls">keyboard controls</a>.</li>
+<li>Rich and simple <a href="#api-definitions">API</a>.</li>
+<li><a href="#css-class-structure">CSS classes</a> for quick and easy restyling.</li>
+<li>Many build variants to choose from.</li>
+<li>Flexible and customizable component design.</li>
+</ul>
 <p>All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.</p>
+<h3 id="new-features?"><a class="header-link" href="#new-features?"></a>New features?</h3>
+<p>If you feel that something important is missing (or found a bug) - feel free to <a href="https://github.com/KazanExpress/vue-simple-suggest/issues/new">create an issue</a>. :)</p>
 <hr>
 <h2 id="simple-example"><a class="header-link" href="#simple-example"></a>Simple example</h2>
 <p>To use the component just install via NPM:</p>
@@ -65,7 +83,7 @@
     <span class="hljs-attr">v-model</span>=<span class="hljs-string">"chosen"</span>
     <span class="hljs-attr">:list</span>=<span class="hljs-string">"simpleSuggestionList"</span>
     <span class="hljs-attr">:filter-by-query</span>=<span class="hljs-string">"true"</span>&gt;</span>
-<span class="hljs-comment">&lt;!-- Filter by query to only show the filtered results --&gt;</span>
+<span class="hljs-comment">&lt;!-- Filter by input text to only show the matching results --&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">vue-suggest</span>&gt;</span>
 
   <span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
@@ -75,6 +93,7 @@
 
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
   <span class="hljs-keyword">import</span> VueSuggest <span class="hljs-keyword">from</span> <span class="hljs-string">'vue-simple-suggest'</span>
+  <span class="hljs-keyword">import</span> <span class="hljs-string">'vue-simple-suggest/dist/styles.css'</span> <span class="hljs-comment">// Optional CSS</span>
 
   <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
     <span class="hljs-attr">components</span>: {
@@ -93,6 +112,56 @@
           <span class="hljs-string">'Angular.js'</span>
         ]
       }
+    }
+  }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre><hr>
+<h2 id="installation"><a class="header-link" href="#installation"></a>Installation</h2>
+<h3 id="npm"><a class="header-link" href="#npm"></a>NPM</h3>
+<pre class="hljs"><code>npm install --save vue-simple-suggest
+<span class="hljs-comment"># or</span>
+yarn add vue-simple-suggest</code></pre><h3 id="unpkg"><a class="header-link" href="#unpkg"></a>Unpkg</h3>
+<pre class="hljs"><code><span class="hljs-comment">&lt;!-- UMD Component, without polyfills --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/vue-simple-suggest/dist/umd.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/vue-simple-suggest@1.5.0/dist/umd.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+                                                              <span class="hljs-comment">&lt;!-- Specific version --&gt;</span>
+
+<span class="hljs-comment">&lt;!-- CSS --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/vue-simple-suggest/dist/styles.css"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+<span class="hljs-comment">&lt;!-- If you need polyfills, use IIFE verision below --&gt;</span>
+<span class="hljs-comment">&lt;!-- IIFE build includes ALL polyfills: Object.assign, Promises, Generators, Async/Await! --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/vue-simple-suggest/dist/iife.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre><h3 id="importing"><a class="header-link" href="#importing"></a>Importing</h3>
+<pre class="hljs"><code><span class="hljs-comment">/// ESNext (original code, no pollyfills, single-file .vue component, css included)</span>
+<span class="hljs-keyword">import</span> VueSimpleSuggest <span class="hljs-keyword">from</span> <span class="hljs-string">'vue-simple-suggest/lib'</span>
+<span class="hljs-comment">///</span>
+
+<span class="hljs-comment">/// ES6 (async polyfills)</span>
+<span class="hljs-keyword">import</span> VueSimpleSuggest <span class="hljs-keyword">from</span> <span class="hljs-string">'vue-simple-suggest'</span>
+<span class="hljs-comment">// or, if you have problems importing:</span>
+<span class="hljs-keyword">import</span> VueSimpleSuggest <span class="hljs-keyword">from</span> <span class="hljs-string">'vue-simple-suggest/dist/es6'</span>
+<span class="hljs-comment">///</span>
+
+<span class="hljs-comment">/// ES7 and above (no polyfills)</span>
+<span class="hljs-keyword">import</span> VueSimpleSuggest <span class="hljs-keyword">from</span> <span class="hljs-string">'vue-simple-suggest/dist/es7'</span>
+<span class="hljs-comment">///</span>
+
+<span class="hljs-comment">/// CommonJS (async and promises are polyfilled)</span>
+<span class="hljs-keyword">const</span> VueSimpleSuggest = <span class="hljs-built_in">require</span>(<span class="hljs-string">'vue-simple-suggest'</span>)
+<span class="hljs-comment">// or, if you have problems importing:</span>
+<span class="hljs-keyword">const</span> VueSimpleSuggest = <span class="hljs-built_in">require</span>(<span class="hljs-string">'vue-simple-suggest/dist/cjs'</span>)
+<span class="hljs-comment">///</span>
+
+<span class="hljs-comment">// Optional - import css separately with css loaders:</span>
+<span class="hljs-keyword">import</span> <span class="hljs-string">'vue-simple-suggest/dist/styles.css'</span></code></pre><h3 id="usage"><a class="header-link" href="#usage"></a>Usage</h3>
+<p><strong>Globaly:</strong></p>
+<pre class="hljs"><code>Vue.component(<span class="hljs-string">'vue-simple-suggest'</span>, VueSimpleSuggest)</code></pre><p><strong>In single-file .vue components:</strong></p>
+<pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+  <span class="hljs-keyword">import</span> VueSimpleSuggest <span class="hljs-keyword">from</span> <span class="hljs-string">'vue-simple-suggest'</span>
+  <span class="hljs-keyword">import</span> <span class="hljs-string">'vue-simple-suggest/dist/styles.css'</span>
+
+  <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+    <span class="hljs-attr">components</span>: {
+      VueSimpleSuggest
     }
   }
 </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></code></pre><hr>
@@ -173,6 +242,7 @@ npm run docs</code></pre><hr>
   <span class="hljs-attr">:destyled</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:remove-list</span>=<span class="hljs-string">"false"</span>
   <span class="hljs-attr">:filter-by-query</span>=<span class="hljs-string">"false"</span>
+  <span class="hljs-attr">:filter</span>=<span class="hljs-string">"customFilterFunction"</span>
   <span class="hljs-attr">:value</span>=<span class="hljs-string">"defaultValue"</span>
   <span class="hljs-attr">:controls</span>=<span class="hljs-string">"{
     selectionUp: [38, 33],
@@ -213,6 +283,13 @@ npm run docs</code></pre><hr>
     <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>Loading...<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><hr>
+<h3 id="css-class-structure"><a class="header-link" href="#css-class-structure"></a>CSS class structure</h3>
+<p>If there&#39;s a need to customize the appearance of the component, here&#39;s the internal class-structure:</p>
+<pre class="hljs"><code><span class="hljs-selector-class">.vue-simple-suggest</span>
+  <span class="hljs-selector-class">.input-wrapper</span>
+    <span class="hljs-selector-class">.default-input</span> <span class="hljs-comment">// Replaced with your custom input if default slot is provided</span>
+  <span class="hljs-selector-class">.suggestions</span><span class="hljs-selector-class">.designed</span> <span class="hljs-comment">// .designed is applied only if `destyled` prop is false</span>
+    <span class="hljs-selector-class">.suggest-item</span></code></pre><hr>
 <h3 id="api-definitions"><a class="header-link" href="#api-definitions"></a>API definitions</h3>
 <h4 id="props"><a class="header-link" href="#props"></a>Props</h4>
 <table>
@@ -278,6 +355,12 @@ npm run docs</code></pre><hr>
 <td>Boolean</td>
 <td><code>false</code></td>
 <td>Whether to filter the resulting suggestions by input&#39;s text query (make it a search component).</td>
+</tr>
+<tr>
+<td><code>filter</code></td>
+<td>Function</td>
+<td>-</td>
+<td>A custom function for filtering the suggestion results. Used only if <code>filter-by-query</code> is set <code>true</code>.</td>
 </tr>
 <tr>
 <td><code>mode</code> <sup><a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0">v1.4.0</a></sup></td>
@@ -558,14 +641,18 @@ npm run docs</code></pre><hr>
 <td><a href="#default-controls">Default Controls</a></td>
 <td>The current controls scheme.</td>
 </tr>
+<tr>
+<td><code>isPlainSuggestion</code></td>
+<td>false</td>
+<td>Whether the current suggestions list consists of plain strings (not objects).</td>
+</tr>
 </tbody>
 </table>
 <hr>
 <h3 id="slots"><a class="header-link" href="#slots"></a>Slots</h3>
-<p>all optional</p>
 <h5 id="custom-input"><a class="header-link" href="#custom-input"></a>Custom input</h5>
 <blockquote>
-<p>default slot</p>
+<p>default slot (optional)</p>
 </blockquote>
 <p>Supports nesting. Input props can be passed to a custom input to avoid their processing by vue-simple-suggest.
 Defaults to a simple input with props passed to vue-simple-suggest.</p>
@@ -591,7 +678,7 @@ Defaults to a simple input with props passed to vue-simple-suggest.</p>
   <span class="hljs-tag">&lt;<span class="hljs-name">my-custom-input-somponent</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-custom-input-somponent</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><h5 id="custom-suggestion-item"><a class="header-link" href="#custom-suggestion-item"></a>Custom suggestion item</h5>
 <blockquote>
-<p><code>suggestion-item</code> slot</p>
+<p><code>suggestion-item</code> slot (optional)</p>
 </blockquote>
 <p>Allows custom html-definitons of the suggestion items in a list.
 Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</code></p>
@@ -625,7 +712,7 @@ Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</c
 <p class="img-container"><img src="assets/screenshot.jpg" alt=""></p>
 <h5 id="custom-miscellanious-item-slots"><a class="header-link" href="#custom-miscellanious-item-slots"></a>Custom miscellanious item slots</h5>
 <blockquote>
-<p><code>misc-item-above</code> and <code>misc-item-below</code> slots</p>
+<p><code>misc-item-above</code> and <code>misc-item-below</code> slots (optional)</p>
 </blockquote>
 <p>Allow custom elements to be shown in suggestion list. These elements never dissapear from the list, niether can they be selected nor hovered on.</p>
 <p>These can be used for decoration, loaders, error messages and etc.</p>

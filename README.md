@@ -8,14 +8,19 @@
 [![](https://img.shields.io/badge/github-repo-lightgray.svg?style=flat-square)](https://github.com/KazanExpress/vue-simple-suggest)
 [![](https://img.shields.io/badge/very-awesome-orange.svg?style=flat-square)](https://github.com/vuejs/awesome-vue#autocomplete) [![npm](https://img.shields.io/npm/dt/vue-simple-suggest.svg?style=flat-square)](https://www.npmjs.com/package/vue-simple-suggest)
 
+## Install
+
 ```bash
 npm install --save vue-simple-suggest
 ```
+
+See [installation guide](#installation) for more options.
 
 ## Table of contents
 
 - [What is it?](#what-is-it)
 - [Simple example](#simple-example)
+- [Installation](#installation)
 - [Build](#build-setup)
 - [Controls](#default-controls)
 - [Component API](#component-api)
@@ -37,17 +42,32 @@ npm install --save vue-simple-suggest
 
 This is a simple yet feature-rich suggestion/autocomplete component for Vue.js.
 
-It supports v-model, allows custom styling, custom input and suggestion list templates, API calls and more.
-
 Actually, it's so feature rich, that it's possible to do crazy stuff with it, like
   - Imitating drop-downs and drop-down menus
   - Turn suggestions list into an actual suggestions table
   - Work with ANY type of custom input passed (like type=button, radio and etc.)
   - ... And many more things
 
-And, as a bonus, it is very light (<4kb minified).
+And, as a bonus, it is very light.
+
+### Features
+
+- `v-model` support.
+- Switching `v-model` type (select/input).
+- [Custom input](#custom-input) element through default slot.
+- [Custom list items](#custom-suggestion-item) through named scoped slots.
+- All HTML5-valid props for default input element are provided (`type`, `tabindex` and etc...).
+- Customizable [keyboard controls](#default-controls).
+- Rich and simple [API](#api-definitions).
+- [CSS classes](#css-class-structure) for quick and easy restyling.
+- Many build variants to choose from.
+- Flexible and customizable component design.
 
 All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.
+
+### New features?
+
+If you feel that something important is missing (or found a bug) - feel free to [create an issue](https://github.com/KazanExpress/vue-simple-suggest/issues/new). :)
 
 -----
 
@@ -66,7 +86,7 @@ Then, in your Vue.js component/page:
     v-model="chosen"
     :list="simpleSuggestionList"
     :filter-by-query="true">
-<!-- Filter by query to only show the filtered results -->
+<!-- Filter by input text to only show the matching results -->
   </vue-suggest>
 
   <br>
@@ -76,6 +96,7 @@ Then, in your Vue.js component/page:
 
 <script>
   import VueSuggest from 'vue-simple-suggest'
+  import 'vue-simple-suggest/dist/styles.css' // Optional CSS
 
   export default {
     components: {
@@ -98,7 +119,83 @@ Then, in your Vue.js component/page:
   }
 </script>
 ```
+-----
 
+## Installation
+
+### NPM
+
+```bash
+npm install --save vue-simple-suggest
+# or
+yarn add vue-simple-suggest
+```
+
+### Unpkg
+
+```html
+<!-- UMD Component, without polyfills -->
+<script type="text/javascript" src="https://unpkg.com/vue-simple-suggest/dist/umd.js"></script>
+<script type="text/javascript" src="https://unpkg.com/vue-simple-suggest@1.5.0/dist/umd.js"></script>
+                                                              <!-- Specific version -->
+
+<!-- CSS -->
+<script type="text/javascript" src="https://unpkg.com/vue-simple-suggest/dist/styles.css"></script>
+
+<!-- If you need polyfills, use IIFE verision below -->
+<!-- IIFE build includes ALL polyfills: Object.assign, Promises, Generators, Async/Await! -->
+<script type="text/javascript" src="https://unpkg.com/vue-simple-suggest/dist/iife.js"></script>
+```
+
+### Importing
+
+```js
+/// ESNext (original code, no pollyfills, single-file .vue component, css included)
+import VueSimpleSuggest from 'vue-simple-suggest/lib'
+///
+
+/// ES6 (async polyfills)
+import VueSimpleSuggest from 'vue-simple-suggest'
+// or, if you have problems importing:
+import VueSimpleSuggest from 'vue-simple-suggest/dist/es6'
+///
+
+/// ES7 and above (no polyfills)
+import VueSimpleSuggest from 'vue-simple-suggest/dist/es7'
+///
+
+/// CommonJS (async and promises are polyfilled)
+const VueSimpleSuggest = require('vue-simple-suggest')
+// or, if you have problems importing:
+const VueSimpleSuggest = require('vue-simple-suggest/dist/cjs')
+///
+
+// Optional - import css separately with css loaders:
+import 'vue-simple-suggest/dist/styles.css'
+```
+
+### Usage
+
+**Globaly:**
+
+```js
+Vue.component('vue-simple-suggest', VueSimpleSuggest)
+```
+
+**In single-file .vue components:**
+
+```html
+<script>
+  import VueSimpleSuggest from 'vue-simple-suggest'
+  import 'vue-simple-suggest/dist/styles.css'
+
+  export default {
+    components: {
+      VueSimpleSuggest
+    }
+  }
+</script>
+```
 
 -----
 
@@ -169,6 +266,7 @@ JS object:
   :destyled="false"
   :remove-list="false"
   :filter-by-query="false"
+  :filter="customFilterFunction"
   :value="defaultValue"
   :controls="{
     selectionUp: [38, 33],
@@ -241,6 +339,7 @@ If there's a need to customize the appearance of the component, here's the inter
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list. |
 | `remove-list`                   | Boolean  | `false`    | If true - the suggestion list will be always hidden. |
 | `filter-by-query`                | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component). |
+| `filter` | Function | - | A custom function for filtering the suggestion results. Used only if `filter-by-query` is set `true`. |
 | `mode` <sup>[v1.4.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)</sup>                         | String | `'input'` | The `v-model` event. Determines the event, that triggers `v-model`. Can be one of `'input'` (`v-model` binds a displayed property) or `'select'` (`v-model` binds a selected item). |
 | `type`, `value`, `pattern`, etc...   |          |            | All of the HTML5 input attributes with their respected default values. |
 
@@ -330,14 +429,14 @@ You can use these to imitate some of the component's behaviours.
 |`input`| - | A ref to the current input (component or vanilla). |
 |`hoveredIndex`| - | The current hovered element index. |
 |`controlScheme`| [Default Controls](#default-controls) | The current controls scheme. |
+|`isPlainSuggestion`| false | Whether the current suggestions list consists of plain strings (not objects). |
 
 -----
 
 ### Slots
-all optional
 
 ##### Custom input
-> default slot
+> default slot (optional)
 
 Supports nesting. Input props can be passed to a custom input to avoid their processing by vue-simple-suggest.
 Defaults to a simple input with props passed to vue-simple-suggest.
@@ -383,7 +482,7 @@ Defaults to a simple input with props passed to vue-simple-suggest.
 ```
 
 ##### Custom suggestion item
-> `suggestion-item` slot
+> `suggestion-item` slot (optional)
 
 Allows custom html-definitons of the suggestion items in a list.
 Defaults to `<span>{{ displayAttribute(suggestion) }}</span>`
@@ -433,7 +532,7 @@ Result:
 ![](assets/screenshot.jpg)
 
 ##### Custom miscellanious item slots
-> `misc-item-above` and `misc-item-below` slots
+> `misc-item-above` and `misc-item-below` slots (optional)
 
 Allow custom elements to be shown in suggestion list. These elements never dissapear from the list, niether can they be selected nor hovered on.
 

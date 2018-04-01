@@ -1,7 +1,6 @@
 .DS_Store
 thumbs.db
 node_modules/
-dist/
 npm-debug.log
 yarn-error.log
 example/src/assets/css
