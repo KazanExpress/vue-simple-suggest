@@ -309,7 +309,7 @@ export default {
       }
 
       catch (e) {
-        this.suggestions.splice(0);
+        this.clearSuggestions()
         throw e
       }
 
@@ -328,7 +328,7 @@ export default {
     async getSuggestions (value = '') {
       if (this.listShown && !value) {
         this.hideList()
-        this.suggestions.splice(0)
+        this.clearSuggestions()
         return this.suggestions
       }
 
