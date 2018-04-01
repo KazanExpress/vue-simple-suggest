@@ -7,7 +7,7 @@
       @keyup="onListKeyUp($event), onAutocomplete($event)"
       ref="inputSlot">
       <slot>
-        <input v-bind="$props" :value="text || ''">
+        <input class="default-input" v-bind="$props" :value="text || ''">
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown && !removeList && !miscSlotsAreEmpty()" :class="{ designed: !destyled }">
@@ -44,6 +44,7 @@ import {
   defaultControls,
   modes,
   fromPath,
+  inputProps,
   hasKeyCode
 } from './misc'
 
@@ -55,14 +56,7 @@ export default {
     prop: 'value',
     get event() { return event }
   },
-  props: {
-    placeholder: {
-      type: String
-    },
-    type: {
-      type: String,
-      default: 'text'
-    },
+  props: Object.assign({}, inputProps, {
     controls: {
       type: Object,
       default: () => defaultControls
@@ -117,7 +111,7 @@ export default {
       default: event,
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
-  },
+  }),
   // Handle run-time mode changes:
   watch: {
     mode: v => event = v
@@ -169,6 +163,7 @@ export default {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
     this.input[this.on]('blur', this.onBlur)
     this.input[this.on]('focus', this.onFocus)
+    console.log(this);
   },
   beforeDestroy () {
     this.input[this.off]('blur', this.onBlur)

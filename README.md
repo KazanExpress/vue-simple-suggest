@@ -20,6 +20,7 @@ npm install --save vue-simple-suggest
 - [Controls](#default-controls)
 - [Component API](#component-api)
   - [TLDR](#tldr)
+  - [CSS class structure](#css-class-structure)
   - [API Definitions](#api-definitions)
     - [Props](#props)
     - [Emitted Events](#emitted-events)
@@ -208,6 +209,20 @@ JS object:
     <span>Loading...</span>
   </div>
 </vue-simple-suggest>
+```
+
+-----
+
+### CSS class structure
+
+If there's a need to customize the appearance of the component, here's the internal class-structure:
+
+```less
+.vue-simple-suggest
+  .input-wrapper
+    .default-input // Replaced with your custom input if default slot is provided
+  .suggestions.designed // .designed is applied only if `destyled` prop is false
+    .suggest-item
 ```
 
 -----

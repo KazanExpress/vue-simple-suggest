@@ -11,7 +11,7 @@
         >select</button>
 
       </p>
-      <vue-suggest class="asdad"
+      <vue-suggest class="asdad" pattern="\w+"
         v-model="model"
         :list="getList"
         :max-count="10"
