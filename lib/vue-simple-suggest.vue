@@ -120,11 +120,7 @@ export default {
   },
   // Handle run-time mode changes:
   watch: {
-    mode(v) {
-      event = v
-      console.log(event,  event === 'input' ? this.text : this.selected)
-      this.$emit(event, event === 'input' ? this.text : this.selected)
-    }
+    mode: v => event = v
   },
   //
   data () {
