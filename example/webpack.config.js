@@ -44,7 +44,7 @@ module.exports = {
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      'vue-simple-suggest': path.resolve(__dirname, '../lib/vue-simple-suggest.vue')
+      'vue-simple-suggest': path.resolve(__dirname, '../index')
     },
     extensions: ['*', '.js', '.vue', '.json']
   },
