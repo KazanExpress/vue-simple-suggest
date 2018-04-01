@@ -97,7 +97,9 @@ export default {
     // TODO: Document this!
     filter: {
       type: Function,
-      default: el => value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true
+      default(el) {
+        return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true
+      }
     },
     //
 
