@@ -64,7 +64,9 @@ Then, in your Vue.js component/page:
   <vue-suggest
     v-model="chosen"
     :list="simpleSuggestionList"
-  ></vue-suggest>
+    :filter-by-query="true">
+<!-- Filter by query to only show the filtered results -->
+  </vue-suggest>
 
   <br>
 
@@ -115,6 +117,7 @@ npm run dev
 # build example & readme for static serving
 npm run docs
 ```
+
 -----
 ## Default Controls
 
@@ -211,6 +214,7 @@ JS object:
 ### API definitions
 
 #### Props
+
 | Name                           | Type     | Default  | Description         |
 |--------------------------------|----------|----------|--------------------------------------------------------------|
 | `controls` <sup>[v1.2.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.2.0)</sup>                    | Object   | See [default controls](#default-controls)  | Determines the keyboard shortcuts in key-codes (for browser-compatibility purposes). Arrays provide the ability to assign multiple keys to one action. Consists of 5 array fields: `selectionUp`, `selectionDown`, `select`, `hideList` and `autocomplete`, all of which are optional. |
@@ -224,6 +228,23 @@ JS object:
 | `filter-by-query`                | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component). |
 | `mode` <sup>[v1.4.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)</sup>                         | String | `'input'` | The `v-model` event. Determines the event, that triggers `v-model`. Can be one of `'input'` (`v-model` binds a displayed property) or `'select'` (`v-model` binds a selected item). |
 | `type`, `value`, `pattern`, etc...   |          |            | All of the HTML5 input attributes with their respected default values. |
+
+##### mode
+> New in [v1.4.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)
+
+Determines the event, that triggers `v-model`. Can be one of `'input'` (default) or `'select'`.
+
+For example, if `'input'` is chosen - then v-model will update the value each time an [`input`](#emitted-events) event is fired, setting the input's string.
+
+Same is for `'select'` - v-model changes only when something is selected from the list, setting the selected value (string, object or whatever) to its argument.
+
+A proper use-case for it being when one wants to use the component only for selection binding and custom input for text binding:
+
+```html
+<vue-simple-suggest v-model="selected" mode="select">
+  <input v-model="text">
+</vue-simple-suggest>
+```
 
 -----
 #### Emitted Events
@@ -262,7 +283,7 @@ JS object:
 #### Ref Event Handlers
 > accessed via `$refs.*your ref name here*`
 
-You can use these to imitate come of the component's behaviours.
+You can use these to imitate some of the component's behaviours.
 
 | Name | Arguments | Description |
 |------|-----------|-------------|
@@ -288,8 +309,8 @@ You can use these to imitate come of the component's behaviours.
 |`inputElement`| `null` | Currently used HTMLInputElement. |
 |`canSend`| `true` | Whether the assigned getListFuncion can be executed. |
 |`timeoutInstance`| `null` | The timeout until next getListFunction execution. |
-|`text`| `vueSimpleSuggest.$props.value` | Current input text. |
-|`slotIsComponent`| - | Whether this current custom input is a vue-component. |
+|`text`| `$props.value` | Current input text. |
+|`slotIsComponent`| `false` | Whether this current custom input is a vue-component. |
 |`listIsRequest`| - | Whether the list prop is a function. |
 |`input`| - | A ref to the current input (component or vanilla). |
 |`hoveredIndex`| - | The current hovered element index. |
@@ -394,7 +415,7 @@ boldenSuggestion({ suggestion, query }) {
 ```
 Result:
 
-![](/assets/screenshot.jpg)
+![](assets/screenshot.jpg)
 
 ##### Custom miscellanious item slots
 > `misc-item-above` and `misc-item-below` slots
@@ -423,4 +444,31 @@ Accept the `suggestions` array and a `query` text as a `slot-scope` attribute va
     <span>Loading...</span>
   </div>
 </vue-simple-suggest>
+```
+
+These slots can also be used to handle empty results, like this:
+
+```html
+<!-- Main slot template -->
+<template slot="misc-item-above" slot-scope="{ suggestions, query }">
+
+  <!-- Sub-template if have any suggestions -->
+  <template v-if="suggestions.length > 0">
+    <div class="misc-item">
+      <span>You're searching for '{{ query }}'.</span>
+    </div>
+    <div class="misc-item">
+      <span>{{ suggestions.length }} suggestions are shown...</span>
+    </div>
+    <hr>
+  </template>
+
+  <!-- Show "No result" otherwise, if not loading new ones -->
+  <template v-else-if="!loading">
+    <div class="misc-item">
+      <span>No results</span>
+    </div>
+  </template>
+
+</template>
 ```
