@@ -251,6 +251,7 @@ JS object:
 ## Component API
 
 ### TLDR
+<details><summary>Click to expand</summary>
 
 ```html
 <!-- Ref to access the API, v-model for efficient query binding -->
@@ -308,6 +309,8 @@ JS object:
   </div>
 </vue-simple-suggest>
 ```
+
+</details>
 
 -----
 
