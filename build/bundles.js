@@ -16,7 +16,7 @@ module.exports = exports = {
     }
   },
   iife: {
-    // compress: true,
+    compress: true,
     polyfills: {
       arrows: true,
       assign: true,
@@ -26,7 +26,7 @@ module.exports = exports = {
     autoDefine: true
   },
   umd: {
-    // compress: true,
+    compress: true,
     polyfills: {
       async: true,
       arrows: true
