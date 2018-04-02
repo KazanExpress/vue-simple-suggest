@@ -67,7 +67,7 @@ function hasKeyCode(arr, event) {
   }
 }
 
-function _finally(value, finalizer) {
+function _finally(body, finalizer) {
   try {
     var result = body();
   } catch (e) {

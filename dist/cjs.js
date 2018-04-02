@@ -83,7 +83,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
-function _finally(value, finalizer) {
+function _finally(body, finalizer) {
   try {
     var result = body();
   } catch (e) {

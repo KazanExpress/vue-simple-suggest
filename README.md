@@ -134,7 +134,7 @@ yarn add vue-simple-suggest
 ### Unpkg
 
 ```html
-<!-- UMD Component, without polyfills -->
+<!-- UMD Component, async/await polyfills through promises -->
 <script type="text/javascript" src="https://unpkg.com/vue-simple-suggest/dist/umd.js"></script>
 <script type="text/javascript" src="https://unpkg.com/vue-simple-suggest@1.5.1/dist/umd.js"></script>
                                                               <!-- Specific version -->
@@ -164,7 +164,7 @@ import VueSimpleSuggest from 'vue-simple-suggest/dist/es6'
 import VueSimpleSuggest from 'vue-simple-suggest/dist/es7'
 ///
 
-/// CommonJS (async and promises are polyfilled)
+/// CommonJS (async, Object.assign and promises are polyfilled)
 const VueSimpleSuggest = require('vue-simple-suggest')
 // or, if you have problems importing:
 const VueSimpleSuggest = require('vue-simple-suggest/dist/cjs')

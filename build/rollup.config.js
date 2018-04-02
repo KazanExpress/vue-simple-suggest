@@ -33,8 +33,8 @@ module.exports = exports = function(
     css({ output: 'dist/styles.css' }),
     babel({
       exclude: 'node_modules/**',
-      runtimeHelpers: true,
-      presets: polyfills.arrows ? ['stage-0', 'es2015-rollup'] : [],
+      runtimeHelpers: false,
+      presets: polyfills.arrows ? ['stage-3', 'es2015-rollup'] : [],
       plugins: babelPlugins
     }),
     nodeResolve({ browser: true, jsnext: true, main: true }),

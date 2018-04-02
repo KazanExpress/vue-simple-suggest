@@ -55,13 +55,13 @@
   }
 </span><span class=hljs-tag>&lt;/<span class=hljs-name>script</span>&gt;</span></code></pre><hr> <h2 id=installation><a class=header-link href=#installation></a>Installation</h2> <h3 id=npm><a class=header-link href=#npm></a>NPM</h3> <pre class=hljs><code>npm install --save vue-simple-suggest
 <span class=hljs-comment># or</span>
-yarn add vue-simple-suggest</code></pre><h3 id=unpkg><a class=header-link href=#unpkg></a>Unpkg</h3> <pre class=hljs><code><span class=hljs-comment>&lt;!-- UMD Component, without polyfills --&gt;</span>
+yarn add vue-simple-suggest</code></pre><h3 id=unpkg><a class=header-link href=#unpkg></a>Unpkg</h3> <pre class=hljs><code><span class=hljs-comment>&lt;!-- UMD Component, async/await polyfills through promises --&gt;</span>
 <span class=hljs-tag>&lt;<span class=hljs-name>script</span> <span class=hljs-attr>type</span>=<span class=hljs-string>"text/javascript"</span> <span class=hljs-attr>src</span>=<span class=hljs-string>"https://unpkg.com/vue-simple-suggest/dist/umd.js"</span>&gt;</span><span class="undefined"></span><span class=hljs-tag>&lt;/<span class=hljs-name>script</span>&gt;</span>
 <span class=hljs-tag>&lt;<span class=hljs-name>script</span> <span class=hljs-attr>type</span>=<span class=hljs-string>"text/javascript"</span> <span class=hljs-attr>src</span>=<span class=hljs-string>"https://unpkg.com/vue-simple-suggest@1.5.1/dist/umd.js"</span>&gt;</span><span class="undefined"></span><span class=hljs-tag>&lt;/<span class=hljs-name>script</span>&gt;</span>
                                                               <span class=hljs-comment>&lt;!-- Specific version --&gt;</span>
 
 <span class=hljs-comment>&lt;!-- CSS --&gt;</span>
-<span class=hljs-tag>&lt;<span class=hljs-name>script</span> <span class=hljs-attr>type</span>=<span class=hljs-string>"text/javascript"</span> <span class=hljs-attr>src</span>=<span class=hljs-string>"https://unpkg.com/vue-simple-suggest/dist/styles.css"</span>&gt;</span><span class="undefined"></span><span class=hljs-tag>&lt;/<span class=hljs-name>script</span>&gt;</span>
+<span class=hljs-tag>&lt;<span class=hljs-name>link</span> <span class=hljs-attr>rel</span>=<span class=hljs-string>"stylesheet"</span> <span class=hljs-attr>href</span>=<span class=hljs-string>"https://unpkg.com/vue-simple-suggest/dist/styles.css"</span>&gt;</span>
 
 <span class=hljs-comment>&lt;!-- If you need polyfills, use IIFE verision below --&gt;</span>
 <span class=hljs-comment>&lt;!-- IIFE build includes ALL polyfills: Object.assign, Promises, Generators, Async/Await! --&gt;</span>
@@ -79,7 +79,7 @@ yarn add vue-simple-suggest</code></pre><h3 id=unpkg><a class=header-link href=#
 <span class=hljs-keyword>import</span> VueSimpleSuggest <span class=hljs-keyword>from</span> <span class=hljs-string>'vue-simple-suggest/dist/es7'</span>
 <span class=hljs-comment>///</span>
 
-<span class=hljs-comment>/// CommonJS (async and promises are polyfilled)</span>
+<span class=hljs-comment>/// CommonJS (async, Object.assign and promises are polyfilled)</span>
 <span class=hljs-keyword>const</span> VueSimpleSuggest = <span class=hljs-built_in>require</span>(<span class=hljs-string>'vue-simple-suggest'</span>)
 <span class=hljs-comment>// or, if you have problems importing:</span>
 <span class=hljs-keyword>const</span> VueSimpleSuggest = <span class=hljs-built_in>require</span>(<span class=hljs-string>'vue-simple-suggest/dist/cjs'</span>)
