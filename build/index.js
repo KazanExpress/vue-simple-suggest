@@ -9,7 +9,7 @@ const roll = (format, name, conf) => {
   ).then(bundle => bundle
     .write({
       format,
-      name: 'vueSimpleSuggest',
+      name: 'VueSimpleSuggest',
       file: 'dist/' + name + '.js'
     })
   );
