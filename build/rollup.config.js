@@ -4,6 +4,7 @@ const babel = require('rollup-plugin-babel');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
 const uglify = require('rollup-plugin-uglify');
+const regenerator = require('rollup-plugin-regenerator');
 
 module.exports = exports = function(
   compress = false,
@@ -41,6 +42,10 @@ module.exports = exports = function(
 
   if (compress) {
     plugins.push(uglify());
+  }
+
+  if (polyfills.async) {
+    plugins.push(regenerator({ includeRuntime: true }))
   }
 
   return {

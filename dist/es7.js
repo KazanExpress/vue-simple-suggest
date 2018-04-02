@@ -129,15 +129,12 @@ var VueSimpleSuggest = {
       type: Boolean,
       default: false
     },
-
-    // TODO: Document this!
     filter: {
       type: Function,
       default(el) {
         return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true;
       }
     },
-    //
 
     debounce: {
       type: Number,
@@ -165,11 +162,7 @@ var VueSimpleSuggest = {
       canSend: true,
       timeoutInstance: null,
       text: this.value,
-
-      // TODO: Document this!
       isPlainSuggestion: false,
-      //
-
       controlScheme: {}
     };
   },
@@ -201,7 +194,6 @@ var VueSimpleSuggest = {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
     this.input[this.on]('blur', this.onBlur);
     this.input[this.on]('focus', this.onFocus);
-    console.log(this);
   },
   beforeDestroy() {
     this.input[this.off]('blur', this.onBlur);
