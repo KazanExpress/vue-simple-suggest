@@ -331,6 +331,7 @@ var VueSimpleSuggest = {
         }
       } catch (e) {
         this.clearSuggestions();
+        console.error(e);
         throw e;
       } finally {
         this.$nextTick(() => {

@@ -400,6 +400,7 @@ var VueSimpleSuggest = {
           });
         }, function (e) {
           _this2.clearSuggestions();
+          console.error(e);
           throw e;
         });
       }, function () {

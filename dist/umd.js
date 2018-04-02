@@ -449,7 +449,7 @@
                   this.canSend = true;
 
                 case 10:
-                  _context2.next = 16;
+                  _context2.next = 17;
                   break;
 
                 case 12:
@@ -457,10 +457,11 @@
                   _context2.t3 = _context2['catch'](0);
 
                   this.clearSuggestions();
+                  console.error(_context2.t3);
                   throw _context2.t3;
 
-                case 16:
-                  _context2.prev = 16;
+                case 17:
+                  _context2.prev = 17;
 
                   this.$nextTick(function () {
                     if (_this3.suggestions.length === 0 && _this3.miscSlotsAreEmpty()) {
@@ -472,12 +473,12 @@
 
                   return _context2.abrupt('return', this.suggestions);
 
-                case 20:
+                case 21:
                 case 'end':
                   return _context2.stop();
               }
             }
-          }, _callee2, this, [[0, 12, 16, 20]]);
+          }, _callee2, this, [[0, 12, 17, 21]]);
         }));
 
         function research() {

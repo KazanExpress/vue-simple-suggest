@@ -439,6 +439,7 @@ var VueSimpleSuggest = {
           });
         }, function (e) {
           _this4.clearSuggestions();
+          console.error(e);
           throw e;
         });
       }, function () {

@@ -299,6 +299,7 @@ export default {
 
       catch (e) {
         this.clearSuggestions()
+        console.error(e)
         throw e
       }
 
