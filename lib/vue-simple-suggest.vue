@@ -7,10 +7,10 @@
       @keyup="onListKeyUp($event), onAutocomplete($event)"
       ref="inputSlot">
       <slot>
-        <input v-bind="$props" :value="text || ''">
+        <input class="default-input" v-bind="$props" :value="text || ''">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!listShown && !removeList && !miscSlotsAreEmpty()" :class="{ designed: !destyled }">
+    <div class="suggestions" v-if="!!listShown && !removeList" :class="{ designed: !destyled }">
       <slot name="misc-item-above"
         :suggestions="suggestions"
         :query="text"
@@ -44,6 +44,7 @@ import {
   defaultControls,
   modes,
   fromPath,
+  inputProps,
   hasKeyCode
 } from './misc'
 
@@ -55,14 +56,7 @@ export default {
     prop: 'value',
     get event() { return event }
   },
-  props: {
-    placeholder: {
-      type: String
-    },
-    type: {
-      type: String,
-      default: 'text'
-    },
+  props: Object.assign({}, inputProps, {
     controls: {
       type: Object,
       default: () => defaultControls
@@ -99,13 +93,12 @@ export default {
       type: Boolean,
       default: false
     },
-
-    // TODO: Document this!
     filter: {
       type: Function,
-      default: el => value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true
+      default(el, value) {
+        return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true
+      }
     },
-    //
 
     debounce: {
       type: Number,
@@ -117,7 +110,7 @@ export default {
       default: event,
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
-  },
+  }),
   // Handle run-time mode changes:
   watch: {
     mode: v => event = v
@@ -133,11 +126,7 @@ export default {
       canSend: true,
       timeoutInstance: null,
       text: this.value,
-
-      // TODO: Document this!
       isPlainSuggestion: false,
-      //
-
       controlScheme: {}
     }
   },
@@ -268,7 +257,7 @@ export default {
     },
     onAutocomplete (event) {
       if (hasKeyCode(this.controlScheme.autocomplete, event)
-        && (event.ctrlKey || event.shiftKey)
+        && (event.ctrlKey || event.shiftKey) && (this.suggestions.length > 0 && this.suggestions[0])
       ) {
         event.preventDefault()
         this.select(this.suggestions[0])
@@ -309,7 +298,8 @@ export default {
       }
 
       catch (e) {
-        this.suggestions.splice(0);
+        this.clearSuggestions()
+        console.error(e)
         throw e
       }
 
@@ -327,8 +317,8 @@ export default {
     },
     async getSuggestions (value = '') {
       if (this.listShown && !value) {
-        this.hideList()
-        this.suggestions.splice(0)
+        this.hideList(true)
+        this.clearSuggestions()
         return this.suggestions
       }
 
@@ -357,7 +347,7 @@ export default {
         }
 
         if (this.filterByQuery) {
-          result = result.filter(this.filter)
+          result = result.filter((el) => this.filter(el, value))
         }
 
         if (this.listIsRequest) {

@@ -11,7 +11,7 @@
         >select</button>
 
       </p>
-      <vue-suggest class="asdad"
+      <vue-suggest class="asdad" pattern="\w+"
         v-model="model"
         :list="getList"
         :max-count="10"
@@ -85,7 +85,8 @@
 </template>
 
 <script>
-  import VueSuggest from 'vue-simple-suggest'
+  import VueSuggest from 'vue-simple-suggest/lib'
+
   import TestInput from './TestInput'
 
   export default {
@@ -200,7 +201,7 @@
     color: #2c3e50;
     margin: 60px auto 0;
     width: 800px;
-    height: 796px;
+    height: 792px;
     display: flex;
   }
 
@@ -242,10 +243,11 @@
 
   #app pre.selected {
     margin: 8px 0;
-    width: 506px;
     height: 295px;
     overflow-x: scroll;
     overflow-y: scroll;
+    border: 1px solid #cde;
+    border-radius: 4px;
   }
 
   #app .v-model-event {
