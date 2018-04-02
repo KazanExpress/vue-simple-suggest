@@ -608,7 +608,7 @@ var VueSimpleSuggest = {
       const slot = name => this.$scopedSlots['misc-item-' + name];
       const isFunction = slotName => slot(slotName) && typeof slot(slotName) === 'function';
 
-      return ['above', 'below'].some(slotName => isFunction(slotName) ? !slot(slotName)(this) : !slot(slotName));
+      return this.suggestions.length === 0 && ['above', 'below'].some(slotName => isFunction(slotName) ? !slot(slotName)(this) : !slot(slotName));
     },
     displayProperty(obj) {
       return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + '';

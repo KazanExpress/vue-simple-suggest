@@ -2775,7 +2775,7 @@ var VueSimpleSuggest = {
         return slot(slotName) && typeof slot(slotName) === 'function';
       };
 
-      return ['above', 'below'].some(function (slotName) {
+      return this.suggestions.length === 0 && ['above', 'below'].some(function (slotName) {
         return isFunction(slotName) ? !slot(slotName)(_this2) : !slot(slotName);
       });
     },
