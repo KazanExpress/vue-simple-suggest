@@ -419,7 +419,7 @@ var VueSimpleSuggest = {
       var _this3 = this;
 
       if (_this3.listShown && !value) {
-        _this3.hideList();
+        _this3.hideList(true);
         _this3.clearSuggestions();
         return _this3.suggestions;
       }

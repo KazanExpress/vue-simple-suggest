@@ -347,7 +347,7 @@ var VueSimpleSuggest = {
     },
     async getSuggestions(value = '') {
       if (this.listShown && !value) {
-        this.hideList();
+        this.hideList(true);
         this.clearSuggestions();
         return this.suggestions;
       }

@@ -460,7 +460,7 @@ var VueSimpleSuggest = {
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
       if (_this5.listShown && !value) {
-        _this5.hideList();
+        _this5.hideList(true);
         _this5.clearSuggestions();
         return _this5.suggestions;
       }
