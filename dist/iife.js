@@ -102,6 +102,7 @@ var VueSimpleSuggest = (function () {
     try {
       var result = body();
     } catch (e) {
+      console.error(e);
       return finalizer();
     }if (result && result.then) {
       return result.then(finalizer, finalizer);
