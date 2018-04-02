@@ -1,1 +1,624 @@
-!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):t.VueSimpleSuggest=e()}(this,function(){"use strict";var t={selectionUp:[38],selectionDown:[40],select:[13],hideList:[27],autocomplete:[32,13]},e={input:String,select:Object},s={type:String},n={type:s,accesskey:s,autocomplete:s,form:s,formaction:s,formenctype:s,formmethod:s,formtarget:s,height:s,width:s,inputmode:s,max:s,min:s,minlength:s,maxlength:s,name:s,pattern:s,placeholder:s,selectionDirection:s,selectionEnd:s,selectionStart:s,size:s,src:s,step:s,tabindex:s,title:s,spellcheck:{},readonly:{},required:{},multiple:{},formnovalidate:{},autofocus:{},checked:{},disabled:{}};function i(t,e){return e.split(".").reduce(function(t,e){return t===Object(t)?t[e]:t},t)}function o(t,e){if(t.length<=0)return!1;var s=function(t){return t.some(function(t){return t===e.keyCode})};return Array.isArray(t[0])?t.some(function(t){return s(t)}):s(t)}var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"==typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},u=function(t){return function(){var e=t.apply(this,arguments);return new Promise(function(t,s){return function n(i,o){try{var r=e[i](o),u=r.value}catch(t){return void s(t)}if(!r.done)return Promise.resolve(u).then(function(t){n("next",t)},function(t){n("throw",t)});t(u)}("next")})}},h="input";return{render:function(){var t=this,e=t.$createElement,s=t._self._c||e;return s("div",{staticClass:"vue-simple-suggest"},[s("div",{ref:"inputSlot",staticClass:"input-wrapper",class:{designed:!t.destyled},on:{click:t.onInputClick,input:t.onInput,keydown:t.onArrowKeyDown,keyup:function(e){t.onListKeyUp(e),t.onAutocomplete(e)}}},[t._t("default",[s("input",t._b({staticClass:"default-input",domProps:{value:t.text||""}},"input",t.$props,!1))])],2),t._v(" "),t.listShown&&!t.removeList?s("div",{staticClass:"suggestions",class:{designed:!t.destyled}},[t._t("misc-item-above",null,{suggestions:t.suggestions,query:t.text}),t._v(" "),t._l(t.suggestions,function(e,n){return s("div",{key:t.isPlainSuggestion?"suggestion-"+n:t.valueProperty(e),staticClass:"suggest-item",class:{selected:t.selected&&t.valueProperty(e)==t.valueProperty(t.selected),hover:t.hovered&&t.valueProperty(t.hovered)==t.valueProperty(e)},on:{mouseenter:function(s){t.hover(e,s.target)},mouseleave:function(e){t.hover(null,e.target)}}},[t._t("suggestion-item",[s("span",[t._v(t._s(t.displayProperty(e)))])],{suggestion:e,query:t.text})],2)}),t._v(" "),t._t("misc-item-below",null,{suggestions:t.suggestions,query:t.text})],2):t._e()])},staticRenderFns:[],name:"vue-simple-suggest",model:{prop:"value",get event(){return h}},props:Object.assign({},n,{controls:{type:Object,default:function(){return t}},minLength:{type:Number,default:1},maxSuggestions:{type:Number,default:10},displayAttribute:{type:String,default:"title"},valueAttribute:{type:String,default:"id"},list:{type:[Function,Array],default:function(){return[]}},removeList:{type:Boolean,default:!1},destyled:{type:Boolean,default:!1},filterByQuery:{type:Boolean,default:!1},filter:{type:Function,default:function(t){return!value||~this.displayProperty(t).toLowerCase().indexOf(value.toLowerCase())}},debounce:{type:Number,default:0},value:{},mode:{type:String,default:h,validator:function(t){return!!~Object.keys(e).indexOf(t.toLowerCase())}}}),watch:{mode:function(t){return h=t}},data:function(){return{selected:null,hovered:null,suggestions:[],listShown:!1,inputElement:null,canSend:!0,timeoutInstance:null,text:this.value,isPlainSuggestion:!1,controlScheme:{}}},computed:{slotIsComponent:function(){return this.$slots.default&&this.$slots.default.length>0&&!!this.$slots.default[0].componentInstance},listIsRequest:function(){return"function"==typeof this.list},input:function(){return this.slotIsComponent?this.$slots.default[0].componentInstance:this.inputElement},on:function(){return this.slotIsComponent?"$on":"addEventListener"},off:function(){return this.slotIsComponent?"$off":"removeEventListener"},hoveredIndex:function(){var t=this;return this.suggestions.findIndex(function(e){return t.hovered&&t.valueProperty(t.hovered)==t.valueProperty(e)})}},created:function(){this.controlScheme=Object.assign({},t,this.controls),h=this.mode},mounted:function(){this.inputElement=this.$refs.inputSlot.querySelector("input"),this.input[this.on]("blur",this.onBlur),this.input[this.on]("focus",this.onFocus)},beforeDestroy:function(){this.input[this.off]("blur",this.onBlur),this.input[this.off]("focus",this.onFocus)},methods:{miscSlotsAreEmpty:function(){var t=this,e=function(e){return t.$scopedSlots["misc-item-"+e]};return["above","below"].some(function(s){return function(t){return e(t)&&"function"==typeof e(t)}(s)?!e(s)(t):!e(s)})},displayProperty:function(t){return(this.isPlainSuggestion?t:i(t,this.displayAttribute))+""},valueProperty:function(t){return this.isPlainSuggestion?t:i(t,this.valueAttribute)},select:function(t){this.hovered=null,this.selected=t,this.$emit("select",t),this.$emit("input",this.displayProperty(t)),this.inputElement.value=this.displayProperty(t),this.text=this.displayProperty(t),this.inputElement.focus()},hover:function(t,e){this.hovered=t,null!=this.hovered&&this.$emit("hover",t,e)},hideList:function(){var t=arguments.length>0&&void 0!==arguments[0]&&arguments[0];this.listShown&&(this.hovered&&!t&&this.select(this.hovered),this.listShown=!1,this.$emit("hide-list"))},showList:function(){!this.listShown&&this.text&&this.text.length>=this.minLength&&this.suggestions.length>0&&(this.listShown=!0,this.$emit("show-list"))},onInputClick:function(){var t=u(regeneratorRuntime.mark(function t(e){return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:if(0!==this.minLength||this.text){t.next=3;break}return t.next=3,this.research();case 3:this.showList();case 4:case"end":return t.stop()}},t,this)}));return function(e){return t.apply(this,arguments)}}(),onArrowKeyDown:function(t){if(o([this.controlScheme.selectionUp,this.controlScheme.selectionDown],t)){t.preventDefault(),this.showList();var e=o(this.controlScheme.selectionDown,t),s=2*e-1,n=e?0:this.suggestions.length-1,i=e?this.hoveredIndex<this.suggestions.length-1:this.hoveredIndex>0,r=null;r=this.hovered?i?this.suggestions[this.hoveredIndex+s]:this.suggestions[n]:this.selected||this.suggestions[n],this.hover(r)}},onListKeyUp:function(t){var e=this.controlScheme.select,s=this.controlScheme.hideList;o([e,s],t)&&(t.preventDefault(),this.listShown?this.hideList(o(s,t)):o(e,t)&&this.research())},onAutocomplete:function(t){o(this.controlScheme.autocomplete,t)&&(t.ctrlKey||t.shiftKey)&&this.suggestions.length>0&&this.suggestions[0]&&(t.preventDefault(),this.select(this.suggestions[0]),this.hover(this.suggestions[0]))},onBlur:function(t){this.hideList(),this.$emit("blur",t)},onFocus:function(t){this.$emit("focus",t),this.showList()},onInput:function(t){this.text=t.target.value,this.$emit("input",this.text),this.selected&&(this.selected=null,this.$emit("select",null)),this.debounce?(clearTimeout(this.timeoutInstance),this.timeoutInstance=setTimeout(this.research,this.debounce)):this.research()},research:function(){var t=u(regeneratorRuntime.mark(function t(){var e=this;return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:if(t.prev=0,!this.canSend){t.next=10;break}return this.canSend=!1,t.t0=this,t.t1=this,t.next=7,this.getSuggestions(this.text);case 7:t.t2=t.sent,t.t0.$set.call(t.t0,t.t1,"suggestions",t.t2),this.canSend=!0;case 10:t.next=16;break;case 12:throw t.prev=12,t.t3=t.catch(0),this.clearSuggestions(),t.t3;case 16:return t.prev=16,this.$nextTick(function(){0===e.suggestions.length&&e.miscSlotsAreEmpty()?e.hideList(!0):e.showList()}),t.abrupt("return",this.suggestions);case 20:case"end":return t.stop()}},t,this,[[0,12,16,20]])}));return function(){return t.apply(this,arguments)}}(),getSuggestions:function(){var t=u(regeneratorRuntime.mark(function t(){var e,s=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"";return regeneratorRuntime.wrap(function(t){for(;;)switch(t.prev=t.next){case 0:if(!this.listShown||s){t.next=4;break}return this.hideList(),this.clearSuggestions(),t.abrupt("return",this.suggestions);case 4:if(!(this.minLength>0&&s.length<this.minLength)){t.next=6;break}return t.abrupt("return",this.suggestions);case 6:if(this.selected=null,this.listIsRequest&&this.$emit("request-start",s),e=[],t.prev=9,!this.listIsRequest){t.next=19;break}return t.next=13,this.list(s);case 13:if(t.t1=t.sent,t.t1){t.next=16;break}t.t1=[];case 16:t.t0=t.t1,t.next=20;break;case 19:t.t0=this.list;case 20:e=t.t0,Array.isArray(e)||(e=[e]),"object"!==r(e[0])||Array.isArray(e[0])?this.isPlainSuggestion=!0:this.isPlainSuggestion=!1,this.filterByQuery&&(e=e.filter(this.filter)),this.listIsRequest&&this.$emit("request-done",e),t.next=34;break;case 27:if(t.prev=27,t.t2=t.catch(9),!this.listIsRequest){t.next=33;break}this.$emit("request-failed",t.t2),t.next=34;break;case 33:throw t.t2;case 34:return t.prev=34,this.maxSuggestions&&e.splice(this.maxSuggestions),t.abrupt("return",e);case 38:case"end":return t.stop()}},t,this,[[9,27,34,38]])}));return function(){return t.apply(this,arguments)}}(),clearSuggestions:function(){this.suggestions.splice(0)}}}});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.VueSimpleSuggest = factory());
+}(this, (function () { 'use strict';
+
+  var defaultControls = {
+    selectionUp: [38],
+    selectionDown: [40],
+    select: [13],
+    hideList: [27],
+    autocomplete: [32, 13]
+  };
+
+  var modes = {
+    input: String,
+    select: Object
+  };
+
+  var inputProp = {
+    type: String
+  };
+
+  var inputProps = {
+    type: inputProp,
+    accesskey: inputProp,
+    autocomplete: inputProp,
+    form: inputProp,
+    formaction: inputProp,
+    formenctype: inputProp,
+    formmethod: inputProp,
+    formtarget: inputProp,
+    height: inputProp,
+    width: inputProp,
+    inputmode: inputProp,
+    max: inputProp,
+    min: inputProp,
+    minlength: inputProp,
+    maxlength: inputProp,
+    name: inputProp,
+    pattern: inputProp,
+    placeholder: inputProp,
+    selectionDirection: inputProp,
+    selectionEnd: inputProp,
+    selectionStart: inputProp,
+    size: inputProp,
+    src: inputProp,
+    step: inputProp,
+    tabindex: inputProp,
+    title: inputProp,
+    spellcheck: {},
+    readonly: {},
+    required: {},
+    multiple: {},
+    formnovalidate: {},
+    autofocus: {},
+    checked: {},
+    disabled: {}
+  };
+
+  function fromPath(obj, path) {
+    return path.split('.').reduce(function (o, i) {
+      return o === Object(o) ? o[i] : o;
+    }, obj);
+  }
+
+  function hasKeyCode(arr, event) {
+    if (arr.length <= 0) return false;
+
+    var has = function has(arr) {
+      return arr.some(function (code) {
+        return code === event.keyCode;
+      });
+    };
+    if (Array.isArray(arr[0])) {
+      return arr.some(function (array) {
+        return has(array);
+      });
+    } else {
+      return has(arr);
+    }
+  }
+
+  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  };
+
+  var asyncToGenerator = function (fn) {
+    return function () {
+      var gen = fn.apply(this, arguments);
+      return new Promise(function (resolve, reject) {
+        function step(key, arg) {
+          try {
+            var info = gen[key](arg);
+            var value = info.value;
+          } catch (error) {
+            reject(error);
+            return;
+          }
+
+          if (info.done) {
+            resolve(value);
+          } else {
+            return Promise.resolve(value).then(function (value) {
+              step("next", value);
+            }, function (err) {
+              step("throw", err);
+            });
+          }
+        }
+
+        return step("next");
+      });
+    };
+  };
+
+  var event = 'input';
+
+  var VueSimpleSuggest = {
+    render: function render() {
+      var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest" }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: { designed: !_vm.destyled }, on: { "click": _vm.onInputClick, "input": _vm.onInput, "keydown": _vm.onArrowKeyDown, "keyup": function keyup($event) {
+            _vm.onListKeyUp($event), _vm.onAutocomplete($event);
+          } } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", class: { designed: !_vm.destyled } }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+        return _c('div', { key: _vm.isPlainSuggestion ? 'suggestion-' + index : _vm.valueProperty(suggestion), staticClass: "suggest-item", class: {
+            selected: _vm.selected && _vm.valueProperty(suggestion) == _vm.valueProperty(_vm.selected),
+            hover: _vm.hovered && _vm.valueProperty(_vm.hovered) == _vm.valueProperty(suggestion)
+          }, on: { "mouseenter": function mouseenter($event) {
+              _vm.hover(suggestion, $event.target);
+            }, "mouseleave": function mouseleave($event) {
+              _vm.hover(null, $event.target);
+            } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { suggestion: suggestion, query: _vm.text })], 2);
+      }), _vm._v(" "), _vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()]);
+    },
+    staticRenderFns: [],
+    name: 'vue-simple-suggest',
+    model: {
+      prop: 'value',
+      get event() {
+        return event;
+      }
+    },
+    props: Object.assign({}, inputProps, {
+      controls: {
+        type: Object,
+        default: function _default() {
+          return defaultControls;
+        }
+      },
+      minLength: {
+        type: Number,
+        default: 1
+      },
+      maxSuggestions: {
+        type: Number,
+        default: 10
+      },
+      displayAttribute: {
+        type: String,
+        default: 'title'
+      },
+      valueAttribute: {
+        type: String,
+        default: 'id'
+      },
+      list: {
+        type: [Function, Array],
+        default: function _default() {
+          return [];
+        }
+      },
+      removeList: {
+        type: Boolean,
+        default: false
+      },
+      destyled: {
+        type: Boolean,
+        default: false
+      },
+      filterByQuery: {
+        type: Boolean,
+        default: false
+      },
+      filter: {
+        type: Function,
+        default: function _default(el) {
+          return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true;
+        }
+      },
+
+      debounce: {
+        type: Number,
+        default: 0
+      },
+      value: {},
+      mode: {
+        type: String,
+        default: event,
+        validator: function validator(value) {
+          return !!~Object.keys(modes).indexOf(value.toLowerCase());
+        }
+      }
+    }),
+    // Handle run-time mode changes:
+    watch: {
+      mode: function mode(v) {
+        return event = v;
+      }
+    },
+    //
+    data: function data() {
+      return {
+        selected: null,
+        hovered: null,
+        suggestions: [],
+        listShown: false,
+        inputElement: null,
+        canSend: true,
+        timeoutInstance: null,
+        text: this.value,
+        isPlainSuggestion: false,
+        controlScheme: {}
+      };
+    },
+
+    computed: {
+      slotIsComponent: function slotIsComponent() {
+        return this.$slots.default && this.$slots.default.length > 0 && !!this.$slots.default[0].componentInstance;
+      },
+      listIsRequest: function listIsRequest() {
+        return typeof this.list === 'function';
+      },
+      input: function input() {
+        return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement;
+      },
+      on: function on() {
+        return this.slotIsComponent ? '$on' : 'addEventListener';
+      },
+      off: function off() {
+        return this.slotIsComponent ? '$off' : 'removeEventListener';
+      },
+      hoveredIndex: function hoveredIndex() {
+        var _this = this;
+
+        return this.suggestions.findIndex(function (el) {
+          return _this.hovered && _this.valueProperty(_this.hovered) == _this.valueProperty(el);
+        });
+      }
+    },
+    created: function created() {
+      this.controlScheme = Object.assign({}, defaultControls, this.controls);
+      event = this.mode;
+    },
+    mounted: function mounted() {
+      this.inputElement = this.$refs['inputSlot'].querySelector('input');
+      this.input[this.on]('blur', this.onBlur);
+      this.input[this.on]('focus', this.onFocus);
+    },
+    beforeDestroy: function beforeDestroy() {
+      this.input[this.off]('blur', this.onBlur);
+      this.input[this.off]('focus', this.onFocus);
+    },
+
+    methods: {
+      miscSlotsAreEmpty: function miscSlotsAreEmpty() {
+        var _this2 = this;
+
+        var slot = function slot(name) {
+          return _this2.$scopedSlots['misc-item-' + name];
+        };
+        var isFunction = function isFunction(slotName) {
+          return slot(slotName) && typeof slot(slotName) === 'function';
+        };
+
+        return ['above', 'below'].some(function (slotName) {
+          return isFunction(slotName) ? !slot(slotName)(_this2) : !slot(slotName);
+        });
+      },
+      displayProperty: function displayProperty(obj) {
+        return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + '';
+      },
+      valueProperty: function valueProperty(obj) {
+        return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
+      },
+      select: function select(item) {
+        this.hovered = null;
+        this.selected = item;
+
+        this.$emit('select', item);
+
+        // Ya know, input stuff
+        this.$emit('input', this.displayProperty(item));
+        this.inputElement.value = this.displayProperty(item);
+        this.text = this.displayProperty(item);
+
+        this.inputElement.focus();
+      },
+      hover: function hover(item, elem) {
+        this.hovered = item;
+        if (this.hovered != null) {
+          this.$emit('hover', item, elem);
+        }
+      },
+      hideList: function hideList() {
+        var ignoreSelection = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+        if (this.listShown) {
+          if (this.hovered && !ignoreSelection) {
+            this.select(this.hovered);
+          }
+          this.listShown = false;
+          this.$emit('hide-list');
+        }
+      },
+      showList: function showList() {
+        if (!this.listShown && this.text && this.text.length >= this.minLength) {
+          if (this.suggestions.length > 0) {
+            this.listShown = true;
+            this.$emit('show-list');
+          }
+        }
+      },
+      onInputClick: function () {
+        var _ref = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(event) {
+          return regeneratorRuntime.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  if (!(this.minLength === 0 && !this.text)) {
+                    _context.next = 3;
+                    break;
+                  }
+
+                  _context.next = 3;
+                  return this.research();
+
+                case 3:
+
+                  this.showList();
+
+                case 4:
+                case 'end':
+                  return _context.stop();
+              }
+            }
+          }, _callee, this);
+        }));
+
+        function onInputClick(_x2) {
+          return _ref.apply(this, arguments);
+        }
+
+        return onInputClick;
+      }(),
+      onArrowKeyDown: function onArrowKeyDown(event) {
+        if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)) {
+          event.preventDefault();
+          this.showList();
+
+          var isArrowDown = hasKeyCode(this.controlScheme.selectionDown, event);
+          var direction = isArrowDown * 2 - 1;
+          var listEdge = isArrowDown ? 0 : this.suggestions.length - 1;
+          var hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
+
+          var item = null;
+
+          if (!this.hovered) {
+            item = this.selected || this.suggestions[listEdge];
+          } else if (hoversBetweenEdges) {
+            item = this.suggestions[this.hoveredIndex + direction];
+          } else /* if hovers on edge */{
+              item = this.suggestions[listEdge];
+            }
+
+          this.hover(item);
+        }
+      },
+      onListKeyUp: function onListKeyUp(event) {
+        var select = this.controlScheme.select,
+            hideList = this.controlScheme.hideList;
+
+        if (hasKeyCode([select, hideList], event)) {
+          event.preventDefault();
+          if (this.listShown) {
+            this.hideList(hasKeyCode(hideList, event));
+          } else if (hasKeyCode(select, event)) {
+            this.research();
+          }
+        }
+      },
+      onAutocomplete: function onAutocomplete(event) {
+        if (hasKeyCode(this.controlScheme.autocomplete, event) && (event.ctrlKey || event.shiftKey) && this.suggestions.length > 0 && this.suggestions[0]) {
+          event.preventDefault();
+          this.select(this.suggestions[0]);
+          this.hover(this.suggestions[0]);
+        }
+      },
+      onBlur: function onBlur(e) {
+        this.hideList();
+        this.$emit('blur', e);
+      },
+      onFocus: function onFocus(e) {
+        this.$emit('focus', e);
+        this.showList();
+      },
+      onInput: function onInput(inputEvent) {
+        this.text = inputEvent.target.value;
+        this.$emit('input', this.text);
+
+        if (this.selected) {
+          this.selected = null;
+          this.$emit('select', null);
+        }
+
+        if (this.debounce) {
+          clearTimeout(this.timeoutInstance);
+          this.timeoutInstance = setTimeout(this.research, this.debounce);
+        } else {
+          this.research();
+        }
+      },
+      research: function () {
+        var _ref2 = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+          var _this3 = this;
+
+          return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  _context2.prev = 0;
+
+                  if (!this.canSend) {
+                    _context2.next = 10;
+                    break;
+                  }
+
+                  this.canSend = false;
+                  _context2.t0 = this;
+                  _context2.t1 = this;
+                  _context2.next = 7;
+                  return this.getSuggestions(this.text);
+
+                case 7:
+                  _context2.t2 = _context2.sent;
+
+                  _context2.t0.$set.call(_context2.t0, _context2.t1, 'suggestions', _context2.t2);
+
+                  this.canSend = true;
+
+                case 10:
+                  _context2.next = 16;
+                  break;
+
+                case 12:
+                  _context2.prev = 12;
+                  _context2.t3 = _context2['catch'](0);
+
+                  this.clearSuggestions();
+                  throw _context2.t3;
+
+                case 16:
+                  _context2.prev = 16;
+
+                  this.$nextTick(function () {
+                    if (_this3.suggestions.length === 0 && _this3.miscSlotsAreEmpty()) {
+                      _this3.hideList(true);
+                    } else {
+                      _this3.showList();
+                    }
+                  });
+
+                  return _context2.abrupt('return', this.suggestions);
+
+                case 20:
+                case 'end':
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, this, [[0, 12, 16, 20]]);
+        }));
+
+        function research() {
+          return _ref2.apply(this, arguments);
+        }
+
+        return research;
+      }(),
+      getSuggestions: function () {
+        var _ref3 = asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+          var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+          var result;
+          return regeneratorRuntime.wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  if (!(this.listShown && !value)) {
+                    _context3.next = 4;
+                    break;
+                  }
+
+                  this.hideList();
+                  this.clearSuggestions();
+                  return _context3.abrupt('return', this.suggestions);
+
+                case 4:
+                  if (!(this.minLength > 0 && value.length < this.minLength)) {
+                    _context3.next = 6;
+                    break;
+                  }
+
+                  return _context3.abrupt('return', this.suggestions);
+
+                case 6:
+
+                  this.selected = null;
+
+                  // Start request if can
+                  if (this.listIsRequest) {
+                    this.$emit('request-start', value);
+                  }
+
+                  result = [];
+                  _context3.prev = 9;
+
+                  if (!this.listIsRequest) {
+                    _context3.next = 19;
+                    break;
+                  }
+
+                  _context3.next = 13;
+                  return this.list(value);
+
+                case 13:
+                  _context3.t1 = _context3.sent;
+
+                  if (_context3.t1) {
+                    _context3.next = 16;
+                    break;
+                  }
+
+                  _context3.t1 = [];
+
+                case 16:
+                  _context3.t0 = _context3.t1;
+                  _context3.next = 20;
+                  break;
+
+                case 19:
+                  _context3.t0 = this.list;
+
+                case 20:
+                  result = _context3.t0;
+
+
+                  // IFF the result is not an array (just in case!) - make it an array
+                  if (!Array.isArray(result)) {
+                    result = [result];
+                  }
+
+                  if (_typeof(result[0]) === 'object' && !Array.isArray(result[0])) {
+                    this.isPlainSuggestion = false;
+                  } else {
+                    this.isPlainSuggestion = true;
+                  }
+
+                  if (this.filterByQuery) {
+                    result = result.filter(this.filter);
+                  }
+
+                  if (this.listIsRequest) {
+                    this.$emit('request-done', result);
+                  }
+                  _context3.next = 34;
+                  break;
+
+                case 27:
+                  _context3.prev = 27;
+                  _context3.t2 = _context3['catch'](9);
+
+                  if (!this.listIsRequest) {
+                    _context3.next = 33;
+                    break;
+                  }
+
+                  this.$emit('request-failed', _context3.t2);
+                  _context3.next = 34;
+                  break;
+
+                case 33:
+                  throw _context3.t2;
+
+                case 34:
+                  _context3.prev = 34;
+
+                  if (this.maxSuggestions) {
+                    result.splice(this.maxSuggestions);
+                  }
+
+                  return _context3.abrupt('return', result);
+
+                case 38:
+                case 'end':
+                  return _context3.stop();
+              }
+            }
+          }, _callee3, this, [[9, 27, 34, 38]]);
+        }));
+
+        function getSuggestions() {
+          return _ref3.apply(this, arguments);
+        }
+
+        return getSuggestions;
+      }(),
+      clearSuggestions: function clearSuggestions() {
+        this.suggestions.splice(0);
+      }
+    }
+  };
+
+  return VueSimpleSuggest;
+
+})));

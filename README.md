@@ -140,7 +140,7 @@ yarn add vue-simple-suggest
                                                               <!-- Specific version -->
 
 <!-- CSS -->
-<script type="text/javascript" src="https://unpkg.com/vue-simple-suggest/dist/styles.css"></script>
+<link rel="stylesheet" href="https://unpkg.com/vue-simple-suggest/dist/styles.css">
 
 <!-- If you need polyfills, use IIFE verision below -->
 <!-- IIFE build includes ALL polyfills: Object.assign, Promises, Generators, Async/Await! -->
