@@ -1,1 +1,415 @@
-!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e():"function"==typeof define&&define.amd?define(e):t.VueSimpleSuggest=e()}(this,function(){"use strict";function t(t){return t&&t.__esModule&&Object.prototype.hasOwnProperty.call(t,"default")?t.default:t}function e(t,e){return t(e={exports:{}},e.exports),e.exports}var n,s,i=function(t){if(void 0==t)throw TypeError("Can't call method on  "+t);return t},o=function(t){return Object(i(t))},r={}.hasOwnProperty,u=function(t,e){return r.call(t,e)},l={}.toString,h=Object("z").propertyIsEnumerable(0)?Object:function(t){return"String"==function(t){return l.call(t).slice(8,-1)}(t)?t.split(""):Object(t)},c=function(t){return h(i(t))},a=Math.ceil,f=Math.floor,p=function(t){return isNaN(t=+t)?0:(t>0?f:a)(t)},d=Math.min,g=Math.max,y=Math.min,m=e(function(t){var e=t.exports="undefined"!=typeof window&&window.Math==Math?window:"undefined"!=typeof self&&self.Math==Math?self:Function("return this")();"number"==typeof __g&&(__g=e)}),v=m["__core-js_shared__"]||(m["__core-js_shared__"]={}),S=0,b=Math.random(),w=v[n="keys"]||(v[n]={}),_=(s=!1,function(t,e,n){var i,o,r=c(t),u=(i=r.length)>0?d(p(i),9007199254740991):0,l=function(t,e){return(t=p(t))<0?g(t+e,0):y(t,e)}(n,u);if(s&&e!=e){for(;u>l;)if((o=r[l++])!=o)return!0}else for(;u>l;l++)if((s||l in r)&&r[l]===e)return s||l||0;return!s&&-1}),x=function(t){return w[t]||(w[t]=function(t){return"Symbol(".concat(void 0===t?"":t,")_",(++S+b).toString(36))}(t))}("IE_PROTO"),O="constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf".split(","),P=Object.keys||function(t){return function(t,e){var n,s=c(t),i=0,o=[];for(n in s)n!=x&&u(s,n)&&o.push(n);for(;e.length>i;)u(s,n=e[i++])&&(~_(o,n)||o.push(n));return o}(t,O)},j=e(function(t){var e=t.exports={version:"2.5.3"};"number"==typeof __e&&(__e=e)}),I=(j.version,function(t,e,n){if(function(t){if("function"!=typeof t)throw TypeError(t+" is not a function!")}(t),void 0===e)return t;switch(n){case 1:return function(n){return t.call(e,n)};case 2:return function(n,s){return t.call(e,n,s)};case 3:return function(n,s,i){return t.call(e,n,s,i)}}return function(){return t.apply(e,arguments)}}),L=function(t){return"object"==typeof t?null!==t:"function"==typeof t},E=function(t){if(!L(t))throw TypeError(t+" is not an object!");return t},$=function(t){try{return!!t()}catch(t){return!0}},A=!$(function(){return 7!=Object.defineProperty({},"a",{get:function(){return 7}}).a}),k=m.document,C=L(k)&&L(k.createElement),q=!A&&!$(function(){return 7!=Object.defineProperty((t="div",C?k.createElement(t):{}),"a",{get:function(){return 7}}).a;var t}),M=Object.defineProperty,F={f:A?Object.defineProperty:function(t,e,n){if(E(t),e=function(t,e){if(!L(t))return t;var n,s;if(e&&"function"==typeof(n=t.toString)&&!L(s=n.call(t)))return s;if("function"==typeof(n=t.valueOf)&&!L(s=n.call(t)))return s;if(!e&&"function"==typeof(n=t.toString)&&!L(s=n.call(t)))return s;throw TypeError("Can't convert object to primitive value")}(e,!0),E(n),q)try{return M(t,e,n)}catch(t){}if("get"in n||"set"in n)throw TypeError("Accessors not supported!");return"value"in n&&(t[e]=n.value),t}},B=A?function(t,e,n){return F.f(t,e,function(t,e){return{enumerable:!(1&t),configurable:!(2&t),writable:!(4&t),value:e}}(1,n))}:function(t,e,n){return t[e]=n,t},D=function(t,e,n){var s,i,o,r=t&D.F,u=t&D.G,l=t&D.S,h=t&D.P,c=t&D.B,a=t&D.W,f=u?j:j[e]||(j[e]={}),p=f.prototype,d=u?m:l?m[e]:(m[e]||{}).prototype;for(s in u&&(n=e),n)(i=!r&&d&&void 0!==d[s])&&s in f||(o=i?d[s]:n[s],f[s]=u&&"function"!=typeof d[s]?n[s]:c&&i?I(o,m):a&&d[s]==o?function(t){var e=function(e,n,s){if(this instanceof t){switch(arguments.length){case 0:return new t;case 1:return new t(e);case 2:return new t(e,n)}return new t(e,n,s)}return t.apply(this,arguments)};return e.prototype=t.prototype,e}(o):h&&"function"==typeof o?I(Function.call,o):o,h&&((f.virtual||(f.virtual={}))[s]=o,t&D.R&&p&&!p[s]&&B(p,s,o)))};D.F=1,D.G=2,D.S=4,D.P=8,D.B=16,D.W=32,D.U=64,D.R=128;var R,T,K,N,U=D;R="keys",T=function(){return function(t){return P(o(t))}},K=(j.Object||{})[R]||Object[R],(N={})[R]=T(K),U(U.S+U.F*$(function(){K(1)}),"Object",N);var z=j.Object.keys,G=t(e(function(t){t.exports={default:z,__esModule:!0}})),Q={f:Object.getOwnPropertySymbols},W={f:{}.propertyIsEnumerable},V=Object.assign,H=!V||$(function(){var t={},e={},n=Symbol(),s="abcdefghijklmnopqrst";return t[n]=7,s.split("").forEach(function(t){e[t]=t}),7!=V({},t)[n]||Object.keys(V({},e)).join("")!=s})?function(t,e){for(var n=o(t),s=arguments.length,i=1,r=Q.f,u=W.f;s>i;)for(var l,c=h(arguments[i++]),a=r?P(c).concat(r(c)):P(c),f=a.length,p=0;f>p;)u.call(c,l=a[p++])&&(n[l]=c[l]);return n}:V;U(U.S+U.F,"Object",{assign:H});var J=j.Object.assign,X=t(e(function(t){t.exports={default:J,__esModule:!0}}));const Y={selectionUp:[38],selectionDown:[40],select:[13],hideList:[27],autocomplete:[32,13]},Z={input:String,select:Object},tt={type:String};function et(t,e){return e.split(".").reduce((t,e)=>t===Object(t)?t[e]:t,t)}function nt(t,e){if(t.length<=0)return!1;const n=t=>t.some(t=>t===e.keyCode);return Array.isArray(t[0])?t.some(t=>n(t)):n(t)}let st="input";return{render:function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"vue-simple-suggest"},[n("div",{ref:"inputSlot",staticClass:"input-wrapper",class:{designed:!t.destyled},on:{click:t.onInputClick,input:t.onInput,keydown:t.onArrowKeyDown,keyup:function(e){t.onListKeyUp(e),t.onAutocomplete(e)}}},[t._t("default",[n("input",t._b({staticClass:"default-input",domProps:{value:t.text||""}},"input",t.$props,!1))])],2),t._v(" "),!t.listShown||t.removeList||t.miscSlotsAreEmpty()?t._e():n("div",{staticClass:"suggestions",class:{designed:!t.destyled}},[t._t("misc-item-above",null,{suggestions:t.suggestions,query:t.text}),t._v(" "),t._l(t.suggestions,function(e,s){return n("div",{key:t.isPlainSuggestion?"suggestion-"+s:t.valueProperty(e),staticClass:"suggest-item",class:{selected:t.selected&&t.valueProperty(e)==t.valueProperty(t.selected),hover:t.hovered&&t.valueProperty(t.hovered)==t.valueProperty(e)},on:{mouseenter:function(n){t.hover(e,n.target)},mouseleave:function(e){t.hover(null,e.target)}}},[t._t("suggestion-item",[n("span",[t._v(t._s(t.displayProperty(e)))])],{suggestion:e,query:t.text})],2)}),t._v(" "),t._t("misc-item-below",null,{suggestions:t.suggestions,query:t.text})],2)])},staticRenderFns:[],name:"vue-simple-suggest",model:{prop:"value",get event(){return st}},props:X({},{type:tt,accesskey:tt,autocomplete:tt,form:tt,formaction:tt,formenctype:tt,formmethod:tt,formtarget:tt,height:tt,width:tt,inputmode:tt,max:tt,min:tt,minlength:tt,maxlength:tt,name:tt,pattern:tt,placeholder:tt,selectionDirection:tt,selectionEnd:tt,selectionStart:tt,size:tt,src:tt,step:tt,tabindex:tt,title:tt,spellcheck:{},readonly:{},required:{},multiple:{},formnovalidate:{},autofocus:{},checked:{},disabled:{}},{controls:{type:Object,default:()=>Y},minLength:{type:Number,default:1},maxSuggestions:{type:Number,default:10},displayAttribute:{type:String,default:"title"},valueAttribute:{type:String,default:"id"},list:{type:[Function,Array],default:()=>[]},removeList:{type:Boolean,default:!1},destyled:{type:Boolean,default:!1},filterByQuery:{type:Boolean,default:!1},filter:{type:Function,default(t){return!value||~this.displayProperty(t).toLowerCase().indexOf(value.toLowerCase())}},debounce:{type:Number,default:0},value:{},mode:{type:String,default:st,validator:t=>!!~G(Z).indexOf(t.toLowerCase())}}),watch:{mode:t=>st=t},data(){return{selected:null,hovered:null,suggestions:[],listShown:!1,inputElement:null,canSend:!0,timeoutInstance:null,text:this.value,isPlainSuggestion:!1,controlScheme:{}}},computed:{slotIsComponent(){return this.$slots.default&&this.$slots.default.length>0&&!!this.$slots.default[0].componentInstance},listIsRequest(){return"function"==typeof this.list},input(){return this.slotIsComponent?this.$slots.default[0].componentInstance:this.inputElement},on(){return this.slotIsComponent?"$on":"addEventListener"},off(){return this.slotIsComponent?"$off":"removeEventListener"},hoveredIndex(){return this.suggestions.findIndex(t=>this.hovered&&this.valueProperty(this.hovered)==this.valueProperty(t))}},created(){this.controlScheme=X({},Y,this.controls),st=this.mode},mounted(){this.inputElement=this.$refs.inputSlot.querySelector("input"),this.input[this.on]("blur",this.onBlur),this.input[this.on]("focus",this.onFocus)},beforeDestroy(){this.input[this.off]("blur",this.onBlur),this.input[this.off]("focus",this.onFocus)},methods:{miscSlotsAreEmpty(){const t=t=>this.$scopedSlots["misc-item-"+t];return 0===this.suggestions.length&&["above","below"].some(e=>(e=>t(e)&&"function"==typeof t(e))(e)?!t(e)(this):!t(e))},displayProperty(t){return(this.isPlainSuggestion?t:et(t,this.displayAttribute))+""},valueProperty(t){return this.isPlainSuggestion?t:et(t,this.valueAttribute)},select(t){this.hovered=null,this.selected=t,this.$emit("select",t),this.$emit("input",this.displayProperty(t)),this.inputElement.value=this.displayProperty(t),this.text=this.displayProperty(t),this.inputElement.focus()},hover(t,e){this.hovered=t,null!=this.hovered&&this.$emit("hover",t,e)},hideList(t=!1){this.listShown&&(this.hovered&&!t&&this.select(this.hovered),this.listShown=!1,this.$emit("hide-list"))},showList(){!this.listShown&&this.text&&this.text.length>=this.minLength&&this.suggestions.length>0&&(this.listShown=!0,this.$emit("show-list"))},async onInputClick(t){0!==this.minLength||this.text||await this.research(),this.showList()},onArrowKeyDown(t){if(nt([this.controlScheme.selectionUp,this.controlScheme.selectionDown],t)){t.preventDefault(),this.showList();const e=nt(this.controlScheme.selectionDown,t),n=2*e-1,s=e?0:this.suggestions.length-1,i=e?this.hoveredIndex<this.suggestions.length-1:this.hoveredIndex>0;let o=null;o=this.hovered?i?this.suggestions[this.hoveredIndex+n]:this.suggestions[s]:this.selected||this.suggestions[s],this.hover(o)}},onListKeyUp(t){const e=this.controlScheme.select,n=this.controlScheme.hideList;nt([e,n],t)&&(t.preventDefault(),this.listShown?this.hideList(nt(n,t)):nt(e,t)&&this.research())},onAutocomplete(t){nt(this.controlScheme.autocomplete,t)&&(t.ctrlKey||t.shiftKey)&&this.suggestions.length>0&&this.suggestions[0]&&(t.preventDefault(),this.select(this.suggestions[0]),this.hover(this.suggestions[0]))},onBlur(t){this.hideList(),this.$emit("blur",t)},onFocus(t){this.$emit("focus",t),this.showList()},onInput(t){this.text=t.target.value,this.$emit("input",this.text),this.selected&&(this.selected=null,this.$emit("select",null)),this.debounce?(clearTimeout(this.timeoutInstance),this.timeoutInstance=setTimeout(this.research,this.debounce)):this.research()},async research(){try{this.canSend&&(this.canSend=!1,this.$set(this,"suggestions",await this.getSuggestions(this.text)),this.canSend=!0)}catch(t){throw this.clearSuggestions(),t}finally{return this.$nextTick(()=>{0===this.suggestions.length&&this.miscSlotsAreEmpty()?this.hideList(!0):this.showList()}),this.suggestions}},async getSuggestions(t=""){if(this.listShown&&!t)return this.hideList(),this.clearSuggestions(),this.suggestions;if(this.minLength>0&&t.length<this.minLength)return this.suggestions;this.selected=null,this.listIsRequest&&this.$emit("request-start",t);let e=[];try{e=this.listIsRequest?await this.list(t)||[]:this.list,Array.isArray(e)||(e=[e]),"object"!=typeof e[0]||Array.isArray(e[0])?this.isPlainSuggestion=!0:this.isPlainSuggestion=!1,this.filterByQuery&&(e=e.filter(this.filter)),this.listIsRequest&&this.$emit("request-done",e)}catch(t){if(!this.listIsRequest)throw t;this.$emit("request-failed",t)}finally{return this.maxSuggestions&&e.splice(this.maxSuggestions),e}},clearSuggestions(){this.suggestions.splice(0)}}}});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.VueSimpleSuggest = factory());
+}(this, (function () { 'use strict';
+
+  const defaultControls = {
+    selectionUp: [38],
+    selectionDown: [40],
+    select: [13],
+    hideList: [27],
+    autocomplete: [32, 13]
+  };
+
+  const modes = {
+    input: String,
+    select: Object
+  };
+
+  const inputProp = {
+    type: String
+  };
+
+  const inputProps = {
+    type: inputProp,
+    accesskey: inputProp,
+    autocomplete: inputProp,
+    form: inputProp,
+    formaction: inputProp,
+    formenctype: inputProp,
+    formmethod: inputProp,
+    formtarget: inputProp,
+    height: inputProp,
+    width: inputProp,
+    inputmode: inputProp,
+    max: inputProp,
+    min: inputProp,
+    minlength: inputProp,
+    maxlength: inputProp,
+    name: inputProp,
+    pattern: inputProp,
+    placeholder: inputProp,
+    selectionDirection: inputProp,
+    selectionEnd: inputProp,
+    selectionStart: inputProp,
+    size: inputProp,
+    src: inputProp,
+    step: inputProp,
+    tabindex: inputProp,
+    title: inputProp,
+    spellcheck: {},
+    readonly: {},
+    required: {},
+    multiple: {},
+    formnovalidate: {},
+    autofocus: {},
+    checked: {},
+    disabled: {}
+  };
+
+  function fromPath(obj, path) {
+    return path.split('.').reduce((o, i) => o === Object(o) ? o[i] : o, obj);
+  }
+
+  function hasKeyCode(arr, event) {
+    if (arr.length <= 0) return false;
+
+    const has = arr => arr.some(code => code === event.keyCode);
+    if (Array.isArray(arr[0])) {
+      return arr.some(array => has(array));
+    } else {
+      return has(arr);
+    }
+  }
+
+  let event = 'input';
+
+  var VueSimpleSuggest = {
+    render: function () {
+      var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest" }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: { designed: !_vm.destyled }, on: { "click": _vm.onInputClick, "input": _vm.onInput, "keydown": _vm.onArrowKeyDown, "keyup": function ($event) {
+            _vm.onListKeyUp($event), _vm.onAutocomplete($event);
+          } } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList && !_vm.miscSlotsAreEmpty() ? _c('div', { staticClass: "suggestions", class: { designed: !_vm.destyled } }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+        return _c('div', { key: _vm.isPlainSuggestion ? 'suggestion-' + index : _vm.valueProperty(suggestion), staticClass: "suggest-item", class: {
+            selected: _vm.selected && _vm.valueProperty(suggestion) == _vm.valueProperty(_vm.selected),
+            hover: _vm.hovered && _vm.valueProperty(_vm.hovered) == _vm.valueProperty(suggestion)
+          }, on: { "mouseenter": function ($event) {
+              _vm.hover(suggestion, $event.target);
+            }, "mouseleave": function ($event) {
+              _vm.hover(null, $event.target);
+            } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { suggestion: suggestion, query: _vm.text })], 2);
+      }), _vm._v(" "), _vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()]);
+    },
+    staticRenderFns: [],
+    name: 'vue-simple-suggest',
+    model: {
+      prop: 'value',
+      get event() {
+        return event;
+      }
+    },
+    props: Object.assign({}, inputProps, {
+      controls: {
+        type: Object,
+        default: () => defaultControls
+      },
+      minLength: {
+        type: Number,
+        default: 1
+      },
+      maxSuggestions: {
+        type: Number,
+        default: 10
+      },
+      displayAttribute: {
+        type: String,
+        default: 'title'
+      },
+      valueAttribute: {
+        type: String,
+        default: 'id'
+      },
+      list: {
+        type: [Function, Array],
+        default: () => []
+      },
+      removeList: {
+        type: Boolean,
+        default: false
+      },
+      destyled: {
+        type: Boolean,
+        default: false
+      },
+      filterByQuery: {
+        type: Boolean,
+        default: false
+      },
+      filter: {
+        type: Function,
+        default(el) {
+          return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true;
+        }
+      },
+
+      debounce: {
+        type: Number,
+        default: 0
+      },
+      value: {},
+      mode: {
+        type: String,
+        default: event,
+        validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
+      }
+    }),
+    // Handle run-time mode changes:
+    watch: {
+      mode: v => event = v
+    },
+    //
+    data() {
+      return {
+        selected: null,
+        hovered: null,
+        suggestions: [],
+        listShown: false,
+        inputElement: null,
+        canSend: true,
+        timeoutInstance: null,
+        text: this.value,
+        isPlainSuggestion: false,
+        controlScheme: {}
+      };
+    },
+    computed: {
+      slotIsComponent() {
+        return this.$slots.default && this.$slots.default.length > 0 && !!this.$slots.default[0].componentInstance;
+      },
+      listIsRequest() {
+        return typeof this.list === 'function';
+      },
+      input() {
+        return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement;
+      },
+      on() {
+        return this.slotIsComponent ? '$on' : 'addEventListener';
+      },
+      off() {
+        return this.slotIsComponent ? '$off' : 'removeEventListener';
+      },
+      hoveredIndex() {
+        return this.suggestions.findIndex(el => this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el));
+      }
+    },
+    created() {
+      this.controlScheme = Object.assign({}, defaultControls, this.controls);
+      event = this.mode;
+    },
+    mounted() {
+      this.inputElement = this.$refs['inputSlot'].querySelector('input');
+      this.input[this.on]('blur', this.onBlur);
+      this.input[this.on]('focus', this.onFocus);
+    },
+    beforeDestroy() {
+      this.input[this.off]('blur', this.onBlur);
+      this.input[this.off]('focus', this.onFocus);
+    },
+    methods: {
+      miscSlotsAreEmpty() {
+        const slot = name => this.$scopedSlots['misc-item-' + name];
+        const isFunction = slotName => slot(slotName) && typeof slot(slotName) === 'function';
+
+        return ['above', 'below'].some(slotName => isFunction(slotName) ? !slot(slotName)(this) : !slot(slotName));
+      },
+      displayProperty(obj) {
+        return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + '';
+      },
+      valueProperty(obj) {
+        return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
+      },
+      select(item) {
+        this.hovered = null;
+        this.selected = item;
+
+        this.$emit('select', item);
+
+        // Ya know, input stuff
+        this.$emit('input', this.displayProperty(item));
+        this.inputElement.value = this.displayProperty(item);
+        this.text = this.displayProperty(item);
+
+        this.inputElement.focus();
+      },
+      hover(item, elem) {
+        this.hovered = item;
+        if (this.hovered != null) {
+          this.$emit('hover', item, elem);
+        }
+      },
+      hideList(ignoreSelection = false) {
+        if (this.listShown) {
+          if (this.hovered && !ignoreSelection) {
+            this.select(this.hovered);
+          }
+          this.listShown = false;
+          this.$emit('hide-list');
+        }
+      },
+      showList() {
+        if (!this.listShown && this.text && this.text.length >= this.minLength) {
+          if (this.suggestions.length > 0) {
+            this.listShown = true;
+            this.$emit('show-list');
+          }
+        }
+      },
+      async onInputClick(event) {
+        if (this.minLength === 0 && !this.text) {
+          await this.research();
+        }
+
+        this.showList();
+      },
+      onArrowKeyDown(event) {
+        if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)) {
+          event.preventDefault();
+          this.showList();
+
+          const isArrowDown = hasKeyCode(this.controlScheme.selectionDown, event);
+          const direction = isArrowDown * 2 - 1;
+          const listEdge = isArrowDown ? 0 : this.suggestions.length - 1;
+          const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
+
+          let item = null;
+
+          if (!this.hovered) {
+            item = this.selected || this.suggestions[listEdge];
+          } else if (hoversBetweenEdges) {
+            item = this.suggestions[this.hoveredIndex + direction];
+          } else /* if hovers on edge */{
+              item = this.suggestions[listEdge];
+            }
+
+          this.hover(item);
+        }
+      },
+      onListKeyUp(event) {
+        const select = this.controlScheme.select,
+              hideList = this.controlScheme.hideList;
+
+        if (hasKeyCode([select, hideList], event)) {
+          event.preventDefault();
+          if (this.listShown) {
+            this.hideList(hasKeyCode(hideList, event));
+          } else if (hasKeyCode(select, event)) {
+            this.research();
+          }
+        }
+      },
+      onAutocomplete(event) {
+        if (hasKeyCode(this.controlScheme.autocomplete, event) && (event.ctrlKey || event.shiftKey) && this.suggestions.length > 0 && this.suggestions[0]) {
+          event.preventDefault();
+          this.select(this.suggestions[0]);
+          this.hover(this.suggestions[0]);
+        }
+      },
+      onBlur(e) {
+        this.hideList();
+        this.$emit('blur', e);
+      },
+      onFocus(e) {
+        this.$emit('focus', e);
+        this.showList();
+      },
+      onInput(inputEvent) {
+        this.text = inputEvent.target.value;
+        this.$emit('input', this.text);
+
+        if (this.selected) {
+          this.selected = null;
+          this.$emit('select', null);
+        }
+
+        if (this.debounce) {
+          clearTimeout(this.timeoutInstance);
+          this.timeoutInstance = setTimeout(this.research, this.debounce);
+        } else {
+          this.research();
+        }
+      },
+      async research() {
+        try {
+          if (this.canSend) {
+            this.canSend = false;
+            this.$set(this, 'suggestions', (await this.getSuggestions(this.text)));
+            this.canSend = true;
+          }
+        } catch (e) {
+          this.clearSuggestions();
+          throw e;
+        } finally {
+          this.$nextTick(() => {
+            if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
+              this.hideList(true);
+            } else {
+              this.showList();
+            }
+          });
+
+          return this.suggestions;
+        }
+      },
+      async getSuggestions(value = '') {
+        if (this.listShown && !value) {
+          this.hideList();
+          this.clearSuggestions();
+          return this.suggestions;
+        }
+
+        if (this.minLength > 0 && value.length < this.minLength) {
+          return this.suggestions;
+        }
+
+        this.selected = null;
+
+        // Start request if can
+        if (this.listIsRequest) {
+          this.$emit('request-start', value);
+        }
+
+        let result = [];
+        try {
+          result = this.listIsRequest ? (await this.list(value)) || [] : this.list;
+
+          // IFF the result is not an array (just in case!) - make it an array
+          if (!Array.isArray(result)) {
+            result = [result];
+          }
+
+          if (typeof result[0] === 'object' && !Array.isArray(result[0])) {
+            this.isPlainSuggestion = false;
+          } else {
+            this.isPlainSuggestion = true;
+          }
+
+          if (this.filterByQuery) {
+            result = result.filter(this.filter);
+          }
+
+          if (this.listIsRequest) {
+            this.$emit('request-done', result);
+          }
+        } catch (e) {
+          if (this.listIsRequest) {
+            this.$emit('request-failed', e);
+          } else {
+            throw e;
+          }
+        } finally {
+          if (this.maxSuggestions) {
+            result.splice(this.maxSuggestions);
+          }
+
+          return result;
+        }
+      },
+      clearSuggestions() {
+        this.suggestions.splice(0);
+      }
+    }
+  };
+
+  return VueSimpleSuggest;
+
+})));

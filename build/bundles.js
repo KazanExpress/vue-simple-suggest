@@ -2,7 +2,6 @@ module.exports = exports = {
   cjs: {
     polyfills: {
       arrows: true,
-      assign: true,
       async: true
     }
   },
@@ -13,7 +12,7 @@ module.exports = exports = {
   },
   es7: {
     polyfills: {
-
+      // None
     }
   },
   iife: {
@@ -27,6 +26,8 @@ module.exports = exports = {
   },
   umd: {
     compress: true,
-    polyfills: {}
+    polyfills: {
+      arrows: true
+    }
   }
 };

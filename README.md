@@ -136,7 +136,7 @@ yarn add vue-simple-suggest
 ```html
 <!-- UMD Component, without polyfills -->
 <script type="text/javascript" src="https://unpkg.com/vue-simple-suggest/dist/umd.js"></script>
-<script type="text/javascript" src="https://unpkg.com/vue-simple-suggest@1.5.0/dist/umd.js"></script>
+<script type="text/javascript" src="https://unpkg.com/vue-simple-suggest@1.5.1/dist/umd.js"></script>
                                                               <!-- Specific version -->
 
 <!-- CSS -->
