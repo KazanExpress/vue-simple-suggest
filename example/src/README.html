@@ -122,7 +122,7 @@
 yarn add vue-simple-suggest</code></pre><h3 id="unpkg"><a class="header-link" href="#unpkg"></a>Unpkg</h3>
 <pre class="hljs"><code><span class="hljs-comment">&lt;!-- UMD Component, without polyfills --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/vue-simple-suggest/dist/umd.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/vue-simple-suggest@1.5.0/dist/umd.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"text/javascript"</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://unpkg.com/vue-simple-suggest@1.5.1/dist/umd.js"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
                                                               <span class="hljs-comment">&lt;!-- Specific version --&gt;</span>
 
 <span class="hljs-comment">&lt;!-- CSS --&gt;</span>
@@ -157,7 +157,7 @@ yarn add vue-simple-suggest</code></pre><h3 id="unpkg"><a class="header-link" hr
 <pre class="hljs"><code>Vue.component(<span class="hljs-string">'vue-simple-suggest'</span>, VueSimpleSuggest)</code></pre><p><strong>In single-file .vue components:</strong></p>
 <pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
   <span class="hljs-keyword">import</span> VueSimpleSuggest <span class="hljs-keyword">from</span> <span class="hljs-string">'vue-simple-suggest'</span>
-  <span class="hljs-keyword">import</span> <span class="hljs-string">'vue-simple-suggest/dist/styles.css'</span>
+  <span class="hljs-keyword">import</span> <span class="hljs-string">'vue-simple-suggest/dist/styles.css'</span> <span class="hljs-comment">// Using a css-loader</span>
 
   <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
     <span class="hljs-attr">components</span>: {

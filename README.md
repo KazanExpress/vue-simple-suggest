@@ -187,7 +187,7 @@ Vue.component('vue-simple-suggest', VueSimpleSuggest)
 ```html
 <script>
   import VueSimpleSuggest from 'vue-simple-suggest'
-  import 'vue-simple-suggest/dist/styles.css'
+  import 'vue-simple-suggest/dist/styles.css' // Using a css-loader
 
   export default {
     components: {

@@ -17,7 +17,7 @@
     "dev": "npm run readme && webpack-dev-server --mode development --config example/webpack.config.js --open --hot",
     "build": "node build",
     "docs": "npm run readme && webpack --mode production --config example/webpack.config.js",
-    "readme": "generate-md --layout github --input ./README.md --output ./example/src",
+    "readme": "generate-md --input ./README.md --output ./example/src",
     "preversion": "npm run docs && npm run build",
     "patch": "npm version patch && npm publish",
     "minor": "npm version minor && npm publish",
