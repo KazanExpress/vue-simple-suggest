@@ -187,7 +187,7 @@ var VueSimpleSuggest = {
     },
     filter: {
       type: Function,
-      default(el) {
+      default(el, value) {
         return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true;
       }
     },
@@ -454,7 +454,7 @@ var VueSimpleSuggest = {
             }
 
             if (_this3.filterByQuery) {
-              result = result.filter(_this3.filter);
+              result = result.filter(el => _this3.filter(el, value));
             }
 
             if (_this3.listIsRequest) {

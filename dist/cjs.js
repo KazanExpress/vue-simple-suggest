@@ -207,7 +207,7 @@ var VueSimpleSuggest = {
     },
     filter: {
       type: Function,
-      default: function _default(el) {
+      default: function _default(el, value) {
         return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true;
       }
     },
@@ -495,7 +495,9 @@ var VueSimpleSuggest = {
             }
 
             if (_this5.filterByQuery) {
-              result = result.filter(_this5.filter);
+              result = result.filter(function (el) {
+                return _this5.filter(el, value);
+              });
             }
 
             if (_this5.listIsRequest) {

@@ -95,7 +95,7 @@ export default {
     },
     filter: {
       type: Function,
-      default(el) {
+      default(el, value) {
         return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true
       }
     },
@@ -347,7 +347,7 @@ export default {
         }
 
         if (this.filterByQuery) {
-          result = result.filter(this.filter)
+          result = result.filter((el) => this.filter(el, value))
         }
 
         if (this.listIsRequest) {
