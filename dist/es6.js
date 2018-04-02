@@ -297,7 +297,7 @@ var VueSimpleSuggest = {
       }
     },
     showList() {
-      if (!this.listShown && this.text && this.text.length >= this.minLength) {
+      if (!this.listShown && this.text.length >= this.minLength) {
         if (this.suggestions.length > 0) {
           this.listShown = true;
           this.$emit('show-list');
