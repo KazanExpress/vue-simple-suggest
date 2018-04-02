@@ -14,7 +14,7 @@ module.exports = exports = function(
     promise: true
   }
 ) {
-  const babelPlugins = [];
+  const babelPlugins = ['transform-runtime'];
 
   if (polyfills.assign) {
     babelPlugins.push('transform-object-assign')
@@ -32,7 +32,8 @@ module.exports = exports = function(
     vue(),
     css({ output: 'dist/styles.css' }),
     babel({
-      // runtimeHelpers: true,
+      exclude: 'node_modules/**',
+      runtimeHelpers: true,
       presets: polyfills.arrows ? ['stage-3', 'es2015-rollup'] : [],
       plugins: babelPlugins
     }),
@@ -44,9 +45,9 @@ module.exports = exports = function(
     plugins.push(uglify());
   }
 
-  if (polyfills.async) {
-    plugins.push(regenerator({ includeRuntime: true }))
-  }
+  // if (polyfills.async) {
+  //   plugins.push(regenerator({ includeRuntime: true }))
+  // }
 
   return {
     input: 'lib/index.js',
