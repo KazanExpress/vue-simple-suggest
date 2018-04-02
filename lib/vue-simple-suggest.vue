@@ -299,7 +299,6 @@ export default {
 
       catch (e) {
         this.clearSuggestions()
-        console.error(e)
         throw e
       }
 
@@ -335,16 +334,16 @@ export default {
 
       let result = []
       try {
-        result = this.listIsRequest ? (await this.list(value)) || [] : this.list
+        if (this.listIsRequest) {
+          result = (await this.list(value)) || [];
+        } else {
+          result = this.list;
+        }
 
         // IFF the result is not an array (just in case!) - make it an array
         if (!Array.isArray(result)) { result = [result] }
 
-        if (typeof result[0] === 'object' && !Array.isArray(result[0])) {
-          this.isPlainSuggestion = false
-        } else {
-          this.isPlainSuggestion = true
-        }
+        this.isPlainSuggestion = (typeof result[0] !== 'object') || Array.isArray(result[0])
 
         if (this.filterByQuery) {
           result = result.filter((el) => this.filter(el, value))
