@@ -439,7 +439,6 @@ var VueSimpleSuggest = {
           });
         }, function (e) {
           _this4.clearSuggestions();
-          console.error(e);
           throw e;
         });
       }, function () {
@@ -479,20 +478,21 @@ var VueSimpleSuggest = {
       var result = [];
       return _finally(function () {
         return _catch(function () {
-          var _this5$listIsRequest = _this5.listIsRequest;
-          return _await(_this5$listIsRequest ? _this5.list(value) : _this5.list, function (_this5$list) {
-            result = _this5$listIsRequest ? _this5$list || [] : _this5$list;
-
+          return _invoke(function () {
+            if (_this5.listIsRequest) {
+              return _await(_this5.list(value), function (_this5$list) {
+                result = _this5$list || [];
+              });
+            } else {
+              result = _this5.list;
+            }
+          }, function () {
             // IFF the result is not an array (just in case!) - make it an array
             if (!Array.isArray(result)) {
               result = [result];
             }
 
-            if (_typeof(result[0]) === 'object' && !Array.isArray(result[0])) {
-              _this5.isPlainSuggestion = false;
-            } else {
-              _this5.isPlainSuggestion = true;
-            }
+            _this5.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
 
             if (_this5.filterByQuery) {
               result = result.filter(function (el) {
@@ -503,7 +503,7 @@ var VueSimpleSuggest = {
             if (_this5.listIsRequest) {
               _this5.$emit('request-done', result);
             }
-          }, !_this5$listIsRequest);
+          });
         }, function (e) {
           if (_this5.listIsRequest) {
             _this5.$emit('request-failed', e);

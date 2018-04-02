@@ -5,7 +5,7 @@ const fs = require('fs-extra');
 
 const roll = (format, name, conf) => {
   rollup(
-    config(conf.compress, conf.polyfills)
+    config(conf.compress, conf.polyfills, conf.autoDefine)
   ).then(bundle => bundle
     .write({
       format,

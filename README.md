@@ -133,10 +133,12 @@ yarn add vue-simple-suggest
 
 ### Unpkg
 
+If including via this method - the component will automatically install itself.
+
 ```html
 <!-- UMD Component, async/await polyfills through promises -->
-<script type="text/javascript" src="https://unpkg.com/vue-simple-suggest/dist/umd.js"></script>
-<script type="text/javascript" src="https://unpkg.com/vue-simple-suggest@1.5.1/dist/umd.js"></script>
+<script type="text/javascript" src="https://unpkg.com/vue-simple-suggest"></script>
+<script type="text/javascript" src="https://unpkg.com/vue-simple-suggest@1.5.1"></script>
                                                               <!-- Specific version -->
 
 <!-- CSS -->
@@ -179,6 +181,7 @@ import 'vue-simple-suggest/dist/styles.css'
 **Globaly:**
 
 ```js
+// You don't need to do it, if including via <script> (umd, iife)
 Vue.component('vue-simple-suggest', VueSimpleSuggest)
 ```
 

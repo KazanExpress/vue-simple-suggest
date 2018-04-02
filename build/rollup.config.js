@@ -12,7 +12,8 @@ module.exports = exports = function(
     assign: true,
     async: true,
     promise: true
-  }
+  },
+  defineInWindow = false
 ) {
   const babelPlugins = [];
 
@@ -46,7 +47,7 @@ module.exports = exports = function(
   }
 
   return {
-    input: 'lib/index.js',
+    input: defineInWindow ? 'lib/window.js' : 'lib/index.js',
     plugins
   };
 }

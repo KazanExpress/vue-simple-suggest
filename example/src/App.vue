@@ -44,7 +44,7 @@
 
         <!-- <test-input/> -->
 
-        <template slot="misc-item-above" slot-scope="{ suggestions, query }">
+        <template slot="misc-item-above" slot-scope="{ suggestions, query }" v-if="suggestions.length > 0">
           <template v-if="suggestions.length > 0">
             <div class="misc-item">
               <span>You're searching for '{{ query }}'.</span>
@@ -54,11 +54,11 @@
             </div>
             <hr>
           </template>
-          <template v-else-if="!loading">
+          <!-- <template v-else-if="!loading">
             <div class="misc-item">
               <span>No results</span>
             </div>
-          </template>
+          </template> -->
         </template>
 
         <div slot="suggestion-item" slot-scope="scope">
@@ -136,15 +136,6 @@
       onBlur (e) {
         this.addToLog('blur', e)
       },
-      onRequestStart (value) {
-        this.addToLog('request-start', value)
-      },
-      onRequestDone (e) {
-        this.addToLog('request-done', e)
-      },
-      onRequestFailed (e) {
-        this.addToLog('request-failed', e)
-      },
       onShowList () {
         this.addToLog('show-list')
       },
@@ -158,12 +149,24 @@
       onSuggestHover (suggestion) {
         this.addToLog('hover', suggestion);
       },
-      getList (inputValue) {
+      onRequestStart (value) {
         this.loading = true
 
+        this.addToLog('request-start', value)
+      },
+      onRequestDone (e) {
+        this.loading = false
+
+        this.addToLog('request-done', e)
+      },
+      onRequestFailed (e) {
+        this.loading = false
+
+        this.addToLog('request-failed', e)
+      },
+      getList (inputValue) {
         return new Promise((resolve, reject) => {
           /* setTimeout(() => {
-            this.loading = false
             if (Math.random() > 0.2)
               resolve([0,0,0,0,0,0,0,0,0,0].map(e => Math.random() > 0.2 ? Math.random() : undefined).filter(e => !!e))
             else
@@ -178,9 +181,7 @@
 
             response.json().then(json => {
               resolve([...(json.items || [])])
-              this.loading = false
             }).catch(e => {
-              this.loading = false
               reject(e)
             })
           }).catch(error => {

@@ -22,13 +22,15 @@ module.exports = exports = {
       assign: true,
       async: true,
       promise: true
-    }
+    },
+    autoDefine: true
   },
   umd: {
     compress: true,
     polyfills: {
       async: true,
       arrows: true
-    }
+    },
+    autoDefine: true
   }
 };
