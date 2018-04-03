@@ -126,7 +126,7 @@ export default {
       timeoutInstance: null,
       text: this.value,
       isPlainSuggestion: false,
-      isSelected: false,
+      isAfterSelect: false,
       controlScheme: {}
     }
   },
@@ -187,7 +187,7 @@ export default {
       this.inputElement.value = this.displayProperty(item)
       this.text = this.displayProperty(item)
 
-      this.isSelected = true
+      this.isAfterSelect = true
     },
     hover (item, elem) {
       this.hovered = item
@@ -278,9 +278,9 @@ export default {
       this.hideList()
 
       /// Clicked on suggestion
-      if (this.isSelected) {
+      if (this.isAfterSelect) {
         this.inputElement.focus()
-        this.isSelected = false
+        this.isAfterSelect = false
       }
 
       /// Defocus (pure blur)
@@ -292,7 +292,7 @@ export default {
       this.$emit('focus', e)
 
       // Show list only if the item has not been clicked
-      if (!this.isSelected) {
+      if (!this.isAfterSelect) {
         this.showList()
       }
     },
