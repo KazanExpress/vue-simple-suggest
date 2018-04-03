@@ -126,6 +126,7 @@ export default {
       timeoutInstance: null,
       text: this.value,
       isPlainSuggestion: false,
+      isSelected: false,
       controlScheme: {}
     }
   },
@@ -175,7 +176,7 @@ export default {
     valueProperty (obj) {
       return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute)
     },
-    select (item, isOnHidingList = false) {
+    select (item) {
       this.hovered = null
       this.selected = item
 
@@ -186,9 +187,7 @@ export default {
       this.inputElement.value = this.displayProperty(item)
       this.text = this.displayProperty(item)
 
-      if (!isOnHidingList) {
-        this.inputElement.focus()
-      }
+      this.isSelected = true
     },
     hover (item, elem) {
       this.hovered = item
@@ -199,7 +198,7 @@ export default {
     hideList (ignoreSelection = false) {
       if (this.listShown) {
         if (this.hovered && !ignoreSelection) {
-          this.select(this.hovered, true)
+          this.select(this.hovered)
         }
         this.listShown = false
         this.$emit('hide-list')
@@ -277,11 +276,25 @@ export default {
     },
     onBlur (e) {
       this.hideList()
-      this.$emit('blur', e)
+
+      /// Clicked on suggestion
+      if (this.isSelected) {
+        this.inputElement.focus()
+        this.isSelected = false
+      }
+
+      /// Defocus (pure blur)
+      else {
+        this.$emit('blur', e)
+      }
     },
     onFocus (e) {
       this.$emit('focus', e)
-      this.showList()
+
+      // Show list only if the item has not been clicked
+      if (!this.isSelected) {
+        this.showList()
+      }
     },
     onInput (inputEvent) {
       this.text = inputEvent.target.value
