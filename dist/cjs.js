@@ -143,7 +143,7 @@ var event = 'input';
 
 var VueSimpleSuggest = {
   render: function render() {
-    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest" }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: { designed: !_vm.destyled }, on: { "click": _vm.onInputClick, "input": _vm.onInput, "keydown": _vm.onArrowKeyDown, "keyup": function keyup($event) {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest" }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: { designed: !_vm.destyled }, on: { "click": _vm.showSuggestions, "input": _vm.onInput, "keydown": _vm.moveSelection, "keyup": function keyup($event) {
           _vm.onListKeyUp($event), _vm.onAutocomplete($event);
         } } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", class: { designed: !_vm.destyled } }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('div', { key: _vm.isPlainSuggestion ? 'suggestion-' + index : _vm.valueProperty(suggestion), staticClass: "suggest-item", class: {
@@ -337,33 +337,47 @@ var VueSimpleSuggest = {
       }
     },
     showList: function showList() {
-      if (!this.listShown && this.text.length >= this.minLength) {
+      if (!this.listShown && (this.text && this.text.length || 0) >= this.minLength) {
         if (this.suggestions.length > 0) {
           this.listShown = true;
           this.$emit('show-list');
         }
       }
     },
-    onInputClick: _async(function (event) {
+
+
+    /// DEPRECATED
+    get onInputClick() {
+      return this.showSuggestions;
+    },
+
+    showSuggestions: _async(function () {
       var _this3 = this;
 
       return _invoke(function () {
-        if (_this3.minLength === 0 && !_this3.text) {
+        if (_this3.suggestions.length === 0 && _this3.minLength === 0 && !_this3.text) {
           return _awaitIgnored(_this3.research());
         }
       }, function () {
         _this3.showList();
       });
     }),
-    onArrowKeyDown: function onArrowKeyDown(event) {
+
+
+    /// DEPRECATED
+    get onArrowKeyDown() {
+      return this.moveSelection;
+    },
+
+    moveSelection: function moveSelection(event) {
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)) {
         event.preventDefault();
-        this.showList();
+        this.showSuggestions();
 
-        var isArrowDown = hasKeyCode(this.controlScheme.selectionDown, event);
-        var direction = isArrowDown * 2 - 1;
-        var listEdge = isArrowDown ? 0 : this.suggestions.length - 1;
-        var hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
+        var isMovingDown = hasKeyCode(this.controlScheme.selectionDown, event);
+        var direction = isMovingDown * 2 - 1;
+        var listEdge = isMovingDown ? 0 : this.suggestions.length - 1;
+        var hoversBetweenEdges = isMovingDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
 
         var item = null;
 

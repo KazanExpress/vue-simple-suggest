@@ -1,9 +1,9 @@
 <template>
   <div class="vue-simple-suggest">
     <div class="input-wrapper" :class="{ designed: !destyled }"
-      @click="onInputClick"
+      @click="showSuggestions"
       @input="onInput"
-      @keydown="onArrowKeyDown"
+      @keydown="moveSelection"
       @keyup="onListKeyUp($event), onAutocomplete($event)"
       ref="inputSlot">
       <slot>
@@ -212,22 +212,30 @@ export default {
         }
       }
     },
-    async onInputClick (event) {
+
+    /// DEPRECATED
+    get onInputClick() { return this.showSuggestions },
+
+    async showSuggestions () {
       if (this.suggestions.length === 0 && this.minLength === 0 && !this.text) {
         await this.research()
       }
 
       this.showList()
     },
-    onArrowKeyDown (event) {
+
+    /// DEPRECATED
+    get onArrowKeyDown() { return this.moveSelection },
+
+    moveSelection (event) {
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)) {
         event.preventDefault()
-        this.showList()
+        this.showSuggestions();
 
-        const isArrowDown = hasKeyCode(this.controlScheme.selectionDown, event)
-        const direction = isArrowDown * 2 - 1
-        const listEdge = isArrowDown ? 0 : this.suggestions.length - 1
-        const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0
+        const isMovingDown = hasKeyCode(this.controlScheme.selectionDown, event)
+        const direction = isMovingDown * 2 - 1
+        const listEdge = isMovingDown ? 0 : this.suggestions.length - 1
+        const hoversBetweenEdges = isMovingDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0
 
         let item = null
 
