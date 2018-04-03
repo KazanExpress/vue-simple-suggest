@@ -44,7 +44,7 @@
 
         <!-- <test-input/> -->
 
-        <template slot="misc-item-above" slot-scope="{ suggestions, query }" v-if="suggestions.length > 0">
+        <template slot="misc-item-above" slot-scope="{ suggestions, query }">
           <template v-if="suggestions.length > 0">
             <div class="misc-item">
               <span>You're searching for '{{ query }}'.</span>
@@ -54,11 +54,11 @@
             </div>
             <hr>
           </template>
-          <!-- <template v-else-if="!loading">
+          <template v-else-if="!loading">
             <div class="misc-item">
               <span>No results</span>
             </div>
-          </template> -->
+          </template>
         </template>
 
         <div slot="suggestion-item" slot-scope="scope">

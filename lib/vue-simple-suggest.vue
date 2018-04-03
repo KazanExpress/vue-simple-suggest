@@ -3,8 +3,8 @@
     <div class="input-wrapper" :class="{ designed: !destyled }"
       @click="showSuggestions"
       @input="onInput"
-      @keydown="moveSelection"
-      @keyup="onListKeyUp($event), onAutocomplete($event)"
+      @keydown="moveSelection($event), onAutocomplete($event)"
+      @keyup="onListKeyUp"
       ref="inputSlot">
       <slot>
         <input class="default-input" v-bind="$props" :value="text || ''">
@@ -99,7 +99,6 @@ export default {
         return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true
       }
     },
-
     debounce: {
       type: Number,
       default: 0
@@ -207,8 +206,9 @@ export default {
       }
     },
     showList () {
-      if (!this.listShown && ((this.text && this.text.length) || 0) >= this.minLength) {
-        if (this.suggestions.length > 0) {
+      if (!this.listShown) {
+        const textLength = (this.text && this.text.length) || 0;
+        if (textLength >= this.minLength && this.suggestions.length > 0) {
           this.listShown = true
           this.$emit('show-list')
         }
@@ -314,13 +314,11 @@ export default {
       }
 
       finally {
-        this.$nextTick(() => {
-          if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
-            this.hideList(true)
-          } else {
-            this.showList()
-          }
-        })
+        if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
+          this.hideList(true)
+        } else {
+          this.showList()
+        }
 
         return this.suggestions
       }
