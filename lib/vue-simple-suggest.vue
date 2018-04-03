@@ -176,7 +176,7 @@ export default {
     valueProperty (obj) {
       return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute)
     },
-    select (item) {
+    select (item, isOnHidingList = false) {
       this.hovered = null
       this.selected = item
 
@@ -187,7 +187,9 @@ export default {
       this.inputElement.value = this.displayProperty(item)
       this.text = this.displayProperty(item)
 
-      this.inputElement.focus()
+      if (!isOnHidingList) {
+        this.inputElement.focus()
+      }
     },
     hover (item, elem) {
       this.hovered = item
@@ -198,7 +200,7 @@ export default {
     hideList (ignoreSelection = false) {
       if (this.listShown) {
         if (this.hovered && !ignoreSelection) {
-          this.select(this.hovered)
+          this.select(this.hovered, true)
         }
         this.listShown = false
         this.$emit('hide-list')
