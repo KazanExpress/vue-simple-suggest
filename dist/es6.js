@@ -297,7 +297,7 @@ var VueSimpleSuggest = {
       }
     },
     showList() {
-      if (!this.listShown && this.text.length >= this.minLength) {
+      if (!this.listShown && (this.text && this.text.length || 0) >= this.minLength) {
         if (this.suggestions.length > 0) {
           this.listShown = true;
           this.$emit('show-list');
@@ -308,7 +308,7 @@ var VueSimpleSuggest = {
       var _this = this;
 
       return _invoke(function () {
-        if (_this.minLength === 0 && !_this.text) {
+        if (_this.suggestions.length === 0 && _this.minLength === 0 && !_this.text) {
           return _awaitIgnored(_this.research());
         }
       }, function () {

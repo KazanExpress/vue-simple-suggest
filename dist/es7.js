@@ -241,7 +241,7 @@ var VueSimpleSuggest = {
       }
     },
     showList() {
-      if (!this.listShown && this.text.length >= this.minLength) {
+      if (!this.listShown && (this.text && this.text.length || 0) >= this.minLength) {
         if (this.suggestions.length > 0) {
           this.listShown = true;
           this.$emit('show-list');
@@ -249,7 +249,7 @@ var VueSimpleSuggest = {
       }
     },
     async onInputClick(event) {
-      if (this.minLength === 0 && !this.text) {
+      if (this.suggestions.length === 0 && this.minLength === 0 && !this.text) {
         await this.research();
       }
 
