@@ -11,3 +11,8 @@ example/src/assets/css
 *.ntvs*
 *.njsproj
 *.sln
+docs/assets/css/bootstrap.css
+docs/assets/css/bootstrap-responsive.css
+docs/assets/css/bootstrap-responsive.min.css
+docs/assets/css/bootstrap.min.css
+docs/assets/css/style.css
