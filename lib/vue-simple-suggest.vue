@@ -205,7 +205,7 @@ export default {
       }
     },
     showList () {
-      if (!this.listShown && this.text.length >= this.minLength) {
+      if (!this.listShown && ((this.text && this.text.length) || 0) >= this.minLength) {
         if (this.suggestions.length > 0) {
           this.listShown = true
           this.$emit('show-list')
@@ -213,7 +213,7 @@ export default {
       }
     },
     async onInputClick (event) {
-      if (this.minLength === 0 && !this.text) {
+      if (this.suggestions.length === 0 && this.minLength === 0 && !this.text) {
         await this.research()
       }
 
@@ -257,7 +257,8 @@ export default {
     },
     onAutocomplete (event) {
       if (hasKeyCode(this.controlScheme.autocomplete, event)
-        && (event.ctrlKey || event.shiftKey) && (this.suggestions.length > 0 && this.suggestions[0])
+        && (event.ctrlKey || event.shiftKey)
+        && (this.suggestions.length > 0 && this.suggestions[0])
       ) {
         event.preventDefault()
         this.select(this.suggestions[0])
