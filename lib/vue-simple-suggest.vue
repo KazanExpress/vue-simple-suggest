@@ -257,7 +257,8 @@ export default {
     },
     onAutocomplete (event) {
       if (hasKeyCode(this.controlScheme.autocomplete, event)
-        && (event.ctrlKey || event.shiftKey) && (this.suggestions.length > 0 && this.suggestions[0])
+        && (event.ctrlKey || event.shiftKey)
+        && (this.suggestions.length > 0 && this.suggestions[0])
       ) {
         event.preventDefault()
         this.select(this.suggestions[0])
