@@ -535,9 +535,13 @@ npm run docs</code></pre><hr>
 </thead>
 <tbody>
 <tr>
-<td><code>showSuggestions</code></td>
+<td><code>onInputClick</code> <sup>deprecated</sup></td>
 <td>HTML click event</td>
-<td>Fires whenever the input is being clicked. Shows suggestion list (gets them from the source if none is present). Used to be named <code>onInputClick</code>.</td>
+<td>Fires whenever the input is being clicked. Shows suggestion list (gets them from the source if none is present).</td>
+</tr>
+<tr>
+<td><code>showSuggestions</code></td>
+<td>Alias for <code>onInputClick</code>. Will replace it in the future releases</td>
 </tr>
 <tr>
 <td><code>onInput</code></td>
@@ -565,9 +569,13 @@ npm run docs</code></pre><hr>
 <td>Fires on component keyup. Internally used for hiding the list.</td>
 </tr>
 <tr>
-<td><code>moveSelection</code></td>
+<td><code>onArrowKeyDown</code> <sup>deprecated</sup></td>
 <td>HTML keydown event</td>
-<td>Fires on component keydown. Used for moving list selection. Used to be named <code>onArrowKeyDown</code>.</td>
+<td>Fires on component keydown. Used for moving list selection.</td>
+</tr>
+<tr>
+<td><code>moveSelection</code></td>
+<td>Alias for <code>onArrowKeyDown</code>. Will replace it in the future releases.</td>
 </tr>
 </tbody>
 </table>

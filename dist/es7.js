@@ -71,9 +71,9 @@ let event = 'input';
 
 var VueSimpleSuggest = {
   render: function () {
-    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest" }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: { designed: !_vm.destyled }, on: { "click": _vm.showSuggestions, "input": _vm.onInput, "keydown": _vm.moveSelection, "keyup": function ($event) {
-          _vm.onListKeyUp($event), _vm.onAutocomplete($event);
-        } } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", class: { designed: !_vm.destyled } }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest" }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: { designed: !_vm.destyled }, on: { "click": _vm.showSuggestions, "input": _vm.onInput, "keydown": function ($event) {
+          _vm.moveSelection($event), _vm.onAutocomplete($event);
+        }, "keyup": _vm.onListKeyUp } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", class: { designed: !_vm.destyled } }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('div', { key: _vm.isPlainSuggestion ? 'suggestion-' + index : _vm.valueProperty(suggestion), staticClass: "suggest-item", class: {
           selected: _vm.selected && _vm.valueProperty(suggestion) == _vm.valueProperty(_vm.selected),
           hover: _vm.hovered && _vm.valueProperty(_vm.hovered) == _vm.valueProperty(suggestion)
@@ -135,7 +135,6 @@ var VueSimpleSuggest = {
         return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true;
       }
     },
-
     debounce: {
       type: Number,
       default: 0
@@ -163,6 +162,7 @@ var VueSimpleSuggest = {
       timeoutInstance: null,
       text: this.value,
       isPlainSuggestion: false,
+      isAfterSelect: false,
       controlScheme: {}
     };
   },
@@ -223,7 +223,7 @@ var VueSimpleSuggest = {
       this.inputElement.value = this.displayProperty(item);
       this.text = this.displayProperty(item);
 
-      this.inputElement.focus();
+      this.isAfterSelect = true;
     },
     hover(item, elem) {
       this.hovered = item;
@@ -241,8 +241,9 @@ var VueSimpleSuggest = {
       }
     },
     showList() {
-      if (!this.listShown && (this.text && this.text.length || 0) >= this.minLength) {
-        if (this.suggestions.length > 0) {
+      if (!this.listShown) {
+        const textLength = this.text && this.text.length || 0;
+        if (textLength >= this.minLength && this.suggestions.length > 0) {
           this.listShown = true;
           this.$emit('show-list');
         }
@@ -312,11 +313,25 @@ var VueSimpleSuggest = {
     },
     onBlur(e) {
       this.hideList();
-      this.$emit('blur', e);
+
+      /// Clicked on suggestion
+      if (this.isAfterSelect) {
+        this.inputElement.focus();
+        this.isAfterSelect = false;
+      }
+
+      /// Defocus (pure blur)
+      else {
+          this.$emit('blur', e);
+        }
     },
     onFocus(e) {
       this.$emit('focus', e);
-      this.showList();
+
+      // Show list only if the item has not been clicked
+      if (!this.isAfterSelect) {
+        this.showList();
+      }
     },
     onInput(inputEvent) {
       this.text = inputEvent.target.value;
@@ -345,13 +360,11 @@ var VueSimpleSuggest = {
         this.clearSuggestions();
         throw e;
       } finally {
-        this.$nextTick(() => {
-          if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
-            this.hideList(true);
-          } else {
-            this.showList();
-          }
-        });
+        if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
+          this.hideList(true);
+        } else {
+          this.showList();
+        }
 
         return this.suggestions;
       }
