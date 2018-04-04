@@ -26,9 +26,9 @@
         }"
         :mode="mode"
         ref="suggestComponent"
-        placeholder="Search books..."
+        placeholder="Search information..."
         value-attribute="id"
-        display-attribute="volumeInfo.title"
+        display-attribute="text"
         @select="onSuggestSelect"
         @hover="onSuggestHover"
         @focus="onFocus"
@@ -61,7 +61,7 @@
           </template>
         </template>
 
-        <div slot="suggestion-item" slot-scope="scope">
+        <div slot="suggestion-item" slot-scope="scope" :title="scope.suggestion.description">
           <span v-html="boldenSuggestion(scope)"></span>
         </div>
 
@@ -172,7 +172,8 @@
             else
               resolve([])
           }, 500); */
-          let url = `https://www.googleapis.com/books/v1/volumes?printType=books&q=${inputValue}`
+          // let url = `https://www.googleapis.com/books/v1/volumes?printType=books&q=${inputValue}`
+          let url = `https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&namespace=*&search=${inputValue}&limit=10&namespace=0&format=json`
           this.$refs.suggestComponent.clearSuggestions()
           fetch(url).then(response => {
             if (!response.ok) {
@@ -180,7 +181,21 @@
             }
 
             response.json().then(json => {
-              resolve([...(json.items || [])])
+              let autocompleteText = json.shift()
+              let result = []
+              const fields = ['text', 'description', 'link']
+              json.forEach((part, i) => {
+                part.forEach((el, j) => {
+                  if (!result[j]) {
+                    result.push({
+                      id: j+1
+                    })
+                  }
+                  result[j][fields[i]] = el
+                })
+              })
+              resolve(result)
+              // resolve([...(json.items || [])])
             }).catch(e => {
               reject(e)
             })
