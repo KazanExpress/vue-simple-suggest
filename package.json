@@ -18,10 +18,10 @@
     "build": "node build",
     "docs": "npm run readme && webpack --mode production --config example/webpack.config.js",
     "readme": "generate-md --input ./README.md --output ./example/src",
-    "preversion": "npm run docs && npm run build",
-    "patch": "npm version patch && npm publish",
-    "minor": "npm version minor && npm publish",
-    "major": "npm version major && npm publish"
+    "preversion": "npm run docs && npm run build && (git add .) && git commit -m Docs-and-build.",
+    "patch": "npm version patch && npm publish && git push",
+    "minor": "npm version minor && npm publish && git push",
+    "major": "npm version major && npm publish && git push"
   },
   "keywords": [
     "Vue",
