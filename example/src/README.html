@@ -535,9 +535,9 @@ npm run docs</code></pre><hr>
 </thead>
 <tbody>
 <tr>
-<td><code>onInputClick</code></td>
+<td><code>showSuggestions</code></td>
 <td>HTML click event</td>
-<td>Fires whenever the input is being clicked.</td>
+<td>Fires whenever the input is being clicked. Shows suggestion list (gets them from the source if none is present). Used to be named <code>onInputClick</code>.</td>
 </tr>
 <tr>
 <td><code>onInput</code></td>
@@ -565,9 +565,9 @@ npm run docs</code></pre><hr>
 <td>Fires on component keyup. Internally used for hiding the list.</td>
 </tr>
 <tr>
-<td><code>onArrowKeyDown</code></td>
+<td><code>moveSelection</code></td>
 <td>HTML keydown event</td>
-<td>Fires on component keydown. Internally used for arrow-key-based selections.</td>
+<td>Fires on component keydown. Used for moving list selection. Used to be named <code>onArrowKeyDown</code>.</td>
 </tr>
 </tbody>
 </table>

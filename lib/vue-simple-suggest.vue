@@ -1,10 +1,10 @@
 <template>
   <div class="vue-simple-suggest">
     <div class="input-wrapper" :class="{ designed: !destyled }"
-      @click="onInputClick"
+      @click="showSuggestions"
       @input="onInput"
-      @keydown="onArrowKeyDown"
-      @keyup="onListKeyUp($event), onAutocomplete($event)"
+      @keydown="moveSelection($event), onAutocomplete($event)"
+      @keyup="onListKeyUp"
       ref="inputSlot">
       <slot>
         <input class="default-input" v-bind="$props" :value="text || ''">
@@ -99,7 +99,6 @@ export default {
         return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true
       }
     },
-
     debounce: {
       type: Number,
       default: 0
@@ -127,6 +126,7 @@ export default {
       timeoutInstance: null,
       text: this.value,
       isPlainSuggestion: false,
+      isAfterSelect: false,
       controlScheme: {}
     }
   },
@@ -187,7 +187,7 @@ export default {
       this.inputElement.value = this.displayProperty(item)
       this.text = this.displayProperty(item)
 
-      this.inputElement.focus()
+      this.isAfterSelect = true
     },
     hover (item, elem) {
       this.hovered = item
@@ -205,29 +205,38 @@ export default {
       }
     },
     showList () {
-      if (!this.listShown && ((this.text && this.text.length) || 0) >= this.minLength) {
-        if (this.suggestions.length > 0) {
+      if (!this.listShown) {
+        const textLength = (this.text && this.text.length) || 0;
+        if (textLength >= this.minLength && this.suggestions.length > 0) {
           this.listShown = true
           this.$emit('show-list')
         }
       }
     },
-    async onInputClick (event) {
+
+    /// DEPRECATED
+    get onInputClick() { return this.showSuggestions },
+
+    async showSuggestions () {
       if (this.suggestions.length === 0 && this.minLength === 0 && !this.text) {
         await this.research()
       }
 
       this.showList()
     },
-    onArrowKeyDown (event) {
+
+    /// DEPRECATED
+    get onArrowKeyDown() { return this.moveSelection },
+
+    moveSelection (event) {
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)) {
         event.preventDefault()
-        this.showList()
+        this.showSuggestions();
 
-        const isArrowDown = hasKeyCode(this.controlScheme.selectionDown, event)
-        const direction = isArrowDown * 2 - 1
-        const listEdge = isArrowDown ? 0 : this.suggestions.length - 1
-        const hoversBetweenEdges = isArrowDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0
+        const isMovingDown = hasKeyCode(this.controlScheme.selectionDown, event)
+        const direction = isMovingDown * 2 - 1
+        const listEdge = isMovingDown ? 0 : this.suggestions.length - 1
+        const hoversBetweenEdges = isMovingDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0
 
         let item = null
 
@@ -267,11 +276,25 @@ export default {
     },
     onBlur (e) {
       this.hideList()
-      this.$emit('blur', e)
+
+      /// Clicked on suggestion
+      if (this.isAfterSelect) {
+        this.inputElement.focus()
+        this.isAfterSelect = false
+      }
+
+      /// Defocus (pure blur)
+      else {
+        this.$emit('blur', e)
+      }
     },
     onFocus (e) {
       this.$emit('focus', e)
-      this.showList()
+
+      // Show list only if the item has not been clicked
+      if (!this.isAfterSelect) {
+        this.showList()
+      }
     },
     onInput (inputEvent) {
       this.text = inputEvent.target.value
@@ -304,13 +327,11 @@ export default {
       }
 
       finally {
-        this.$nextTick(() => {
-          if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
-            this.hideList(true)
-          } else {
-            this.showList()
-          }
-        })
+        if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
+          this.hideList(true)
+        } else {
+          this.showList()
+        }
 
         return this.suggestions
       }
