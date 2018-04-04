@@ -228,12 +228,12 @@ export default {
     /// DEPRECATED
     get onArrowKeyDown() { return this.moveSelection },
 
-    moveSelection (event) {
-      if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)) {
-        event.preventDefault()
+    moveSelection (e) {
+      if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
+        e.preventDefault()
         this.showSuggestions();
 
-        const isMovingDown = hasKeyCode(this.controlScheme.selectionDown, event)
+        const isMovingDown = hasKeyCode(this.controlScheme.selectionDown, e)
         const direction = isMovingDown * 2 - 1
         const listEdge = isMovingDown ? 0 : this.suggestions.length - 1
         const hoversBetweenEdges = isMovingDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0
@@ -251,25 +251,25 @@ export default {
         this.hover(item)
       }
     },
-    onListKeyUp (event) {
+    onListKeyUp (e) {
       const select = this.controlScheme.select,
           hideList = this.controlScheme.hideList
 
-      if (hasKeyCode([select, hideList], event)) {
-        event.preventDefault()
+      if (hasKeyCode([select, hideList], e)) {
+        e.preventDefault()
         if (this.listShown) {
-          this.hideList(hasKeyCode(hideList, event))
-        } else if (hasKeyCode(select, event)) {
+          this.hideList(hasKeyCode(hideList, e))
+        } else if (hasKeyCode(select, e)) {
           this.research()
         }
       }
     },
-    onAutocomplete (event) {
-      if (hasKeyCode(this.controlScheme.autocomplete, event)
-        && (event.ctrlKey || event.shiftKey)
+    onAutocomplete (e) {
+      if (hasKeyCode(this.controlScheme.autocomplete, e)
+        && (e.ctrlKey || e.shiftKey)
         && (this.suggestions.length > 0 && this.suggestions[0])
       ) {
-        event.preventDefault()
+        e.preventDefault()
         this.select(this.suggestions[0])
         this.hover(this.suggestions[0])
       }
