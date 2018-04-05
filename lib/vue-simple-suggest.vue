@@ -10,7 +10,7 @@
         <input class="default-input" v-bind="$props" :value="text || ''">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!listShown && !removeList" :class="{ designed: !destyled }">
+    <div class="suggestions" v-if="!!listShown && !removeList">
       <slot name="misc-item-above"
         :suggestions="suggestions"
         :query="text"
@@ -399,16 +399,16 @@ export default {
 }
 </script>
 
-<style scoped>
-.vue-simple-suggest {
+<style>
+.vue-simple-suggest.designed {
   position: relative;
 }
 
-.vue-simple-suggest, .vue-simple-suggest * {
+.vue-simple-suggest.designed, .vue-simple-suggest.designed * {
   box-sizing: border-box;
 }
 
-.vue-simple-suggest .input-wrapper.designed input {
+.vue-simple-suggest.designed .input-wrapper input {
   display: block;
   width: 100%;
   padding: 10px;
@@ -420,11 +420,11 @@ export default {
   transition: all .1s;
 }
 
-.vue-simple-suggest .input-wrapper.designed input:focus {
+.vue-simple-suggest.designed .input-wrapper input:focus {
   border: 1px solid #aaa;
 }
 
-.vue-simple-suggest .suggestions {
+.vue-simple-suggest.designed .suggestions {
   position: absolute;
   left: 0;
   right: 0;
@@ -436,22 +436,22 @@ export default {
   z-index: 1000;
 }
 
-.vue-simple-suggest .suggestions .suggest-item {
+.vue-simple-suggest.designed .suggestions .suggest-item {
   cursor: pointer;
   user-select: none;
 }
 
-.vue-simple-suggest .suggestions .suggest-item,
-.vue-simple-suggest .suggestions .misc-item {
+.vue-simple-suggest.designed .suggestions .suggest-item,
+.vue-simple-suggest.designed .suggestions .misc-item {
   padding: 5px 10px;
 }
 
-.vue-simple-suggest .suggestions .suggest-item.hover {
+.vue-simple-suggest.designed .suggestions .suggest-item.hover {
   background-color: #2874D5 !important;
   color: #fff !important;
 }
 
-.vue-simple-suggest .suggestions .suggest-item.selected {
+.vue-simple-suggest.designed .suggestions .suggest-item.selected {
   background-color: #2832D5;
   color: #fff;
 }
