@@ -26,7 +26,6 @@
         }"
         :mode="mode"
         ref="suggestComponent"
-        placeholder="Search information..."
         value-attribute="id"
         display-attribute="text"
         @suggestion-click="onSuggestClick"
@@ -43,7 +42,7 @@
 
         <!-- <div class="g"><input type="text"></div> -->
 
-        <!-- <test-input/> -->
+        <test-input placeholder="Search information..."/>
 
         <template slot="misc-item-above" slot-scope="{ suggestions, query }">
           <template v-if="suggestions.length > 0">
@@ -63,7 +62,9 @@
         </template>
 
         <div slot="suggestion-item" slot-scope="scope" :title="scope.suggestion.description">
-          <span v-html="boldenSuggestion(scope)"></span>
+          <div class="text">
+            <span v-html="boldenSuggestion(scope)"></span>
+          </div>
           <button @click.stop="addToLog(scope.suggestion.description)">Log</button>
           <button @click.stop="goto(scope.suggestion.link)">Open WIKI</button>
         </div>
@@ -289,6 +290,19 @@
     border: 1px solid #2874D5;
     background-color: #2874D5;
     color: white;
+  }
+
+  #app .vue-simple-suggest .suggest-item .text {
+    display: inline-block;
+    line-height: 1;
+    vertical-align: text-bottom;
+    overflow: hidden;
+  }
+
+  #app .vue-simple-suggest .suggest-item .text span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
   }
 
   #app .vue-simple-suggest .suggest-item button {

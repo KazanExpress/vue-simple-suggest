@@ -294,10 +294,10 @@ npm run docs</code></pre><hr>
 <hr>
 <h3 id="css-class-structure"><a class="header-link" href="#css-class-structure"></a>CSS class structure</h3>
 <p>If there&#39;s a need to customize the appearance of the component, here&#39;s the internal class-structure:</p>
-<pre class="hljs"><code><span class="hljs-selector-class">.vue-simple-suggest</span>
+<pre class="hljs"><code><span class="hljs-selector-class">.vue-simple-suggest</span><span class="hljs-selector-class">.designed</span> <span class="hljs-comment">// .designed is applied only if `destyled` prop is false</span>
   <span class="hljs-selector-class">.input-wrapper</span>
     <span class="hljs-selector-class">.default-input</span> <span class="hljs-comment">// Replaced with your custom input if default slot is provided</span>
-  <span class="hljs-selector-class">.suggestions</span><span class="hljs-selector-class">.designed</span> <span class="hljs-comment">// .designed is applied only if `destyled` prop is false</span>
+  <span class="hljs-selector-class">.suggestions</span>
     <span class="hljs-selector-class">.suggest-item</span></code></pre><hr>
 <h3 id="api-definitions"><a class="header-link" href="#api-definitions"></a>API definitions</h3>
 <h4 id="props"><a class="header-link" href="#props"></a>Props</h4>
@@ -430,6 +430,11 @@ npm run docs</code></pre><hr>
 <td><code>hover</code></td>
 <td>Hovered suggestion</td>
 <td>Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).</td>
+</tr>
+<tr>
+<td><code>suggestion-click</code></td>
+<td>Selected suggestion, HTML click event</td>
+<td>Fires on suggestion element click.</td>
 </tr>
 <tr>
 <td><code>show-list</code></td>
