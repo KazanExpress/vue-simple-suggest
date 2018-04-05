@@ -322,10 +322,10 @@ JS object:
 If there's a need to customize the appearance of the component, here's the internal class-structure:
 
 ```less
-.vue-simple-suggest
+.vue-simple-suggest.designed // .designed is applied only if `destyled` prop is false
   .input-wrapper
     .default-input // Replaced with your custom input if default slot is provided
-  .suggestions.designed // .designed is applied only if `destyled` prop is false
+  .suggestions
     .suggest-item
 ```
 
@@ -375,6 +375,7 @@ A proper use-case for it being when one wants to use the component only for sele
 | `blur`          | HTML focus event            | An outward projection of the current input's event.                                                    |
 | `select`        | Selected suggestion         | Fires on suggestion selection (via a mouse click or enter keypress).                                   |
 | `hover`         | Hovered suggestion          | Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).            |
+| `suggestion-click`        | Selected suggestion, HTML click event        | Fires on suggestion element click.                                   |
 | `show-list`      | -                           | Fires each time the suggestion list is toggled to be shown.                                            |
 | `hide-list`      | -                           | Fires each time the suggestion list is being hidden.                                                   |
 | `request-start`  | Current input value (query) | Fires each time a `list` function starts executing.                                                 |

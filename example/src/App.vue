@@ -29,6 +29,7 @@
         placeholder="Search information..."
         value-attribute="id"
         display-attribute="text"
+        @suggestion-click="onSuggestClick"
         @select="onSuggestSelect"
         @hover="onSuggestHover"
         @focus="onFocus"
@@ -63,6 +64,8 @@
 
         <div slot="suggestion-item" slot-scope="scope" :title="scope.suggestion.description">
           <span v-html="boldenSuggestion(scope)"></span>
+          <button @click.stop="addToLog(scope.suggestion.description)">Log</button>
+          <button @click.stop="goto(scope.suggestion.link)">Open WIKI</button>
         </div>
 
         <div class="misc-item" slot="misc-item-below" slot-scope="{ suggestions }" v-if="loading">
@@ -113,7 +116,7 @@
         const replace = str => (result = result && typeof result === 'string' ? result.replace(str, str.bold()) : result);
         const texts = query.split(/[\s-_/\\|\.]/gm).filter(t => !!t) || [''];
         const procs = [
-          s => s[0].toUpperCase() + s.substr(1),
+          s => s[0].toUpperCase() + s.substr(1).toLowerCase(),
           s => s.toLowerCase(),
           s => s.toUpperCase(),
           s => s
@@ -122,8 +125,12 @@
         texts.forEach(t => procs.forEach(p => replace(p(t))));
         return result;
       },
+      goto (url) {
+        window.open(url, '_blank').focus()
+      },
       addToLog (name, e) {
         this.log.push(name)
+
         console.log.apply(console, arguments);
 
         this.$nextTick(() => {
@@ -141,6 +148,9 @@
       },
       onHideList () {
         this.addToLog('hide-list')
+      },
+      onSuggestClick (suggest, e) {
+        this.addToLog('suggestion-click', suggest, e)
       },
       onSuggestSelect (suggest) {
         this.addToLog('select', suggest)
@@ -254,7 +264,6 @@
 
   #app .log pre {
     white-space: pre-wrap;
-    word-break: break-all;
   }
 
   #app pre.selected {
@@ -280,5 +289,11 @@
     border: 1px solid #2874D5;
     background-color: #2874D5;
     color: white;
+  }
+
+  #app .vue-simple-suggest .suggest-item button {
+    float: right;
+    line-height: 1;
+    margin-left: 4px;
   }
 </style>
