@@ -129,7 +129,7 @@ var VueSimpleSuggest = {
   render: function () {
     var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest" }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: { designed: !_vm.destyled }, on: { "click": _vm.showSuggestions, "input": _vm.onInput, "keydown": function ($event) {
           _vm.moveSelection($event), _vm.onAutocomplete($event);
-        }, "keyup": _vm.onListKeyUp } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", class: { designed: !_vm.destyled } }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+        }, "keyup": _vm.onListKeyUp } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions" }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('div', { key: _vm.isPlainSuggestion ? 'suggestion-' + index : _vm.valueProperty(suggestion), staticClass: "suggest-item", class: {
           selected: _vm.selected && _vm.valueProperty(suggestion) == _vm.valueProperty(_vm.selected),
           hover: _vm.hovered && _vm.valueProperty(_vm.hovered) == _vm.valueProperty(suggestion)
@@ -329,12 +329,12 @@ var VueSimpleSuggest = {
       return this.moveSelection;
     },
 
-    moveSelection(event) {
-      if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)) {
-        event.preventDefault();
+    moveSelection(e) {
+      if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
+        e.preventDefault();
         this.showSuggestions();
 
-        const isMovingDown = hasKeyCode(this.controlScheme.selectionDown, event);
+        const isMovingDown = hasKeyCode(this.controlScheme.selectionDown, e);
         const direction = isMovingDown * 2 - 1;
         const listEdge = isMovingDown ? 0 : this.suggestions.length - 1;
         const hoversBetweenEdges = isMovingDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
@@ -352,22 +352,22 @@ var VueSimpleSuggest = {
         this.hover(item);
       }
     },
-    onListKeyUp(event) {
+    onListKeyUp(e) {
       const select = this.controlScheme.select,
             hideList = this.controlScheme.hideList;
 
-      if (hasKeyCode([select, hideList], event)) {
-        event.preventDefault();
+      if (hasKeyCode([select, hideList], e)) {
+        e.preventDefault();
         if (this.listShown) {
-          this.hideList(hasKeyCode(hideList, event));
-        } else if (hasKeyCode(select, event)) {
+          this.hideList(hasKeyCode(hideList, e));
+        } else if (hasKeyCode(select, e)) {
           this.research();
         }
       }
     },
-    onAutocomplete(event) {
-      if (hasKeyCode(this.controlScheme.autocomplete, event) && (event.ctrlKey || event.shiftKey) && this.suggestions.length > 0 && this.suggestions[0]) {
-        event.preventDefault();
+    onAutocomplete(e) {
+      if (hasKeyCode(this.controlScheme.autocomplete, e) && (e.ctrlKey || e.shiftKey) && this.suggestions.length > 0 && this.suggestions[0]) {
+        e.preventDefault();
         this.select(this.suggestions[0]);
         this.hover(this.suggestions[0]);
       }
