@@ -1,6 +1,6 @@
 <template>
-  <div class="vue-simple-suggest">
-    <div class="input-wrapper" :class="{ designed: !destyled }"
+  <div class="vue-simple-suggest" :class="{ designed: !destyled }">
+    <div class="input-wrapper"
       @click="showSuggestions"
       @input="onInput"
       @keydown="moveSelection($event), onAutocomplete($event)"
