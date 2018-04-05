@@ -143,7 +143,7 @@ var event = 'input';
 
 var VueSimpleSuggest = {
   render: function render() {
-    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest" }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: { designed: !_vm.destyled }, on: { "click": _vm.showSuggestions, "input": _vm.onInput, "keydown": function keydown($event) {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: { designed: !_vm.destyled } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", on: { "click": _vm.showSuggestions, "input": _vm.onInput, "keydown": function keydown($event) {
           _vm.moveSelection($event), _vm.onAutocomplete($event);
         }, "keyup": _vm.onListKeyUp } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions" }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('div', { key: _vm.isPlainSuggestion ? 'suggestion-' + index : _vm.valueProperty(suggestion), staticClass: "suggest-item", class: {
