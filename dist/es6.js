@@ -127,9 +127,15 @@ let event = 'input';
 
 var VueSimpleSuggest = {
   render: function () {
-    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest" }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: { designed: !_vm.destyled }, on: { "click": _vm.showSuggestions, "input": _vm.onInput, "keydown": function ($event) {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: { designed: !_vm.destyled } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", on: { "click": _vm.showSuggestions, "input": _vm.onInput, "keydown": function ($event) {
           _vm.moveSelection($event), _vm.onAutocomplete($event);
-        }, "keyup": _vm.onListKeyUp } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", class: { designed: !_vm.destyled } }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+        }, "keyup": _vm.onListKeyUp } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", on: { "mouseenter": function ($event) {
+          _vm.hoverList(true);
+        }, "mouseleave": function ($event) {
+          _vm.hoverList(false);
+        }, "click": function ($event) {
+          _vm.inputElement.focus();
+        } } }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('div', { key: _vm.isPlainSuggestion ? 'suggestion-' + index : _vm.valueProperty(suggestion), staticClass: "suggest-item", class: {
           selected: _vm.selected && _vm.valueProperty(suggestion) == _vm.valueProperty(_vm.selected),
           hover: _vm.hovered && _vm.valueProperty(_vm.hovered) == _vm.valueProperty(suggestion)
@@ -137,7 +143,11 @@ var VueSimpleSuggest = {
             _vm.hover(suggestion, $event.target);
           }, "mouseleave": function ($event) {
             _vm.hover(null, $event.target);
-          } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { suggestion: suggestion, query: _vm.text })], 2);
+          }, "click": function ($event) {
+            _vm.suggestionClick(suggestion, $event);
+          } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { autocomplete: function () {
+          return _vm.autocompleteText(suggestion);
+        }, suggestion: suggestion, query: _vm.text })], 2);
     }), _vm._v(" "), _vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()]);
   },
   staticRenderFns: [],
@@ -218,7 +228,8 @@ var VueSimpleSuggest = {
       timeoutInstance: null,
       text: this.value,
       isPlainSuggestion: false,
-      isAfterSelect: false,
+      isClicking: false,
+      isOverList: false,
       controlScheme: {}
     };
   },
@@ -256,11 +267,11 @@ var VueSimpleSuggest = {
     this.input[this.off]('focus', this.onFocus);
   },
   methods: {
+    isScopedSlotEmpty(slot) {
+      return slot && typeof slot === 'function' ? !slot(this) : !slot;
+    },
     miscSlotsAreEmpty() {
-      const slot = name => this.$scopedSlots['misc-item-' + name];
-      const isFunction = slotName => slot(slotName) && typeof slot(slotName) === 'function';
-
-      return ['above', 'below'].some(slotName => isFunction(slotName) ? !slot(slotName)(this) : !slot(slotName));
+      return ['above', 'below'].some(slotName => this.isScopedSlotEmpty(this.$scopedSlots['misc-item-' + slotName]));
     },
     displayProperty(obj) {
       return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + '';
@@ -268,30 +279,31 @@ var VueSimpleSuggest = {
     valueProperty(obj) {
       return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
     },
+    autocompleteText(item) {
+      this.$emit('input', this.displayProperty(item));
+      this.inputElement.value = this.displayProperty(item);
+      this.text = this.displayProperty(item);
+    },
     select(item) {
       this.hovered = null;
       this.selected = item;
 
       this.$emit('select', item);
 
-      // Ya know, input stuff
-      this.$emit('input', this.displayProperty(item));
-      this.inputElement.value = this.displayProperty(item);
-      this.text = this.displayProperty(item);
-
-      this.isAfterSelect = true;
+      this.autocompleteText(item);
     },
     hover(item, elem) {
       this.hovered = item;
+
       if (this.hovered != null) {
         this.$emit('hover', item, elem);
       }
     },
+    hoverList(isOverList) {
+      this.isOverList = isOverList;
+    },
     hideList(ignoreSelection = false) {
       if (this.listShown) {
-        if (this.hovered && !ignoreSelection) {
-          this.select(this.hovered);
-        }
         this.listShown = false;
         this.$emit('hide-list');
       }
@@ -299,18 +311,12 @@ var VueSimpleSuggest = {
     showList() {
       if (!this.listShown) {
         const textLength = this.text && this.text.length || 0;
-        if (textLength >= this.minLength && this.suggestions.length > 0) {
+        if (textLength >= this.minLength && (this.suggestions.length > 0 || !this.miscSlotsAreEmpty())) {
           this.listShown = true;
           this.$emit('show-list');
         }
       }
     },
-
-    /// DEPRECATED
-    get onInputClick() {
-      return this.showSuggestions;
-    },
-
     showSuggestions: _async(function () {
       var _this = this;
 
@@ -323,18 +329,12 @@ var VueSimpleSuggest = {
       });
     }),
 
-
-    /// DEPRECATED
-    get onArrowKeyDown() {
-      return this.moveSelection;
-    },
-
-    moveSelection(event) {
-      if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], event)) {
-        event.preventDefault();
+    moveSelection(e) {
+      if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
+        e.preventDefault();
         this.showSuggestions();
 
-        const isMovingDown = hasKeyCode(this.controlScheme.selectionDown, event);
+        const isMovingDown = hasKeyCode(this.controlScheme.selectionDown, e);
         const direction = isMovingDown * 2 - 1;
         const listEdge = isMovingDown ? 0 : this.suggestions.length - 1;
         const hoversBetweenEdges = isMovingDown ? this.hoveredIndex < this.suggestions.length - 1 : this.hoveredIndex > 0;
@@ -352,45 +352,57 @@ var VueSimpleSuggest = {
         this.hover(item);
       }
     },
-    onListKeyUp(event) {
+    onListKeyUp(e) {
       const select = this.controlScheme.select,
             hideList = this.controlScheme.hideList;
 
-      if (hasKeyCode([select, hideList], event)) {
-        event.preventDefault();
+      if (hasKeyCode([select, hideList], e)) {
+        e.preventDefault();
         if (this.listShown) {
-          this.hideList(hasKeyCode(hideList, event));
-        } else if (hasKeyCode(select, event)) {
+          if (hasKeyCode(select, e)) {
+            this.select(this.hovered);
+          }
+
+          this.hideList();
+        } else if (hasKeyCode(select, e)) {
           this.research();
         }
       }
     },
-    onAutocomplete(event) {
-      if (hasKeyCode(this.controlScheme.autocomplete, event) && (event.ctrlKey || event.shiftKey) && this.suggestions.length > 0 && this.suggestions[0]) {
-        event.preventDefault();
-        this.select(this.suggestions[0]);
+    onAutocomplete(e) {
+      if (hasKeyCode(this.controlScheme.autocomplete, e) && (e.ctrlKey || e.shiftKey) && this.suggestions.length > 0 && this.suggestions[0] && this.listShown) {
+        e.preventDefault();
         this.hover(this.suggestions[0]);
+        this.autocompleteText(this.suggestions[0]);
       }
+    },
+    suggestionClick(suggestion, e) {
+      this.$emit('suggestion-click', suggestion, e);
+      this.select(suggestion);
+      this.hideList();
+      this.inputElement.focus();
+
+      /// Ensure, that all needed flags are off before finishing the click.
+      this.isClicking = this.isOverList = false;
     },
     onBlur(e) {
-      this.hideList();
+      /// Clicking starts here, because input's blur occurs before the suggestionClick
+      /// and exactly when the user clicks the mouse button or taps the screen.
+      this.isClicking = this.isOverList;
 
-      /// Clicked on suggestion
-      if (this.isAfterSelect) {
-        this.inputElement.focus();
-        this.isAfterSelect = false;
+      if (!this.isClicking) {
+        this.hideList();
+        this.$emit('blur', e);
       }
-
-      /// Defocus (pure blur)
-      else {
-          this.$emit('blur', e);
-        }
     },
     onFocus(e) {
-      this.$emit('focus', e);
+      // Only emit, if it was a native input focus
+      if (e.sourceCapabilities) {
+        this.$emit('focus', e);
+      }
 
       // Show list only if the item has not been clicked
-      if (!this.isAfterSelect) {
+      if (!this.isClicking) {
         this.showList();
       }
     },
