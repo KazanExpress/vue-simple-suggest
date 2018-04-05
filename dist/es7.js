@@ -178,20 +178,20 @@ var VueSimpleSuggest = {
     };
   },
   computed: {
-    slotIsComponent() {
-      return this.$slots.default && this.$slots.default.length > 0 && !!this.$slots.default[0].componentInstance;
-    },
     listIsRequest() {
       return typeof this.list === 'function';
     },
+    inputIsComponent() {
+      return this.$slots.default && this.$slots.default.length > 0 && !!this.$slots.default[0].componentInstance;
+    },
     input() {
-      return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement;
+      return this.inputIsComponent ? this.$slots.default[0].componentInstance : this.inputElement;
     },
     on() {
-      return this.slotIsComponent ? '$on' : 'addEventListener';
+      return this.inputIsComponent ? '$on' : 'addEventListener';
     },
     off() {
-      return this.slotIsComponent ? '$off' : 'removeEventListener';
+      return this.inputIsComponent ? '$off' : 'removeEventListener';
     },
     hoveredIndex() {
       return this.suggestions.findIndex(el => this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el));
@@ -327,7 +327,8 @@ var VueSimpleSuggest = {
     onBlur(e) {
       /// Clicking starts here, because input's blur occurs before the suggestionClick
       /// and exactly when the user clicks the mouse button or taps the screen.
-      this.isClicking = this.isOverList;
+      this.isClicking = this.isOverList && !e.relatedTarget;
+      /// Also, a check for a related target, as a blur event can occur not only via clicks.
 
       if (!this.isClicking) {
         this.hideList();
