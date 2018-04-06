@@ -322,10 +322,11 @@ JS object:
 If there's a need to customize the appearance of the component, here's the internal class-structure:
 
 ```less
-.vue-simple-suggest
+// .designed is applied only if `destyled` prop is false
+.vue-simple-suggest.designed.focus // .focus is applied whenever the component is focused.
   .input-wrapper
     .default-input // Replaced with your custom input if default slot is provided
-  .suggestions.designed // .designed is applied only if `destyled` prop is false
+  .suggestions
     .suggest-item
 ```
 
@@ -375,6 +376,7 @@ A proper use-case for it being when one wants to use the component only for sele
 | `blur`          | HTML focus event            | An outward projection of the current input's event.                                                    |
 | `select`        | Selected suggestion         | Fires on suggestion selection (via a mouse click or enter keypress).                                   |
 | `hover`         | Hovered suggestion          | Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).            |
+| `suggestion-click`        | Selected suggestion, HTML click event        | Fires on suggestion element click.                                   |
 | `show-list`      | -                           | Fires each time the suggestion list is toggled to be shown.                                            |
 | `hide-list`      | -                           | Fires each time the suggestion list is being hidden.                                                   |
 | `request-start`  | Current input value (query) | Fires each time a `list` function starts executing.                                                 |
@@ -407,14 +409,12 @@ You can use these to imitate some of the component's behaviours.
 
 | Name | Arguments | Description |
 |------|-----------|-------------|
-|`onInputClick` <sup>deprecated</sup>| HTML click event | Fires whenever the input is being clicked. Shows suggestion list (gets them from the source if none is present). |
 |`showSuggestions`| Alias for `onInputClick`. Will replace it in the future releases |
 |`onInput`| HTML input event | Fires whenever the input text is changed. Emits the [`input`](#emitted-events) event. |
 |`onFocus`| HTML focus event | Fires whenever the input comes into focus, emits the [`focus`](#emitted-events) event. |
 |`onBlur`| HTML focus event | Antonym to `onFocus`. |
 |`onAutocomplete`| - | Fires when the autocomplete [keyboard shortcut](#default-controls) is pressed. Selects the first suggestion. |
 |`onListKeyUp`| HTML keyup event | Fires on component keyup. Internally used for hiding the list. |
-|`onArrowKeyDown` <sup>deprecated</sup>| HTML keydown event | Fires on component keydown. Used for moving list selection. |
 |`moveSelection`| Alias for `onArrowKeyDown`. Will replace it in the future releases. |
 
 -----
@@ -437,7 +437,11 @@ You can use these to imitate some of the component's behaviours.
 |`input`| - | A ref to the current input (component or vanilla). |
 |`hoveredIndex`| - | The current hovered element index. |
 |`controlScheme`| [Default Controls](#default-controls) | The current controls scheme. |
-|`isPlainSuggestion`| false | Whether the current suggestions list consists of plain strings (not objects). |
+|`isPlainSuggestion`| `false` | Whether the current suggestions list consists of plain strings (not objects). |
+|`isClicking`| `false` | `true` if the user currently clicks. |
+|`isOverList`| `false` | `true` if the user currently hovers over suggestions list. |
+|`isInFocus`| `false` | `true` if the component is currently in focus. |
+|`isTabbed`| `false` | `true` if the user pressed tab, while the component is in focus. |
 
 -----
 
@@ -492,6 +496,8 @@ Defaults to a simple input with props passed to vue-simple-suggest.
 ##### Custom suggestion item
 > `suggestion-item` slot (optional)
 
+**Description**
+
 Allows custom html-definitons of the suggestion items in a list.
 Defaults to `<span>{{ displayAttribute(suggestion) }}</span>`
 
@@ -501,12 +507,32 @@ Accepts the `suggestion` object and a `query` text as a `slot-scope` attribute v
 <!-- Example: -->
 <vue-simple-suggest>
   <div slot="suggestion-item" slot-scope="{ suggestion, query }">
-    <div>My {{ suggestion.title }}</div>
+    <div>{{ suggestion.title }} by {{ suggestion.author }}</div>
   </div>
 </vue-simple-suggest>
 ```
 
-In cooperation with [ref fields](#ref-methods) can be used to drastically transform the suggestion list behaviour.
+**Custom buttons inside of suggestion items**
+
+If you want to add some action buttons to the suggetion items, just use the `.stop` directive modifier to prevent the default `suggestion-click`:
+
+
+```html
+<!-- Example: -->
+<vue-simple-suggest>
+  <div slot="suggestion-item" slot-scope="{ suggestion, query }">
+    <span>{{ suggestion.title }} by {{ suggestion.author }}</span>
+    <button @click.stop="remove(suggestion)">remove from list</button>
+    <button @click.stop="like(suggestion)">add to favorites</button>
+  </div>
+</vue-simple-suggest>
+```
+
+In this case, the buttons will ONLY execute the bound method and will not select the suggested item.
+
+**Ref Data**
+
+In cooperation with [ref fields](#ref-methods) this slot can be used to drastically transform the suggestion list behaviour.
 
 One of the simplest examples - highlighting the query text in the results:
 
@@ -535,7 +561,7 @@ boldenSuggestion({ suggestion, query }) {
   return result;
 }
 ```
-Result:
+Result via Google Books search API:
 
 ![](assets/screenshot.jpg)
 

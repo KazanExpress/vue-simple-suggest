@@ -17,6 +17,7 @@
   background: white;
   outline:none;
   transition: all .1s;
+  transition-delay: .05s
 }
 
 .vue-simple-suggest.designed .input-wrapper input:focus {

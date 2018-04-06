@@ -1,5 +1,7 @@
 <template>
-  <div class="vue-simple-suggest" :class="{ designed: !destyled }">
+  <div class="vue-simple-suggest" :class="{ designed: !destyled, focus: isInFocus }"
+    @keydown.tab="isTabbed = true"
+  >
     <div class="input-wrapper"
       @click="showSuggestions"
       @input="onInput"
@@ -10,7 +12,10 @@
         <input class="default-input" v-bind="$props" :value="text || ''">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!listShown && !removeList">
+    <div class="suggestions" v-if="!!listShown && !removeList"
+      @mouseenter="hoverList(true)"
+      @mouseleave="hoverList(false)"
+    >
       <slot name="misc-item-above"
         :suggestions="suggestions"
         :query="text"
@@ -19,12 +24,14 @@
       <div class="suggest-item" v-for="(suggestion, index) in suggestions"
         @mouseenter="hover(suggestion, $event.target)"
         @mouseleave="hover(null, $event.target)"
+        @click="suggestionClick(suggestion, $event)"
         :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
         :class="{
           selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
           hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
         }">
         <slot name="suggestion-item"
+          :autocomplete="() => autocompleteText(suggestion)"
           :suggestion="suggestion"
           :query="text">
           <span>{{ displayProperty(suggestion) }}</span>
@@ -126,25 +133,28 @@ export default {
       timeoutInstance: null,
       text: this.value,
       isPlainSuggestion: false,
-      isAfterSelect: false,
+      isClicking: false,
+      isOverList: false,
+      isInFocus: false,
+      isTabbed: false,
       controlScheme: {}
     }
   },
   computed: {
-    slotIsComponent () {
-      return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance
-    },
     listIsRequest () {
       return typeof this.list === 'function'
     },
+    inputIsComponent () {
+      return (this.$slots.default && this.$slots.default.length > 0) && !!this.$slots.default[0].componentInstance
+    },
     input () {
-      return this.slotIsComponent ? this.$slots.default[0].componentInstance : this.inputElement
+      return this.inputIsComponent ? this.$slots.default[0].componentInstance : this.inputElement
     },
     on () {
-      return this.slotIsComponent ? '$on' : 'addEventListener'
+      return this.inputIsComponent ? '$on' : 'addEventListener'
     },
     off () {
-      return this.slotIsComponent ? '$off' : 'removeEventListener'
+      return this.inputIsComponent ? '$off' : 'removeEventListener'
     },
     hoveredIndex () {
       return this.suggestions.findIndex(el => this.hovered && (this.valueProperty(this.hovered) == this.valueProperty(el)))
@@ -164,11 +174,11 @@ export default {
     this.input[this.off]('focus', this.onFocus)
   },
   methods: {
+    isScopedSlotEmpty (slot) {
+      return (slot && typeof slot === 'function') ? !slot(this) : !slot
+    },
     miscSlotsAreEmpty () {
-      const slot = name => this.$scopedSlots['misc-item-' + name]
-      const isFunction = slotName => slot(slotName) && typeof slot(slotName) === 'function'
-
-      return ['above', 'below'].some(slotName => isFunction(slotName) ? !slot(slotName)(this) : !slot(slotName))
+      return ['above', 'below'].some(slotName => this.isScopedSlotEmpty(this.$scopedSlots['misc-item-' + slotName]))
     },
     displayProperty (obj) {
       return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + ''
@@ -176,30 +186,31 @@ export default {
     valueProperty (obj) {
       return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute)
     },
+    autocompleteText (text) {
+      this.$emit('input', text)
+      this.inputElement.value = text
+      this.text = text
+    },
     select (item) {
       this.hovered = null
       this.selected = item
 
       this.$emit('select', item)
 
-      // Ya know, input stuff
-      this.$emit('input', this.displayProperty(item))
-      this.inputElement.value = this.displayProperty(item)
-      this.text = this.displayProperty(item)
-
-      this.isAfterSelect = true
+      this.autocompleteText(this.displayProperty(item))
     },
     hover (item, elem) {
       this.hovered = item
+
       if (this.hovered != null) {
         this.$emit('hover', item, elem)
       }
     },
-    hideList (ignoreSelection = false) {
+    hoverList (isOverList) {
+      this.isOverList = isOverList
+    },
+    hideList () {
       if (this.listShown) {
-        if (this.hovered && !ignoreSelection) {
-          this.select(this.hovered)
-        }
         this.listShown = false
         this.$emit('hide-list')
       }
@@ -207,16 +218,12 @@ export default {
     showList () {
       if (!this.listShown) {
         const textLength = (this.text && this.text.length) || 0;
-        if (textLength >= this.minLength && this.suggestions.length > 0) {
+        if (textLength >= this.minLength && (this.suggestions.length > 0 || !this.miscSlotsAreEmpty())) {
           this.listShown = true
           this.$emit('show-list')
         }
       }
     },
-
-    /// DEPRECATED
-    get onInputClick() { return this.showSuggestions },
-
     async showSuggestions () {
       if (this.suggestions.length === 0 && this.minLength === 0 && !this.text) {
         await this.research()
@@ -224,10 +231,6 @@ export default {
 
       this.showList()
     },
-
-    /// DEPRECATED
-    get onArrowKeyDown() { return this.moveSelection },
-
     moveSelection (e) {
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
         e.preventDefault()
@@ -258,7 +261,11 @@ export default {
       if (hasKeyCode([select, hideList], e)) {
         e.preventDefault()
         if (this.listShown) {
-          this.hideList(hasKeyCode(hideList, e))
+          if (hasKeyCode(select, e) && this.hovered) {
+            this.select(this.hovered)
+          }
+
+          this.hideList()
         } else if (hasKeyCode(select, e)) {
           this.research()
         }
@@ -268,31 +275,56 @@ export default {
       if (hasKeyCode(this.controlScheme.autocomplete, e)
         && (e.ctrlKey || e.shiftKey)
         && (this.suggestions.length > 0 && this.suggestions[0])
+        && (this.listShown)
       ) {
         e.preventDefault()
-        this.select(this.suggestions[0])
         this.hover(this.suggestions[0])
+        this.autocompleteText(this.displayProperty(this.suggestions[0]))
       }
     },
-    onBlur (e) {
+    suggestionClick (suggestion, e) {
+      this.$emit('suggestion-click', suggestion, e)
+      this.select(suggestion)
       this.hideList()
 
-      /// Clicked on suggestion
-      if (this.isAfterSelect) {
-        this.inputElement.focus()
-        this.isAfterSelect = false
+      /// Ensure, that all needed flags are off before finishing the click.
+      this.isClicking = this.isOverList = false
+    },
+    onBlur (e) {
+      if (this.isInFocus) {
+
+        /// Clicking starts here, because input's blur occurs before the suggestionClick
+        /// and exactly when the user clicks the mouse button or taps the screen.
+        this.isClicking = this.isOverList && !this.isTabbed
+
+        if (!this.isClicking) {
+          this.isInFocus = false;
+          this.hideList()
+
+          this.$emit('blur', e)
+        } else if (e.isTrusted && !this.isTabbed) {
+          this.inputElement.focus()
+        }
+      } else {
+        this.inputElement.blur()
+        console.error(
+          `This should never happen!
+          If you encouneterd this error, please report at https://github.com/KazanExpress/vue-simple-suggest/issues`
+        )
       }
 
-      /// Defocus (pure blur)
-      else {
-        this.$emit('blur', e)
-      }
+      this.isTabbed = false;
     },
     onFocus (e) {
-      this.$emit('focus', e)
+      this.isInFocus = true;
+
+      // Only emit, if it was a native input focus
+      if (e.sourceCapabilities) {
+        this.$emit('focus', e)
+      }
 
       // Show list only if the item has not been clicked
-      if (!this.isAfterSelect) {
+      if (!this.isClicking) {
         this.showList()
       }
     },
@@ -328,7 +360,7 @@ export default {
 
       finally {
         if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
-          this.hideList(true)
+          this.hideList()
         } else {
           this.showList()
         }
@@ -338,7 +370,7 @@ export default {
     },
     async getSuggestions (value = '') {
       if (this.listShown && !value) {
-        this.hideList(true)
+        this.hideList()
         this.clearSuggestions()
         return this.suggestions
       }
@@ -418,9 +450,10 @@ export default {
   background: white;
   outline:none;
   transition: all .1s;
+  transition-delay: .05s
 }
 
-.vue-simple-suggest.designed .input-wrapper input:focus {
+.vue-simple-suggest.designed.focus .input-wrapper input {
   border: 1px solid #aaa;
 }
 
