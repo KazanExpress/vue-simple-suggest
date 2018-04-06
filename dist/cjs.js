@@ -143,14 +143,16 @@ var event = 'input';
 
 var VueSimpleSuggest = {
   render: function render() {
-    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: { designed: !_vm.destyled } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", on: { "click": _vm.showSuggestions, "input": _vm.onInput, "keydown": function keydown($event) {
+    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: { designed: !_vm.destyled, focus: _vm.isInFocus }, on: { "keydown": function keydown($event) {
+          if (!('button' in $event) && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
+            return null;
+          }_vm.isTabbed = true;
+        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", on: { "click": _vm.showSuggestions, "input": _vm.onInput, "keydown": function keydown($event) {
           _vm.moveSelection($event), _vm.onAutocomplete($event);
         }, "keyup": _vm.onListKeyUp } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", on: { "mouseenter": function mouseenter($event) {
           _vm.hoverList(true);
         }, "mouseleave": function mouseleave($event) {
           _vm.hoverList(false);
-        }, "click": function click($event) {
-          _vm.inputElement.focus();
         } } }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('div', { key: _vm.isPlainSuggestion ? 'suggestion-' + index : _vm.valueProperty(suggestion), staticClass: "suggest-item", class: {
           selected: _vm.selected && _vm.valueProperty(suggestion) == _vm.valueProperty(_vm.selected),
@@ -254,6 +256,8 @@ var VueSimpleSuggest = {
       isPlainSuggestion: false,
       isClicking: false,
       isOverList: false,
+      isInFocus: false,
+      isTabbed: false,
       controlScheme: {}
     };
   },
@@ -313,10 +317,10 @@ var VueSimpleSuggest = {
     valueProperty: function valueProperty(obj) {
       return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
     },
-    autocompleteText: function autocompleteText(item) {
-      this.$emit('input', this.displayProperty(item));
-      this.inputElement.value = this.displayProperty(item);
-      this.text = this.displayProperty(item);
+    autocompleteText: function autocompleteText(text) {
+      this.$emit('input', text);
+      this.inputElement.value = text;
+      this.text = text;
     },
     select: function select(item) {
       this.hovered = null;
@@ -324,7 +328,7 @@ var VueSimpleSuggest = {
 
       this.$emit('select', item);
 
-      this.autocompleteText(item);
+      this.autocompleteText(this.displayProperty(item));
     },
     hover: function hover(item, elem) {
       this.hovered = item;
@@ -337,7 +341,6 @@ var VueSimpleSuggest = {
       this.isOverList = isOverList;
     },
     hideList: function hideList() {
-
       if (this.listShown) {
         this.listShown = false;
         this.$emit('hide-list');
@@ -393,7 +396,7 @@ var VueSimpleSuggest = {
       if (hasKeyCode([select, hideList], e)) {
         e.preventDefault();
         if (this.listShown) {
-          if (hasKeyCode(select, e)) {
+          if (hasKeyCode(select, e) && this.hovered) {
             this.select(this.hovered);
           }
 
@@ -407,30 +410,42 @@ var VueSimpleSuggest = {
       if (hasKeyCode(this.controlScheme.autocomplete, e) && (e.ctrlKey || e.shiftKey) && this.suggestions.length > 0 && this.suggestions[0] && this.listShown) {
         e.preventDefault();
         this.hover(this.suggestions[0]);
-        this.autocompleteText(this.suggestions[0]);
+        this.autocompleteText(this.displayProperty(this.suggestions[0]));
       }
     },
     suggestionClick: function suggestionClick(suggestion, e) {
       this.$emit('suggestion-click', suggestion, e);
       this.select(suggestion);
       this.hideList();
-      this.inputElement.focus();
 
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = this.isOverList = false;
     },
     onBlur: function onBlur(e) {
-      /// Clicking starts here, because input's blur occurs before the suggestionClick
-      /// and exactly when the user clicks the mouse button or taps the screen.
-      this.isClicking = this.isOverList && !e.relatedTarget;
-      /// Also, a check for a related target, as a blur event can occur not only via clicks.
+      if (this.isInFocus) {
 
-      if (!this.isClicking) {
-        this.hideList();
-        this.$emit('blur', e);
+        /// Clicking starts here, because input's blur occurs before the suggestionClick
+        /// and exactly when the user clicks the mouse button or taps the screen.
+        this.isClicking = this.isOverList && !this.isTabbed;
+
+        if (!this.isClicking) {
+          this.isInFocus = false;
+          this.hideList();
+
+          this.$emit('blur', e);
+        } else if (e.isTrusted && !this.isTabbed) {
+          this.inputElement.focus();
+        }
+      } else {
+        this.inputElement.blur();
+        console.error('This should never happen!\n          If you encouneterd this error, please report at https://github.com/KazanExpress/vue-simple-suggest/issues');
       }
+
+      this.isTabbed = false;
     },
     onFocus: function onFocus(e) {
+      this.isInFocus = true;
+
       // Only emit, if it was a native input focus
       if (e.sourceCapabilities) {
         this.$emit('focus', e);
@@ -478,7 +493,7 @@ var VueSimpleSuggest = {
         });
       }, function () {
         if (_this4.suggestions.length === 0 && _this4.miscSlotsAreEmpty()) {
-          _this4.hideList(true);
+          _this4.hideList();
         } else {
           _this4.showList();
         }
@@ -492,7 +507,7 @@ var VueSimpleSuggest = {
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
       if (_this5.listShown && !value) {
-        _this5.hideList(true);
+        _this5.hideList();
         _this5.clearSuggestions();
         return _this5.suggestions;
       }

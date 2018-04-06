@@ -20,7 +20,7 @@
   transition-delay: .05s
 }
 
-.vue-simple-suggest.designed .input-wrapper input:focus {
+.vue-simple-suggest.designed.focus .input-wrapper input {
   border: 1px solid #aaa;
 }
 
