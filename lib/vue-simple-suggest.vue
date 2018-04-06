@@ -1,5 +1,7 @@
 <template>
-  <div class="vue-simple-suggest" :class="{ designed: !destyled }">
+  <div class="vue-simple-suggest" :class="{ designed: !destyled, focus: isInFocus }"
+    @keydown.tab="isTabbed = true"
+  >
     <div class="input-wrapper"
       @click="showSuggestions"
       @input="onInput"
@@ -13,7 +15,6 @@
     <div class="suggestions" v-if="!!listShown && !removeList"
       @mouseenter="hoverList(true)"
       @mouseleave="hoverList(false)"
-      @click="inputElement.focus()"
     >
       <slot name="misc-item-above"
         :suggestions="suggestions"
@@ -134,6 +135,8 @@ export default {
       isPlainSuggestion: false,
       isClicking: false,
       isOverList: false,
+      isInFocus: false,
+      isTabbed: false,
       controlScheme: {}
     }
   },
@@ -163,12 +166,12 @@ export default {
   },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
-    this.input[this.on]('blur', this.onBlur)
-    this.input[this.on]('focus', this.onFocus)
+    this.input[this.on]('blur', this.onInputBlur)
+    this.input[this.on]('focus', this.onInputFocus)
   },
   beforeDestroy () {
-    this.input[this.off]('blur', this.onBlur)
-    this.input[this.off]('focus', this.onFocus)
+    this.input[this.off]('blur', this.onInputBlur)
+    this.input[this.off]('focus', this.onInputFocus)
   },
   methods: {
     isScopedSlotEmpty (slot) {
@@ -183,10 +186,10 @@ export default {
     valueProperty (obj) {
       return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute)
     },
-    autocompleteText (item) {
-      this.$emit('input', this.displayProperty(item))
-      this.inputElement.value = this.displayProperty(item)
-      this.text = this.displayProperty(item)
+    autocompleteText (text) {
+      this.$emit('input', text)
+      this.inputElement.value = text
+      this.text = text
     },
     select (item) {
       this.hovered = null
@@ -194,7 +197,7 @@ export default {
 
       this.$emit('select', item)
 
-      this.autocompleteText(item)
+      this.autocompleteText(this.displayProperty(item))
     },
     hover (item, elem) {
       this.hovered = item
@@ -206,7 +209,7 @@ export default {
     hoverList (isOverList) {
       this.isOverList = isOverList
     },
-    hideList (ignoreSelection = false) {
+    hideList () {
       if (this.listShown) {
         this.listShown = false
         this.$emit('hide-list')
@@ -258,7 +261,7 @@ export default {
       if (hasKeyCode([select, hideList], e)) {
         e.preventDefault()
         if (this.listShown) {
-          if (hasKeyCode(select, e)) {
+          if (hasKeyCode(select, e) && this.hovered) {
             this.select(this.hovered)
           }
 
@@ -276,30 +279,44 @@ export default {
       ) {
         e.preventDefault()
         this.hover(this.suggestions[0])
-        this.autocompleteText(this.suggestions[0])
+        this.autocompleteText(this.displayProperty(this.suggestions[0]))
       }
     },
     suggestionClick (suggestion, e) {
       this.$emit('suggestion-click', suggestion, e)
       this.select(suggestion)
       this.hideList()
-      this.inputElement.focus()
 
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = this.isOverList = false
     },
-    onBlur (e) {
-      /// Clicking starts here, because input's blur occurs before the suggestionClick
-      /// and exactly when the user clicks the mouse button or taps the screen.
-      this.isClicking = this.isOverList && !e.relatedTarget
-      /// Also, a check for a related target, as a blur event can occur not only via clicks.
+    onInputBlur (e) {
+      if (this.isInFocus) {
+        /// Clicking starts here, because input's blur occurs before the suggestionClick
+        /// and exactly when the user clicks the mouse button or taps the screen.
+        this.isClicking = this.isOverList && !this.isTabbed
 
-      if (!this.isClicking) {
-        this.hideList()
-        this.$emit('blur', e)
+        if (!this.isClicking) {
+          this.isInFocus = false;
+          this.hideList()
+
+          this.$emit('blur', e)
+        } else if (e.isTrusted && !this.isTabbed) {
+          this.inputElement.focus()
+        }
+      } else {
+        this.inputElement.blur()
+        console.error(
+          `This should never happen!
+          If you encouneterd this error, please report at https://github.com/KazanExpress/vue-simple-suggest/issues`
+        )
       }
+
+      this.isTabbed = false;
     },
-    onFocus (e) {
+    onInputFocus (e) {
+      this.isInFocus = true;
+
       // Only emit, if it was a native input focus
       if (e.sourceCapabilities) {
         this.$emit('focus', e)
@@ -342,7 +359,7 @@ export default {
 
       finally {
         if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
-          this.hideList(true)
+          this.hideList()
         } else {
           this.showList()
         }
@@ -352,7 +369,7 @@ export default {
     },
     async getSuggestions (value = '') {
       if (this.listShown && !value) {
-        this.hideList(true)
+        this.hideList()
         this.clearSuggestions()
         return this.suggestions
       }
@@ -435,7 +452,7 @@ export default {
   transition-delay: .05s
 }
 
-.vue-simple-suggest.designed .input-wrapper input:focus {
+.vue-simple-suggest.designed.focus .input-wrapper input {
   border: 1px solid #aaa;
 }
 

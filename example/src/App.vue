@@ -297,12 +297,12 @@
     line-height: 1;
     vertical-align: text-bottom;
     overflow: hidden;
+    max-width: 72%;
+    text-overflow: ellipsis;
   }
 
   #app .vue-simple-suggest .suggest-item .text span {
-    overflow: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis
   }
 
   #app .vue-simple-suggest .suggest-item button {
