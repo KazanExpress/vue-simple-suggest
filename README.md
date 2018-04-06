@@ -322,7 +322,8 @@ JS object:
 If there's a need to customize the appearance of the component, here's the internal class-structure:
 
 ```less
-.vue-simple-suggest.designed // .designed is applied only if `destyled` prop is false
+// .designed is applied only if `destyled` prop is false
+.vue-simple-suggest.designed.focus // .focus is applied whenever the component is focued.
   .input-wrapper
     .default-input // Replaced with your custom input if default slot is provided
   .suggestions
