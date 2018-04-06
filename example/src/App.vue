@@ -26,6 +26,7 @@
         }"
         :mode="mode"
         ref="suggestComponent"
+        placeholder="Search information..."
         value-attribute="id"
         display-attribute="text"
         @suggestion-click="onSuggestClick"
@@ -42,7 +43,7 @@
 
         <!-- <div class="g"><input type="text"></div> -->
 
-        <test-input placeholder="Search information..."/>
+        <!-- <test-input placeholder="Search information..."/> -->
 
         <template slot="misc-item-above" slot-scope="{ suggestions, query }">
           <template v-if="suggestions.length > 0">
