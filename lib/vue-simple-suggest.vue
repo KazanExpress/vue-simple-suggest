@@ -166,12 +166,12 @@ export default {
   },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
-    this.input[this.on]('blur', this.onInputBlur)
-    this.input[this.on]('focus', this.onInputFocus)
+    this.input[this.on]('blur', this.onBlur)
+    this.input[this.on]('focus', this.onFocus)
   },
   beforeDestroy () {
-    this.input[this.off]('blur', this.onInputBlur)
-    this.input[this.off]('focus', this.onInputFocus)
+    this.input[this.off]('blur', this.onBlur)
+    this.input[this.off]('focus', this.onFocus)
   },
   methods: {
     isScopedSlotEmpty (slot) {
@@ -290,8 +290,9 @@ export default {
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = this.isOverList = false
     },
-    onInputBlur (e) {
+    onBlur (e) {
       if (this.isInFocus) {
+
         /// Clicking starts here, because input's blur occurs before the suggestionClick
         /// and exactly when the user clicks the mouse button or taps the screen.
         this.isClicking = this.isOverList && !this.isTabbed
@@ -314,7 +315,7 @@ export default {
 
       this.isTabbed = false;
     },
-    onInputFocus (e) {
+    onFocus (e) {
       this.isInFocus = true;
 
       // Only emit, if it was a native input focus
