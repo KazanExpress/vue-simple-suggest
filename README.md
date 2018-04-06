@@ -323,7 +323,7 @@ If there's a need to customize the appearance of the component, here's the inter
 
 ```less
 // .designed is applied only if `destyled` prop is false
-.vue-simple-suggest.designed.focus // .focus is applied whenever the component is focued.
+.vue-simple-suggest.designed.focus // .focus is applied whenever the component is focused.
   .input-wrapper
     .default-input // Replaced with your custom input if default slot is provided
   .suggestions
