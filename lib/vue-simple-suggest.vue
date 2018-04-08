@@ -369,13 +369,13 @@ export default {
       }
     },
     async getSuggestions (value = '') {
-      if (this.listShown && !value) {
+      if (this.listShown && !value && this.minLength > 0) {
         this.hideList()
         this.clearSuggestions()
         return this.suggestions
       }
 
-      if ((this.minLength > 0) && value.length < this.minLength) {
+      if (value.length < this.minLength) {
         return this.suggestions
       }
 
