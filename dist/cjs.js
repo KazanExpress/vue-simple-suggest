@@ -99,7 +99,8 @@ function _finally(body, finalizer) {
   }if (result && result.then) {
     return result.then(void 0, recover);
   }return result;
-}function _invokeIgnored(body) {
+}
+function _invokeIgnored(body) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
@@ -506,13 +507,13 @@ var VueSimpleSuggest = {
 
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-      if (_this5.listShown && !value) {
+      if (_this5.listShown && !value && _this5.minLength > 0) {
         _this5.hideList();
         _this5.clearSuggestions();
         return _this5.suggestions;
       }
 
-      if (_this5.minLength > 0 && value.length < _this5.minLength) {
+      if (value.length < _this5.minLength) {
         return _this5.suggestions;
       }
 

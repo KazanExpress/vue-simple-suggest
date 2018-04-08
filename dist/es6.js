@@ -83,7 +83,8 @@ function _finally(body, finalizer) {
   }if (result && result.then) {
     return result.then(void 0, recover);
   }return result;
-}function _invokeIgnored(body) {
+}
+function _invokeIgnored(body) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
@@ -472,13 +473,13 @@ var VueSimpleSuggest = {
     getSuggestions: _async(function (value = '') {
       var _this3 = this;
 
-      if (_this3.listShown && !value) {
+      if (_this3.listShown && !value && _this3.minLength > 0) {
         _this3.hideList();
         _this3.clearSuggestions();
         return _this3.suggestions;
       }
 
-      if (_this3.minLength > 0 && value.length < _this3.minLength) {
+      if (value.length < _this3.minLength) {
         return _this3.suggestions;
       }
 
