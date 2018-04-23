@@ -732,7 +732,15 @@ Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</c
     <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click.stop</span>=<span class="hljs-string">"like(suggestion)"</span>&gt;</span>add to favorites<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><p>In this case, the buttons will ONLY execute the bound method and will not select the suggested item.</p>
-<p><strong>Ref Data</strong></p>
+<p><strong>Manual autocomplete</strong></p>
+<p>If there&#39;s a need to autocomplete the suggestion in the input instead of selecting it, you can use the <code>autocomplete()</code> function in the slot&#39;s scope:</p>
+<pre class="hljs"><code><span class="hljs-comment">&lt;!-- Example: --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestion-item"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestion, autocomplete }"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>{{ suggestion.title }} by {{ suggestion.author }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click.stop</span>=<span class="hljs-string">"autocomplete()"</span>&gt;</span>Complete input<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><p><strong>Ref Data</strong></p>
 <p>In cooperation with <a href="#ref-methods">ref fields</a> this slot can be used to drastically transform the suggestion list behaviour.</p>
 <p>One of the simplest examples - highlighting the query text in the results:</p>
 <pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestion-item"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"scope"</span>&gt;</span>
