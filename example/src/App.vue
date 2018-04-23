@@ -115,17 +115,8 @@
 
         if (!query) return result;
 
-        const replace = str => (result = result && typeof result === 'string' ? result.replace(str, str.bold()) : result);
         const texts = query.split(/[\s-_/\\|\.]/gm).filter(t => !!t) || [''];
-        const procs = [
-          s => s[0].toUpperCase() + s.substr(1).toLowerCase(),
-          s => s.toLowerCase(),
-          s => s.toUpperCase(),
-          s => s
-        ];
-
-        texts.forEach(t => procs.forEach(p => replace(p(t))));
-        return result;
+        return result.replace(new RegExp('(.*?)(' + texts.join('|') + ')(.*?)','gi'), '$1<b>$2</b>$3');
       },
       goto (url) {
         window.open(url, '_blank').focus()

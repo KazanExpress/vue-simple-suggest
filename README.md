@@ -558,21 +558,12 @@ One of the simplest examples - highlighting the query text in the results:
 
 ```js
 boldenSuggestion({ suggestion, query }) {
-  let result = this.$refs.vueSimpleSuggest.displayProperty(suggestion);
+  let result = this.$refs.suggestComponent.displayProperty(suggestion);
 
   if (!query) return result;
 
-  const replace = str => (result = result.replace(str, str.bold()));
   const texts = query.split(/[\s-_/\\|\.]/gm).filter(t => !!t) || [''];
-  const processors = [
-    s => s[0].toUpperCase() + s.substr(1),
-    s => s.toLowerCase(),
-    s => s.toUpperCase(),
-    s => s
-  ];
-  texts.forEach(text => processors.forEach(processor => replace(processor(text))));
-
-  return result;
+  return result.replace(new RegExp('(.*?)(' + texts.join('|') + ')(.*?)','gi'), '$1<b>$2</b>$3');
 }
 ```
 Result via Google Books search API:
