@@ -294,7 +294,8 @@ npm run docs</code></pre><hr>
 <hr>
 <h3 id="css-class-structure"><a class="header-link" href="#css-class-structure"></a>CSS class structure</h3>
 <p>If there&#39;s a need to customize the appearance of the component, here&#39;s the internal class-structure:</p>
-<pre class="hljs"><code><span class="hljs-selector-class">.vue-simple-suggest</span><span class="hljs-selector-class">.designed</span> <span class="hljs-comment">// .designed is applied only if `destyled` prop is false</span>
+<pre class="hljs"><code><span class="hljs-comment">// .designed is applied only if `destyled` prop is false</span>
+<span class="hljs-selector-class">.vue-simple-suggest</span><span class="hljs-selector-class">.designed</span><span class="hljs-selector-class">.focus</span> <span class="hljs-comment">// .focus is applied whenever the component is focused.</span>
   <span class="hljs-selector-class">.input-wrapper</span>
     <span class="hljs-selector-class">.default-input</span> <span class="hljs-comment">// Replaced with your custom input if default slot is provided</span>
   <span class="hljs-selector-class">.suggestions</span>
@@ -540,11 +541,6 @@ npm run docs</code></pre><hr>
 </thead>
 <tbody>
 <tr>
-<td><code>onInputClick</code> <sup>deprecated</sup></td>
-<td>HTML click event</td>
-<td>Fires whenever the input is being clicked. Shows suggestion list (gets them from the source if none is present).</td>
-</tr>
-<tr>
 <td><code>showSuggestions</code></td>
 <td>Alias for <code>onInputClick</code>. Will replace it in the future releases</td>
 </tr>
@@ -572,11 +568,6 @@ npm run docs</code></pre><hr>
 <td><code>onListKeyUp</code></td>
 <td>HTML keyup event</td>
 <td>Fires on component keyup. Internally used for hiding the list.</td>
-</tr>
-<tr>
-<td><code>onArrowKeyDown</code> <sup>deprecated</sup></td>
-<td>HTML keydown event</td>
-<td>Fires on component keydown. Used for moving list selection.</td>
 </tr>
 <tr>
 <td><code>moveSelection</code></td>
@@ -665,8 +656,28 @@ npm run docs</code></pre><hr>
 </tr>
 <tr>
 <td><code>isPlainSuggestion</code></td>
-<td>false</td>
+<td><code>false</code></td>
 <td>Whether the current suggestions list consists of plain strings (not objects).</td>
+</tr>
+<tr>
+<td><code>isClicking</code></td>
+<td><code>false</code></td>
+<td><code>true</code> if the user currently clicks.</td>
+</tr>
+<tr>
+<td><code>isOverList</code></td>
+<td><code>false</code></td>
+<td><code>true</code> if the user currently hovers over suggestions list.</td>
+</tr>
+<tr>
+<td><code>isInFocus</code></td>
+<td><code>false</code></td>
+<td><code>true</code> if the component is currently in focus.</td>
+</tr>
+<tr>
+<td><code>isTabbed</code></td>
+<td><code>false</code></td>
+<td><code>true</code> if the user pressed tab, while the component is in focus.</td>
 </tr>
 </tbody>
 </table>
@@ -702,35 +713,38 @@ Defaults to a simple input with props passed to vue-simple-suggest.</p>
 <blockquote>
 <p><code>suggestion-item</code> slot (optional)</p>
 </blockquote>
+<p><strong>Description</strong></p>
 <p>Allows custom html-definitons of the suggestion items in a list.
 Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</code></p>
 <p>Accepts the <code>suggestion</code> object and a <code>query</code> text as a <code>slot-scope</code> attribute values.</p>
 <pre class="hljs"><code><span class="hljs-comment">&lt;!-- Example: --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestion-item"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestion, query }"</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>My {{ suggestion.title }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>{{ suggestion.title }} by {{ suggestion.author }}<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><p>In cooperation with <a href="#ref-methods">ref fields</a> can be used to drastically transform the suggestion list behaviour.</p>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><p><strong>Custom buttons inside of suggestion items</strong></p>
+<p>If you want to add some action buttons to the suggetion items, just use the <code>.stop</code> directive modifier to prevent the default <code>suggestion-click</code>:</p>
+<pre class="hljs"><code><span class="hljs-comment">&lt;!-- Example: --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestion-item"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"{ suggestion, query }"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>{{ suggestion.title }} by {{ suggestion.author }}<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click.stop</span>=<span class="hljs-string">"remove(suggestion)"</span>&gt;</span>remove from list<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">button</span> @<span class="hljs-attr">click.stop</span>=<span class="hljs-string">"like(suggestion)"</span>&gt;</span>add to favorites<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><p>In this case, the buttons will ONLY execute the bound method and will not select the suggested item.</p>
+<p><strong>Ref Data</strong></p>
+<p>In cooperation with <a href="#ref-methods">ref fields</a> this slot can be used to drastically transform the suggestion list behaviour.</p>
 <p>One of the simplest examples - highlighting the query text in the results:</p>
 <pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestion-item"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"scope"</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-html</span>=<span class="hljs-string">"boldenSuggestion(scope)"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre><pre class="hljs"><code>boldenSuggestion({ suggestion, query }) {
-  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">this</span>.$refs.vueSimpleSuggest.displayProperty(suggestion);
+  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">this</span>.$refs.suggestComponent.displayProperty(suggestion);
 
   <span class="hljs-keyword">if</span> (!query) <span class="hljs-keyword">return</span> result;
 
-  <span class="hljs-keyword">const</span> replace = <span class="hljs-function"><span class="hljs-params">str</span> =&gt;</span> (result = result.replace(str, str.bold()));
   <span class="hljs-keyword">const</span> texts = query.split(<span class="hljs-regexp">/[\s-_/\\|\.]/gm</span>).filter(<span class="hljs-function"><span class="hljs-params">t</span> =&gt;</span> !!t) || [<span class="hljs-string">''</span>];
-  <span class="hljs-keyword">const</span> processors = [
-    <span class="hljs-function"><span class="hljs-params">s</span> =&gt;</span> s[<span class="hljs-number">0</span>].toUpperCase() + s.substr(<span class="hljs-number">1</span>),
-    s =&gt; s.toLowerCase(),
-    s =&gt; s.toUpperCase(),
-    s =&gt; s
-  ];
-  texts.forEach(<span class="hljs-function"><span class="hljs-params">text</span> =&gt;</span> processors.forEach(<span class="hljs-function"><span class="hljs-params">processor</span> =&gt;</span> replace(processor(text))));
-
-  <span class="hljs-keyword">return</span> result;
-}</code></pre><p>Result:</p>
+  <span class="hljs-keyword">return</span> result.replace(<span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">'(.*?)('</span> + texts.join(<span class="hljs-string">'|'</span>) + <span class="hljs-string">')(.*?)'</span>,<span class="hljs-string">'gi'</span>), <span class="hljs-string">'$1&lt;b&gt;$2&lt;/b&gt;$3'</span>);
+}</code></pre><p>Result via Google Books search API:</p>
 <p class="img-container"><img src="assets/screenshot.jpg" alt=""></p>
 <h5 id="custom-miscellanious-item-slots"><a class="header-link" href="#custom-miscellanious-item-slots"></a>Custom miscellanious item slots</h5>
 <blockquote>
