@@ -530,6 +530,20 @@ If you want to add some action buttons to the suggetion items, just use the `.st
 
 In this case, the buttons will ONLY execute the bound method and will not select the suggested item.
 
+**Manual autocomplete**
+
+If there's a need to autocomplete the suggestion in the input instead of selecting it, you can use the `autocomplete()` function in the slot's scope:
+
+```html
+<!-- Example: -->
+<vue-simple-suggest>
+  <div slot="suggestion-item" slot-scope="{ suggestion, autocomplete }">
+    <span>{{ suggestion.title }} by {{ suggestion.author }}</span>
+    <button @click.stop="autocomplete()">Complete input</button>
+  </div>
+</vue-simple-suggest>
+```
+
 **Ref Data**
 
 In cooperation with [ref fields](#ref-methods) this slot can be used to drastically transform the suggestion list behaviour.
