@@ -178,7 +178,7 @@ export default {
       return (slot && typeof slot === 'function') ? !slot(this) : !slot
     },
     miscSlotsAreEmpty () {
-      return ['above', 'below'].some(slotName => this.isScopedSlotEmpty(this.$scopedSlots['misc-item-' + slotName]))
+      return ['above', 'below'].every(slotName => this.isScopedSlotEmpty(this.$scopedSlots['misc-item-' + slotName]))
     },
     displayProperty (obj) {
       return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + ''
