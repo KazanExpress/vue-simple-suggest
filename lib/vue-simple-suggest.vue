@@ -55,7 +55,7 @@ import {
   hasKeyCode
 } from './misc'
 
-let event = 'input'
+let event = 'input';
 
 export default {
   name: 'vue-simple-suggest',
@@ -117,7 +117,7 @@ export default {
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
   }),
-  // Handle run-time mode changes:
+  // Handle run-time mode changes (not working):
   watch: {
     mode: v => event = v
   },
@@ -175,10 +175,23 @@ export default {
   },
   methods: {
     isScopedSlotEmpty (slot) {
-      return (slot && typeof slot === 'function') ? !slot(this) : !slot
+      if (slot) {
+        const vNode = slot(this);
+        return !(Array.isArray(vNode) || (vNode && (vNode.tag || vNode.context || vNode.text || vNode.children)));
+      }
+
+      return true;
     },
     miscSlotsAreEmpty () {
-      return ['above', 'below'].some(slotName => this.isScopedSlotEmpty(this.$scopedSlots['misc-item-' + slotName]))
+      const slots = ['misc-item-above', 'misc-item-below'].map(s => this.$scopedSlots[s]);
+
+      if (slots.every(s => !!s)) {
+        return slots.every(this.isScopedSlotEmpty.bind(this));
+      }
+
+      const slot = slots.find(s => !!s);
+
+      return this.isScopedSlotEmpty.call(this, slot);
     },
     displayProperty (obj) {
       return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + ''
@@ -218,7 +231,9 @@ export default {
     showList () {
       if (!this.listShown) {
         const textLength = (this.text && this.text.length) || 0;
-        if (textLength >= this.minLength && (this.suggestions.length > 0 || !this.miscSlotsAreEmpty())) {
+        if (textLength >= this.minLength
+          && ((this.suggestions.length > 0) || !this.miscSlotsAreEmpty())
+        ) {
           this.listShown = true
           this.$emit('show-list')
         }
@@ -359,7 +374,7 @@ export default {
       }
 
       finally {
-        if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
+        if ((this.suggestions.length === 0) && this.miscSlotsAreEmpty()) {
           this.hideList()
         } else {
           this.showList()
@@ -371,8 +386,7 @@ export default {
     async getSuggestions (value = '') {
       if (this.listShown && !value && this.minLength > 0) {
         this.hideList()
-        this.clearSuggestions()
-        return this.suggestions
+        return []
       }
 
       if (value.length < this.minLength) {
@@ -384,6 +398,10 @@ export default {
       // Start request if can
       if (this.listIsRequest) {
         this.$emit('request-start', value)
+
+        if ((this.suggestions.length > 0) || (!this.miscSlotsAreEmpty())) {
+          this.showList()
+        }
       }
 
       let result = []

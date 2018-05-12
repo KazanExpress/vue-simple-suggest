@@ -46,20 +46,20 @@
         <!-- <test-input placeholder="Search information..."/> -->
 
         <template slot="misc-item-above" slot-scope="{ suggestions, query }">
+          <div class="misc-item">
+            <span>You're searching for '{{ query }}'.</span>
+          </div>
+
           <template v-if="suggestions.length > 0">
-            <div class="misc-item">
-              <span>You're searching for '{{ query }}'.</span>
-            </div>
             <div class="misc-item">
               <span>{{ suggestions.length }} suggestions are shown...</span>
             </div>
             <hr>
           </template>
-          <template v-else-if="!loading">
-            <div class="misc-item">
-              <span>No results</span>
-            </div>
-          </template>
+
+          <div class="misc-item" v-else-if="!loading">
+            <span>No results</span>
+          </div>
         </template>
 
         <div slot="suggestion-item" slot-scope="scope" :title="scope.suggestion.description">
@@ -169,15 +169,9 @@
       },
       getList (inputValue) {
         return new Promise((resolve, reject) => {
-          /* setTimeout(() => {
-            if (Math.random() > 0.2)
-              resolve([0,0,0,0,0,0,0,0,0,0].map(e => Math.random() > 0.2 ? Math.random() : undefined).filter(e => !!e))
-            else
-              resolve([])
-          }, 500); */
           // let url = `https://www.googleapis.com/books/v1/volumes?printType=books&q=${inputValue}`
           let url = `https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&namespace=*&search=${inputValue}&limit=10&namespace=0&format=json`
-          this.$refs.suggestComponent.clearSuggestions()
+          // this.$refs.suggestComponent.clearSuggestions()
           fetch(url).then(response => {
             if (!response.ok) {
               reject()

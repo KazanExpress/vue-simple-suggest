@@ -604,12 +604,12 @@ These slots can also be used to handle empty results, like this:
 ```html
 <!-- Main slot template -->
 <template slot="misc-item-above" slot-scope="{ suggestions, query }">
+  <div class="misc-item">
+    <span>You're searching for '{{ query }}'.</span>
+  </div>
 
   <!-- Sub-template if have any suggestions -->
   <template v-if="suggestions.length > 0">
-    <div class="misc-item">
-      <span>You're searching for '{{ query }}'.</span>
-    </div>
     <div class="misc-item">
       <span>{{ suggestions.length }} suggestions are shown...</span>
     </div>
@@ -617,11 +617,8 @@ These slots can also be used to handle empty results, like this:
   </template>
 
   <!-- Show "No result" otherwise, if not loading new ones -->
-  <template v-else-if="!loading">
-    <div class="misc-item">
-      <span>No results</span>
-    </div>
-  </template>
-
+  <div class="misc-item" v-else-if="!loading">
+    <span>No results</span>
+  </div>
 </template>
 ```
