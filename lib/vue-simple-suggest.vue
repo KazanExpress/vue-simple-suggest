@@ -3,7 +3,7 @@
     @keydown.tab="isTabbed = true"
   >
     <div class="input-wrapper"
-      @click="showSuggestions($event)"
+      @click="showSuggestions"
       @input="onInput"
       @keydown="moveSelection($event), onAutocomplete($event)"
       @keyup="onListKeyUp"
