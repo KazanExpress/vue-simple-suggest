@@ -117,7 +117,7 @@ export default {
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
   }),
-  // Handle run-time mode changes:
+  // Handle run-time mode changes (not working):
   watch: {
     mode: v => event = v
   },
