@@ -119,12 +119,7 @@ export default {
   }),
   // Handle run-time mode changes:
   watch: {
-    mode: v => event = v,
-    suggestions(newVal, oldVal) {
-      console.warn('WHAT', Object.assign({}, newVal), Object.assign({}, oldVal))
-      if (this.suggestions.length === 0) {
-      }
-    }
+    mode: v => event = v
   },
   //
   data () {
