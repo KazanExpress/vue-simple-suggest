@@ -182,12 +182,12 @@ npm run docs</code></pre><hr> <h2 id=default-controls><a class=header-link href=
   <span class=hljs-tag>&lt;/<span class=hljs-name>div</span>&gt;</span>
 <span class=hljs-tag>&lt;/<span class=hljs-name>vue-simple-suggest</span>&gt;</span></code></pre><p>These slots can also be used to handle empty results, like this:</p> <pre class=hljs><code><span class=hljs-comment>&lt;!-- Main slot template --&gt;</span>
 <span class=hljs-tag>&lt;<span class=hljs-name>template</span> <span class=hljs-attr>slot</span>=<span class=hljs-string>"misc-item-above"</span> <span class=hljs-attr>slot-scope</span>=<span class=hljs-string>"{ suggestions, query }"</span>&gt;</span>
+  <span class=hljs-tag>&lt;<span class=hljs-name>div</span> <span class=hljs-attr>class</span>=<span class=hljs-string>"misc-item"</span>&gt;</span>
+    <span class=hljs-tag>&lt;<span class=hljs-name>span</span>&gt;</span>You're searching for '{{ query }}'.<span class=hljs-tag>&lt;/<span class=hljs-name>span</span>&gt;</span>
+  <span class=hljs-tag>&lt;/<span class=hljs-name>div</span>&gt;</span>
 
   <span class=hljs-comment>&lt;!-- Sub-template if have any suggestions --&gt;</span>
   <span class=hljs-tag>&lt;<span class=hljs-name>template</span> <span class=hljs-attr>v-if</span>=<span class=hljs-string>"suggestions.length &gt; 0"</span>&gt;</span>
-    <span class=hljs-tag>&lt;<span class=hljs-name>div</span> <span class=hljs-attr>class</span>=<span class=hljs-string>"misc-item"</span>&gt;</span>
-      <span class=hljs-tag>&lt;<span class=hljs-name>span</span>&gt;</span>You're searching for '{{ query }}'.<span class=hljs-tag>&lt;/<span class=hljs-name>span</span>&gt;</span>
-    <span class=hljs-tag>&lt;/<span class=hljs-name>div</span>&gt;</span>
     <span class=hljs-tag>&lt;<span class=hljs-name>div</span> <span class=hljs-attr>class</span>=<span class=hljs-string>"misc-item"</span>&gt;</span>
       <span class=hljs-tag>&lt;<span class=hljs-name>span</span>&gt;</span>{{ suggestions.length }} suggestions are shown...<span class=hljs-tag>&lt;/<span class=hljs-name>span</span>&gt;</span>
     <span class=hljs-tag>&lt;/<span class=hljs-name>div</span>&gt;</span>
@@ -195,12 +195,9 @@ npm run docs</code></pre><hr> <h2 id=default-controls><a class=header-link href=
   <span class=hljs-tag>&lt;/<span class=hljs-name>template</span>&gt;</span>
 
   <span class=hljs-comment>&lt;!-- Show "No result" otherwise, if not loading new ones --&gt;</span>
-  <span class=hljs-tag>&lt;<span class=hljs-name>template</span> <span class=hljs-attr>v-else-if</span>=<span class=hljs-string>"!loading"</span>&gt;</span>
-    <span class=hljs-tag>&lt;<span class=hljs-name>div</span> <span class=hljs-attr>class</span>=<span class=hljs-string>"misc-item"</span>&gt;</span>
-      <span class=hljs-tag>&lt;<span class=hljs-name>span</span>&gt;</span>No results<span class=hljs-tag>&lt;/<span class=hljs-name>span</span>&gt;</span>
-    <span class=hljs-tag>&lt;/<span class=hljs-name>div</span>&gt;</span>
-  <span class=hljs-tag>&lt;/<span class=hljs-name>template</span>&gt;</span>
-
+  <span class=hljs-tag>&lt;<span class=hljs-name>div</span> <span class=hljs-attr>class</span>=<span class=hljs-string>"misc-item"</span> <span class=hljs-attr>v-else-if</span>=<span class=hljs-string>"!loading"</span>&gt;</span>
+    <span class=hljs-tag>&lt;<span class=hljs-name>span</span>&gt;</span>No results<span class=hljs-tag>&lt;/<span class=hljs-name>span</span>&gt;</span>
+  <span class=hljs-tag>&lt;/<span class=hljs-name>div</span>&gt;</span>
 <span class=hljs-tag>&lt;/<span class=hljs-name>template</span>&gt;</span></code></pre> </article> <script type="text/javascript" src="main.js"></script></body> </html> 
   </body>
 </html>

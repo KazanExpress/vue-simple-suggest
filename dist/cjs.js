@@ -99,8 +99,7 @@ function _finally(body, finalizer) {
   }if (result && result.then) {
     return result.then(void 0, recover);
   }return result;
-}
-function _invokeIgnored(body) {
+}function _invokeIgnored(body) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
@@ -237,7 +236,7 @@ var VueSimpleSuggest = {
       }
     }
   }),
-  // Handle run-time mode changes:
+  // Handle run-time mode changes (not working):
   watch: {
     mode: function mode(v) {
       return event = v;
@@ -303,14 +302,31 @@ var VueSimpleSuggest = {
 
   methods: {
     isScopedSlotEmpty: function isScopedSlotEmpty(slot) {
-      return slot && typeof slot === 'function' ? !slot(this) : !slot;
+      if (slot) {
+        var vNode = slot(this);
+        return !(Array.isArray(vNode) || vNode && (vNode.tag || vNode.context || vNode.text || vNode.children));
+      }
+
+      return true;
     },
     miscSlotsAreEmpty: function miscSlotsAreEmpty() {
       var _this2 = this;
 
-      return ['above', 'below'].some(function (slotName) {
-        return _this2.isScopedSlotEmpty(_this2.$scopedSlots['misc-item-' + slotName]);
+      var slots = ['misc-item-above', 'misc-item-below'].map(function (s) {
+        return _this2.$scopedSlots[s];
       });
+
+      if (slots.every(function (s) {
+        return !!s;
+      })) {
+        return slots.every(this.isScopedSlotEmpty.bind(this));
+      }
+
+      var slot = slots.find(function (s) {
+        return !!s;
+      });
+
+      return this.isScopedSlotEmpty.call(this, slot);
     },
     displayProperty: function displayProperty(obj) {
       return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + '';
@@ -509,8 +525,7 @@ var VueSimpleSuggest = {
 
       if (_this5.listShown && !value && _this5.minLength > 0) {
         _this5.hideList();
-        _this5.clearSuggestions();
-        return _this5.suggestions;
+        return [];
       }
 
       if (value.length < _this5.minLength) {
@@ -522,6 +537,10 @@ var VueSimpleSuggest = {
       // Start request if can
       if (_this5.listIsRequest) {
         _this5.$emit('request-start', value);
+
+        if (_this5.suggestions.length > 0 || !_this5.miscSlotsAreEmpty()) {
+          _this5.showList();
+        }
       }
 
       var result = [];

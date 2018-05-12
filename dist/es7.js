@@ -158,7 +158,7 @@ var VueSimpleSuggest = {
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
   }),
-  // Handle run-time mode changes:
+  // Handle run-time mode changes (not working):
   watch: {
     mode: v => event = v
   },
@@ -216,10 +216,23 @@ var VueSimpleSuggest = {
   },
   methods: {
     isScopedSlotEmpty(slot) {
-      return slot && typeof slot === 'function' ? !slot(this) : !slot;
+      if (slot) {
+        const vNode = slot(this);
+        return !(Array.isArray(vNode) || vNode && (vNode.tag || vNode.context || vNode.text || vNode.children));
+      }
+
+      return true;
     },
     miscSlotsAreEmpty() {
-      return ['above', 'below'].some(slotName => this.isScopedSlotEmpty(this.$scopedSlots['misc-item-' + slotName]));
+      const slots = ['misc-item-above', 'misc-item-below'].map(s => this.$scopedSlots[s]);
+
+      if (slots.every(s => !!s)) {
+        return slots.every(this.isScopedSlotEmpty.bind(this));
+      }
+
+      const slot = slots.find(s => !!s);
+
+      return this.isScopedSlotEmpty.call(this, slot);
     },
     displayProperty(obj) {
       return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + '';
@@ -402,8 +415,7 @@ var VueSimpleSuggest = {
     async getSuggestions(value = '') {
       if (this.listShown && !value && this.minLength > 0) {
         this.hideList();
-        this.clearSuggestions();
-        return this.suggestions;
+        return [];
       }
 
       if (value.length < this.minLength) {
@@ -415,6 +427,10 @@ var VueSimpleSuggest = {
       // Start request if can
       if (this.listIsRequest) {
         this.$emit('request-start', value);
+
+        if (this.suggestions.length > 0 || !this.miscSlotsAreEmpty()) {
+          this.showList();
+        }
       }
 
       let result = [];
