@@ -55,7 +55,7 @@ import {
   hasKeyCode
 } from './misc'
 
-let event = 'input'
+let event = 'input';
 
 export default {
   name: 'vue-simple-suggest',
@@ -228,7 +228,7 @@ export default {
         this.$emit('hide-list')
       }
     },
-    async showList () {
+    showList () {
       if (!this.listShown) {
         const textLength = (this.text && this.text.length) || 0;
         if (textLength >= this.minLength
@@ -374,7 +374,7 @@ export default {
       }
 
       finally {
-        if ((this.suggestions.length === 0) && await this.miscSlotsAreEmpty()) {
+        if ((this.suggestions.length === 0) && this.miscSlotsAreEmpty()) {
           this.hideList()
         } else {
           this.showList()
@@ -399,7 +399,7 @@ export default {
       if (this.listIsRequest) {
         this.$emit('request-start', value)
 
-        if ((this.suggestions.length > 0) || (!await this.miscSlotsAreEmpty())) {
+        if ((this.suggestions.length > 0) || (!this.miscSlotsAreEmpty())) {
           this.showList()
         }
       }
