@@ -82,12 +82,12 @@ Then, in your Vue.js component/page:
 ```html
 <!-- Some component.vue -->
 <template>
-  <vue-suggest
+  <vue-simple-suggest
     v-model="chosen"
     :list="simpleSuggestionList"
     :filter-by-query="true">
 <!-- Filter by input text to only show the matching results -->
-  </vue-suggest>
+  </vue-simple-suggest>
 
   <br>
 
@@ -95,12 +95,12 @@ Then, in your Vue.js component/page:
 </template>
 
 <script>
-  import VueSuggest from 'vue-simple-suggest'
+  import VueSimpleSuggest from 'vue-simple-suggest'
   import 'vue-simple-suggest/dist/styles.css' // Optional CSS
 
   export default {
     components: {
-      VueSuggest
+      VueSimpleSuggest
     },
     data() {
       return {
