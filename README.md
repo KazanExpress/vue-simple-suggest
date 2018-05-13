@@ -95,12 +95,12 @@ Then, in your Vue.js component/page:
 </template>
 
 <script>
-  import VueSuggest from 'vue-simple-suggest'
+  import VueSimpleSuggest from 'vue-simple-suggest'
   import 'vue-simple-suggest/dist/styles.css' // Optional CSS
 
   export default {
     components: {
-      VueSuggest
+      VueSimpleSuggest
     },
     data() {
       return {
