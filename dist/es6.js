@@ -91,7 +91,8 @@ function _finally(body, finalizer) {
   if (direct) {
     return then ? then(value) : value;
   }value = Promise.resolve(value);return then ? value.then(then) : value;
-}const _async = function () {
+}
+const _async = function () {
   try {
     if (isNaN.apply(null, {})) {
       return function (f) {
@@ -171,8 +172,7 @@ var VueSimpleSuggest = {
     },
     maxSuggestions: {
       type: Number,
-      default: 10
-    },
+      default: 10 },
     displayAttribute: {
       type: String,
       default: 'title'
