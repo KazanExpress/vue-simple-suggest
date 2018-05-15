@@ -453,6 +453,8 @@ You can use these to imitate some of the component's behaviours.
 Supports nesting. Input props can be passed to a custom input to avoid their processing by vue-simple-suggest.
 Defaults to a simple input with props passed to vue-simple-suggest.
 
+**To work with the `vue-simple-suggest` your custom input component MUST emit `focus` and `blur` events!**
+
 **Warning:** `v-model` on a custom input IS NOT the same as `v-model` on vue-simple-suggest!
 
 ```html
