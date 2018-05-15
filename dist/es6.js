@@ -83,8 +83,7 @@ function _finally(body, finalizer) {
   }if (result && result.then) {
     return result.then(void 0, recover);
   }return result;
-}
-function _invokeIgnored(body) {
+}function _invokeIgnored(body) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
@@ -215,7 +214,7 @@ var VueSimpleSuggest = {
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
   }),
-  // Handle run-time mode changes:
+  // Handle run-time mode changes (not working):
   watch: {
     mode: v => event = v
   },
@@ -273,10 +272,23 @@ var VueSimpleSuggest = {
   },
   methods: {
     isScopedSlotEmpty(slot) {
-      return slot && typeof slot === 'function' ? !slot(this) : !slot;
+      if (slot) {
+        const vNode = slot(this);
+        return !(Array.isArray(vNode) || vNode && (vNode.tag || vNode.context || vNode.text || vNode.children));
+      }
+
+      return true;
     },
     miscSlotsAreEmpty() {
-      return ['above', 'below'].some(slotName => this.isScopedSlotEmpty(this.$scopedSlots['misc-item-' + slotName]));
+      const slots = ['misc-item-above', 'misc-item-below'].map(s => this.$scopedSlots[s]);
+
+      if (slots.every(s => !!s)) {
+        return slots.every(this.isScopedSlotEmpty.bind(this));
+      }
+
+      const slot = slots.find(s => !!s);
+
+      return this.isScopedSlotEmpty.call(this, slot);
     },
     displayProperty(obj) {
       return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + '';
@@ -475,8 +487,7 @@ var VueSimpleSuggest = {
 
       if (_this3.listShown && !value && _this3.minLength > 0) {
         _this3.hideList();
-        _this3.clearSuggestions();
-        return _this3.suggestions;
+        return [];
       }
 
       if (value.length < _this3.minLength) {
@@ -488,6 +499,10 @@ var VueSimpleSuggest = {
       // Start request if can
       if (_this3.listIsRequest) {
         _this3.$emit('request-start', value);
+
+        if (_this3.suggestions.length > 0 || !_this3.miscSlotsAreEmpty()) {
+          _this3.showList();
+        }
       }
 
       let result = [];
