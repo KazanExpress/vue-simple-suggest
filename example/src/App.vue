@@ -14,7 +14,7 @@
       <vue-suggest class="asdad" pattern="\w+"
         v-model="model"
         :list="getList"
-        :max-count="10"
+        :max-suggestions="10"
         :min-length="3"
         :debounce="200"
         :filter-by-query="false"

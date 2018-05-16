@@ -8,7 +8,7 @@
       @keyup="onListKeyUp"
       ref="inputSlot">
       <slot>
-        <input class="default-input" v-bind="$props">
+        <input class="default-input" v-bind="$attrs">
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown && !removeList"
@@ -62,7 +62,7 @@ export default {
     prop: 'value',
     get event() { return event }
   },
-  props: Object.assign({}, inputProps, {
+  props: {
     controls: {
       type: Object,
       default: () => defaultControls
@@ -115,7 +115,7 @@ export default {
       default: event,
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
-  }),
+  },
   // Handle run-time mode changes (not working):
   watch: {
     mode: {

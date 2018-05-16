@@ -20,9 +20,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
- input {
-   color: red
- }
-</style>

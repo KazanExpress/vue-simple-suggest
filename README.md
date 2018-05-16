@@ -264,7 +264,7 @@ JS object:
   mode="input"
   :placeholder="placeholder!!!"
   :list="getListFunction"
-  :max-count="10"
+  :max-suggestions="10"
   :min-length="3"
   :debounce="100"
   :destyled="false"
