@@ -453,8 +453,6 @@ You can use these to imitate some of the component's behaviours.
 Supports nesting. Input props can be passed to a custom input to avoid their processing by vue-simple-suggest.
 Defaults to a simple input with props passed to vue-simple-suggest.
 
-**To work with the `vue-simple-suggest` your custom input component MUST emit `focus` and `blur` events!**
-
 **Warning:** `v-model` on a custom input IS NOT the same as `v-model` on vue-simple-suggest!
 
 ```html
@@ -480,7 +478,7 @@ Defaults to a simple input with props passed to vue-simple-suggest.
 ```
 ```html
 <!--  Vanilla HTMLInputElement example 4 (nested):  -->
-<vue-simple-suggest>
+<vue-simple-suggest v-model="model">
   <div>
     <section>
       <input type="email">
@@ -490,8 +488,28 @@ Defaults to a simple input with props passed to vue-simple-suggest.
 ```
 ```html
 <!--  Vue component example (also supports nesting):  -->
-<vue-simple-suggest>
-  <my-custom-input-somponent></my-custom-input-somponent>
+<vue-simple-suggest v-model="vModelGoesHere">
+  <my-custom-input-somponent :value="initialInputValueGoesHere"></my-custom-input-somponent>
+</vue-simple-suggest>
+```
+
+**Custom input component caveats:**
+
+To work with the `vue-simple-suggest` your custom input component has to follow certain standard behaviours.
+
+Custom input component **must** (in order to work properly):
+ - Emit an `input` event.
+ - Emit `focus` and `blur` events.
+ - Have a `value` prop.
+
+Custom input component **should** (in order to avoid usage limitations):
+ - Not stop any event propagations from internal input HTML element.
+ - Forward an original event argument with `focus` and `blur` events.
+
+If `vue-simple-suggest` with your custom component doesn't seem to react to outside variable changes - bind both components' v-model to the same variable, like so:
+```html
+<vue-simple-suggest v-model="model">
+  <my-custom-input-somponent v-model="model"></my-custom-input-somponent>
 </vue-simple-suggest>
 ```
 
