@@ -30,7 +30,7 @@
           hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
         }">
         <slot name="suggestion-item"
-          :autocomplete="() => autocompleteText(suggestion)"
+          :autocomplete="() => autocompleteText(displayProperty(suggestion))"
           :suggestion="suggestion"
           :query="text">
           <span>{{ displayProperty(suggestion) }}</span>

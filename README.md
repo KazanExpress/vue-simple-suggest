@@ -559,7 +559,11 @@ One of the simplest examples - highlighting the query text in the results:
 ```
 
 ```js
-boldenSuggestion({ suggestion, query }) {
+boldenSuggestion(scope) {
+  if (!scope) return scope;
+
+  const { suggestion, query } = scope;
+
   let result = this.$refs.suggestComponent.displayProperty(suggestion);
 
   if (!query) return result;
