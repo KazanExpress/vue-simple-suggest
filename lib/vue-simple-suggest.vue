@@ -204,11 +204,14 @@ export default {
 
       return this.isScopedSlotEmpty.call(this, slot)
     },
+    getPropertyByAttribute (obj, attr) {
+      return this.isPlainSuggestion ? obj : typeof obj !== undefined ? fromPath(obj, attr) : obj
+    },
     displayProperty (obj) {
-      return String(this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute))
+      return String(this.getPropertyByAttribute(obj, this.displayAttribute))
     },
     valueProperty (obj) {
-      return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute)
+      return this.getPropertyByAttribute(obj, this.valueAttribute)
     },
     autocompleteText (text) {
       this.$emit('input', text)
