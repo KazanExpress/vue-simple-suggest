@@ -8,7 +8,7 @@
       @keyup="onListKeyUp"
       ref="inputSlot">
       <slot>
-        <input class="default-input" v-bind="$attrs">
+        <input class="default-input" v-bind="$attrs" :value="text || ''">
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown && !removeList"
