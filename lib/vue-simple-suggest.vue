@@ -4,12 +4,11 @@
   >
     <div class="input-wrapper"
       @click="showSuggestions"
-      @input="onInput"
       @keydown="moveSelection($event), onAutocomplete($event)"
       @keyup="onListKeyUp"
       ref="inputSlot">
       <slot>
-        <input class="default-input" v-bind="$props" :value="text || ''">
+        <input class="default-input" v-bind="$props">
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown && !removeList"
@@ -55,7 +54,7 @@ import {
   hasKeyCode
 } from './misc'
 
-let event = 'input';
+let event = 'input'
 
 export default {
   name: 'vue-simple-suggest',
@@ -119,7 +118,18 @@ export default {
   }),
   // Handle run-time mode changes (not working):
   watch: {
-    mode: v => event = v
+    mode: {
+      handler(current, old) {
+        event = current
+      },
+      immediate: true
+    },
+    value: {
+      handler(current) {
+        this.text = current
+      },
+      immediate: true
+    }
   },
   //
   data () {
@@ -162,39 +172,40 @@ export default {
   },
   created() {
     this.controlScheme = Object.assign({}, defaultControls, this.controls)
-    event = this.mode
   },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
     this.input[this.on]('blur', this.onBlur)
     this.input[this.on]('focus', this.onFocus)
+    this.input[this.on]('input', this.onInput)
   },
   beforeDestroy () {
     this.input[this.off]('blur', this.onBlur)
     this.input[this.off]('focus', this.onFocus)
+    this.input[this.off]('input', this.onInput)
   },
   methods: {
     isScopedSlotEmpty (slot) {
       if (slot) {
-        const vNode = slot(this);
-        return !(Array.isArray(vNode) || (vNode && (vNode.tag || vNode.context || vNode.text || vNode.children)));
+        const vNode = slot(this)
+        return !(Array.isArray(vNode) || (vNode && (vNode.tag || vNode.context || vNode.text || vNode.children)))
       }
 
-      return true;
+      return true
     },
     miscSlotsAreEmpty () {
-      const slots = ['misc-item-above', 'misc-item-below'].map(s => this.$scopedSlots[s]);
+      const slots = ['misc-item-above', 'misc-item-below'].map(s => this.$scopedSlots[s])
 
       if (slots.every(s => !!s)) {
-        return slots.every(this.isScopedSlotEmpty.bind(this));
+        return slots.every(this.isScopedSlotEmpty.bind(this))
       }
 
-      const slot = slots.find(s => !!s);
+      const slot = slots.find(s => !!s)
 
-      return this.isScopedSlotEmpty.call(this, slot);
+      return this.isScopedSlotEmpty.call(this, slot)
     },
     displayProperty (obj) {
-      return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + ''
+      return String(this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute))
     },
     valueProperty (obj) {
       return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute)
@@ -230,7 +241,7 @@ export default {
     },
     showList () {
       if (!this.listShown) {
-        const textLength = (this.text && this.text.length) || 0;
+        const textLength = (this.text && this.text.length) || 0
         if (textLength >= this.minLength
           && ((this.suggestions.length > 0) || !this.miscSlotsAreEmpty())
         ) {
@@ -249,7 +260,7 @@ export default {
     moveSelection (e) {
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
         e.preventDefault()
-        this.showSuggestions();
+        this.showSuggestions()
 
         const isMovingDown = hasKeyCode(this.controlScheme.selectionDown, e)
         const direction = isMovingDown * 2 - 1
@@ -313,7 +324,7 @@ export default {
         this.isClicking = this.isOverList && !this.isTabbed
 
         if (!this.isClicking) {
-          this.isInFocus = false;
+          this.isInFocus = false
           this.hideList()
 
           this.$emit('blur', e)
@@ -328,10 +339,10 @@ export default {
         )
       }
 
-      this.isTabbed = false;
+      this.isTabbed = false
     },
     onFocus (e) {
-      this.isInFocus = true;
+      this.isInFocus = true
 
       // Only emit, if it was a native input focus
       if (e.sourceCapabilities) {
@@ -344,7 +355,11 @@ export default {
       }
     },
     onInput (inputEvent) {
-      this.text = inputEvent.target.value
+      const value = !inputEvent.target ? inputEvent : inputEvent.target.value
+
+      if (this.text === value) { return }
+
+      this.text = value
       this.$emit('input', this.text)
 
       if (this.selected) {
@@ -407,9 +422,9 @@ export default {
       let result = []
       try {
         if (this.listIsRequest) {
-          result = (await this.list(value)) || [];
+          result = (await this.list(value)) || []
         } else {
-          result = this.list;
+          result = this.list
         }
 
         // IFF the result is not an array (just in case!) - make it an array
@@ -439,7 +454,7 @@ export default {
           result.splice(this.maxSuggestions)
         }
 
-        return result;
+        return result
       }
     },
     clearSuggestions () {

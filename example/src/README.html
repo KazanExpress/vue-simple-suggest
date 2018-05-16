@@ -79,12 +79,12 @@
 <p>Then, in your Vue.js component/page:</p>
 <pre class="hljs"><code><span class="hljs-comment">&lt;!-- Some component.vue --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">vue-suggest</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>
     <span class="hljs-attr">v-model</span>=<span class="hljs-string">"chosen"</span>
     <span class="hljs-attr">:list</span>=<span class="hljs-string">"simpleSuggestionList"</span>
     <span class="hljs-attr">:filter-by-query</span>=<span class="hljs-string">"true"</span>&gt;</span>
 <span class="hljs-comment">&lt;!-- Filter by input text to only show the matching results --&gt;</span>
-  <span class="hljs-tag">&lt;/<span class="hljs-name">vue-suggest</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
 
   <span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
 
@@ -92,12 +92,12 @@
 <span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
 
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
-  <span class="hljs-keyword">import</span> VueSuggest <span class="hljs-keyword">from</span> <span class="hljs-string">'vue-simple-suggest'</span>
+  <span class="hljs-keyword">import</span> VueSimpleSuggest <span class="hljs-keyword">from</span> <span class="hljs-string">'vue-simple-suggest'</span>
   <span class="hljs-keyword">import</span> <span class="hljs-string">'vue-simple-suggest/dist/styles.css'</span> <span class="hljs-comment">// Optional CSS</span>
 
   <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
     <span class="hljs-attr">components</span>: {
-      VueSuggest
+      VueSimpleSuggest
     },
     data() {
       <span class="hljs-keyword">return</span> {
@@ -689,6 +689,7 @@ npm run docs</code></pre><hr>
 </blockquote>
 <p>Supports nesting. Input props can be passed to a custom input to avoid their processing by vue-simple-suggest.
 Defaults to a simple input with props passed to vue-simple-suggest.</p>
+<p><strong>To work with the <code>vue-simple-suggest</code> your custom input component MUST emit <code>focus</code> and <code>blur</code> events!</strong></p>
 <p><strong>Warning:</strong> <code>v-model</code> on a custom input IS NOT the same as <code>v-model</code> on vue-simple-suggest!</p>
 <pre class="hljs"><code><span class="hljs-comment">&lt;!--  Default HTMLInputElement example:  --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"Text here"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"search"</span> <span class="hljs-attr">pattern</span>=<span class="hljs-string">"[a-z]+"</span>/&gt;</span></code></pre><pre class="hljs"><code><span class="hljs-comment">&lt;!--  Vanilla HTMLInputElement example 1:  --&gt;</span>
