@@ -2,11 +2,7 @@
   <div class="vue-simple-suggest" :class="{ designed: !destyled, focus: isInFocus }"
     @keydown.tab="isTabbed = true"
   >
-    <div class="input-wrapper"
-      @click="showSuggestions"
-      @keydown="moveSelection($event), onAutocomplete($event)"
-      @keyup="onListKeyUp"
-      ref="inputSlot">
+    <div class="input-wrapper" ref="inputSlot">
       <slot>
         <input class="default-input" v-bind="$attrs" :value="text || ''">
       </slot>
@@ -175,16 +171,36 @@ export default {
   },
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
-    this.input[this.on]('blur', this.onBlur)
-    this.input[this.on]('focus', this.onFocus)
-    this.input[this.on]('input', this.onInput)
+
+    this.prepareEventHandlers(true)
   },
   beforeDestroy () {
-    this.input[this.off]('blur', this.onBlur)
-    this.input[this.off]('focus', this.onFocus)
-    this.input[this.off]('input', this.onInput)
+    this.prepareEventHandlers(false)
   },
   methods: {
+    prepareEventHandlers(enable) {
+      const binder = this[enable ? 'on' : 'off']
+      const keyEventsList = {
+        keydown: $event => (this.moveSelection($event), this.onAutocomplete($event)),
+        keyup: this.onListKeyUp
+      }
+      const eventsList = Object.assign({
+        blur: this.onBlur,
+        focus: this.onFocus,
+        input: this.onInput,
+        click: this.showSuggestions
+      }, keyEventsList)
+
+      for (const event in eventsList) {
+        this.input[binder](event, eventsList[event])
+      }
+
+      const listenerBinder = enable ? 'addEventListener' : 'removeEventListener'
+
+      for (const event in keyEventsList) {
+        this.inputElement[listenerBinder](event, keyEventsList[event])
+      }
+    },
     isScopedSlotEmpty (slot) {
       if (slot) {
         const vNode = slot(this)
@@ -261,6 +277,7 @@ export default {
       this.showList()
     },
     moveSelection (e) {
+      console.log(e)
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
         e.preventDefault()
         this.showSuggestions()
@@ -331,7 +348,7 @@ export default {
           this.hideList()
 
           this.$emit('blur', e)
-        } else if (e.isTrusted && !this.isTabbed) {
+        } else if (e && e.isTrusted && !this.isTabbed) {
           this.inputElement.focus()
         }
       } else {
@@ -348,7 +365,7 @@ export default {
       this.isInFocus = true
 
       // Only emit, if it was a native input focus
-      if (e.sourceCapabilities) {
+      if (e && e.sourceCapabilities) {
         this.$emit('focus', e)
       }
 
