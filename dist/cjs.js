@@ -13,47 +13,6 @@ var modes = {
   select: Object
 };
 
-var inputProp = {
-  type: String
-};
-
-var inputProps = {
-  type: inputProp,
-  accesskey: inputProp,
-  autocomplete: inputProp,
-  form: inputProp,
-  formaction: inputProp,
-  formenctype: inputProp,
-  formmethod: inputProp,
-  formtarget: inputProp,
-  height: inputProp,
-  width: inputProp,
-  inputmode: inputProp,
-  max: inputProp,
-  min: inputProp,
-  minlength: inputProp,
-  maxlength: inputProp,
-  name: inputProp,
-  pattern: inputProp,
-  placeholder: inputProp,
-  selectionDirection: inputProp,
-  selectionEnd: inputProp,
-  selectionStart: inputProp,
-  size: inputProp,
-  src: inputProp,
-  step: inputProp,
-  tabindex: inputProp,
-  title: inputProp,
-  spellcheck: {},
-  readonly: {},
-  required: {},
-  multiple: {},
-  formnovalidate: {},
-  autofocus: {},
-  checked: {},
-  disabled: {}
-};
-
 function fromPath(obj, path) {
   return path.split('.').reduce(function (o, i) {
     return o === Object(o) ? o[i] : o;
@@ -107,8 +66,7 @@ function _finally(body, finalizer) {
   if (direct) {
     return then ? then(value) : value;
   }value = Promise.resolve(value);return then ? value.then(then) : value;
-}
-var _async = function () {
+}var _async = function () {
   try {
     if (isNaN.apply(null, {})) {
       return function (f) {
@@ -135,11 +93,13 @@ var _async = function () {
   var result = body();if (result && result.then) {
     return result.then(then);
   }return then(result);
-}function _awaitIgnored(value, direct) {
+}
+function _awaitIgnored(value, direct) {
   if (!direct) {
     return Promise.resolve(value).then(_empty);
   }
-}function _empty() {}
+}
+function _empty() {}
 var event = 'input';
 
 var VueSimpleSuggest = {
@@ -148,9 +108,7 @@ var VueSimpleSuggest = {
           if (!('button' in $event) && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
             return null;
           }_vm.isTabbed = true;
-        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", on: { "click": _vm.showSuggestions, "keydown": function keydown($event) {
-          _vm.moveSelection($event), _vm.onAutocomplete($event);
-        }, "keyup": _vm.onListKeyUp } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input" }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", on: { "mouseenter": function mouseenter($event) {
+        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper" }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", on: { "mouseenter": function mouseenter($event) {
           _vm.hoverList(true);
         }, "mouseleave": function mouseleave($event) {
           _vm.hoverList(false);
@@ -165,7 +123,7 @@ var VueSimpleSuggest = {
           }, "click": function click($event) {
             _vm.suggestionClick(suggestion, $event);
           } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { autocomplete: function autocomplete() {
-          return _vm.autocompleteText(suggestion);
+          return _vm.autocompleteText(_vm.displayProperty(suggestion));
         }, suggestion: suggestion, query: _vm.text })], 2);
     }), _vm._v(" "), _vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()]);
   },
@@ -177,7 +135,7 @@ var VueSimpleSuggest = {
       return event;
     }
   },
-  props: Object.assign({}, inputProps, {
+  props: {
     controls: {
       type: Object,
       default: function _default() {
@@ -190,7 +148,8 @@ var VueSimpleSuggest = {
     },
     maxSuggestions: {
       type: Number,
-      default: 10 },
+      default: 10
+    },
     displayAttribute: {
       type: String,
       default: 'title'
@@ -205,15 +164,13 @@ var VueSimpleSuggest = {
         return [];
       }
     },
-    removeList: {
-      type: Boolean,
+    removeList: { type: Boolean,
       default: false
     },
     destyled: {
       type: Boolean,
       default: false
-    },
-    filterByQuery: {
+    }, filterByQuery: {
       type: Boolean,
       default: false
     },
@@ -235,7 +192,7 @@ var VueSimpleSuggest = {
         return !!~Object.keys(modes).indexOf(value.toLowerCase());
       }
     }
-  }),
+  },
   // Handle run-time mode changes (not working):
   watch: {
     mode: {
@@ -302,17 +259,41 @@ var VueSimpleSuggest = {
   },
   mounted: function mounted() {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
-    this.input[this.on]('blur', this.onBlur);
-    this.input[this.on]('focus', this.onFocus);
-    this.input[this.on]('input', this.onInput);
+
+    this.prepareEventHandlers(true);
   },
   beforeDestroy: function beforeDestroy() {
-    this.input[this.off]('blur', this.onBlur);
-    this.input[this.off]('focus', this.onFocus);
-    this.input[this.off]('input', this.onInput);
+    this.prepareEventHandlers(false);
   },
 
   methods: {
+    prepareEventHandlers: function prepareEventHandlers(enable) {
+      var _this2 = this;
+
+      var binder = this[enable ? 'on' : 'off'];
+      var keyEventsList = {
+        keydown: function keydown($event) {
+          return _this2.moveSelection($event), _this2.onAutocomplete($event);
+        },
+        keyup: this.onListKeyUp
+      };
+      var eventsList = Object.assign({
+        blur: this.onBlur,
+        focus: this.onFocus,
+        input: this.onInput,
+        click: this.showSuggestions
+      }, keyEventsList);
+
+      for (var _event in eventsList) {
+        this.input[binder](_event, eventsList[_event]);
+      }
+
+      var listenerBinder = enable ? 'addEventListener' : 'removeEventListener';
+
+      for (var _event2 in keyEventsList) {
+        this.inputElement[listenerBinder](_event2, keyEventsList[_event2]);
+      }
+    },
     isScopedSlotEmpty: function isScopedSlotEmpty(slot) {
       if (slot) {
         var vNode = slot(this);
@@ -322,10 +303,10 @@ var VueSimpleSuggest = {
       return true;
     },
     miscSlotsAreEmpty: function miscSlotsAreEmpty() {
-      var _this2 = this;
+      var _this3 = this;
 
       var slots = ['misc-item-above', 'misc-item-below'].map(function (s) {
-        return _this2.$scopedSlots[s];
+        return _this3.$scopedSlots[s];
       });
 
       if (slots.every(function (s) {
@@ -340,11 +321,14 @@ var VueSimpleSuggest = {
 
       return this.isScopedSlotEmpty.call(this, slot);
     },
+    getPropertyByAttribute: function getPropertyByAttribute(obj, attr) {
+      return this.isPlainSuggestion ? obj : (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) !== undefined ? fromPath(obj, attr) : obj;
+    },
     displayProperty: function displayProperty(obj) {
-      return String(this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute));
+      return String(this.getPropertyByAttribute(obj, this.displayAttribute));
     },
     valueProperty: function valueProperty(obj) {
-      return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
+      return this.getPropertyByAttribute(obj, this.valueAttribute);
     },
     autocompleteText: function autocompleteText(text) {
       this.$emit('input', text);
@@ -385,14 +369,14 @@ var VueSimpleSuggest = {
       }
     },
     showSuggestions: _async(function () {
-      var _this3 = this;
+      var _this4 = this;
 
       return _invoke(function () {
-        if (_this3.suggestions.length === 0 && _this3.minLength === 0 && !_this3.text) {
-          return _awaitIgnored(_this3.research());
+        if (_this4.suggestions.length === 0 && _this4.minLength === 0 && !_this4.text) {
+          return _awaitIgnored(_this4.research());
         }
       }, function () {
-        _this3.showList();
+        _this4.showList();
       });
     }),
     moveSelection: function moveSelection(e) {
@@ -462,7 +446,7 @@ var VueSimpleSuggest = {
           this.hideList();
 
           this.$emit('blur', e);
-        } else if (e.isTrusted && !this.isTabbed) {
+        } else if (e && e.isTrusted && !this.isTabbed) {
           this.inputElement.focus();
         }
       } else {
@@ -476,7 +460,7 @@ var VueSimpleSuggest = {
       this.isInFocus = true;
 
       // Only emit, if it was a native input focus
-      if (e.sourceCapabilities) {
+      if (e && e.sourceCapabilities) {
         this.$emit('focus', e);
       }
 
@@ -508,56 +492,56 @@ var VueSimpleSuggest = {
       }
     },
     research: _async(function () {
-      var _this4 = this;
+      var _this5 = this;
 
       return _finally(function () {
         return _catch(function () {
           return _invokeIgnored(function () {
-            if (_this4.canSend) {
-              _this4.canSend = false;
-              var _$set = _this4.$set;
-              return _await(_this4.getSuggestions(_this4.text), function (_this4$getSuggestions) {
-                _$set.call(_this4, _this4, 'suggestions', _this4$getSuggestions);
-                _this4.canSend = true;
+            if (_this5.canSend) {
+              _this5.canSend = false;
+              var _$set = _this5.$set;
+              return _await(_this5.getSuggestions(_this5.text), function (_this5$getSuggestions) {
+                _$set.call(_this5, _this5, 'suggestions', _this5$getSuggestions);
+                _this5.canSend = true;
               });
             }
           });
         }, function (e) {
-          _this4.clearSuggestions();
+          _this5.clearSuggestions();
           throw e;
         });
       }, function () {
-        if (_this4.suggestions.length === 0 && _this4.miscSlotsAreEmpty()) {
-          _this4.hideList();
+        if (_this5.suggestions.length === 0 && _this5.miscSlotsAreEmpty()) {
+          _this5.hideList();
         } else {
-          _this4.showList();
+          _this5.showList();
         }
 
-        return _this4.suggestions;
+        return _this5.suggestions;
       });
     }),
     getSuggestions: _async(function () {
-      var _this5 = this;
+      var _this6 = this;
 
       var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-      if (_this5.listShown && !value && _this5.minLength > 0) {
-        _this5.hideList();
+      if (_this6.listShown && !value && _this6.minLength > 0) {
+        _this6.hideList();
         return [];
       }
 
-      if (value.length < _this5.minLength) {
-        return _this5.suggestions;
+      if (value.length < _this6.minLength) {
+        return _this6.suggestions;
       }
 
-      _this5.selected = null;
+      _this6.selected = null;
 
       // Start request if can
-      if (_this5.listIsRequest) {
-        _this5.$emit('request-start', value);
+      if (_this6.listIsRequest) {
+        _this6.$emit('request-start', value);
 
-        if (_this5.suggestions.length > 0 || !_this5.miscSlotsAreEmpty()) {
-          _this5.showList();
+        if (_this6.suggestions.length > 0 || !_this6.miscSlotsAreEmpty()) {
+          _this6.showList();
         }
       }
 
@@ -565,12 +549,12 @@ var VueSimpleSuggest = {
       return _finally(function () {
         return _catch(function () {
           return _invoke(function () {
-            if (_this5.listIsRequest) {
-              return _await(_this5.list(value), function (_this5$list) {
-                result = _this5$list || [];
+            if (_this6.listIsRequest) {
+              return _await(_this6.list(value), function (_this6$list) {
+                result = _this6$list || [];
               });
             } else {
-              result = _this5.list;
+              result = _this6.list;
             }
           }, function () {
             // IFF the result is not an array (just in case!) - make it an array
@@ -578,28 +562,28 @@ var VueSimpleSuggest = {
               result = [result];
             }
 
-            _this5.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
+            _this6.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
 
-            if (_this5.filterByQuery) {
+            if (_this6.filterByQuery) {
               result = result.filter(function (el) {
-                return _this5.filter(el, value);
+                return _this6.filter(el, value);
               });
             }
 
-            if (_this5.listIsRequest) {
-              _this5.$emit('request-done', result);
+            if (_this6.listIsRequest) {
+              _this6.$emit('request-done', result);
             }
           });
         }, function (e) {
-          if (_this5.listIsRequest) {
-            _this5.$emit('request-failed', e);
+          if (_this6.listIsRequest) {
+            _this6.$emit('request-failed', e);
           } else {
             throw e;
           }
         });
       }, function () {
-        if (_this5.maxSuggestions) {
-          result.splice(_this5.maxSuggestions);
+        if (_this6.maxSuggestions) {
+          result.splice(_this6.maxSuggestions);
         }
 
         return result;

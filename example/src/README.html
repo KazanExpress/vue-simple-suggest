@@ -689,7 +689,6 @@ npm run docs</code></pre><hr>
 </blockquote>
 <p>Supports nesting. Input props can be passed to a custom input to avoid their processing by vue-simple-suggest.
 Defaults to a simple input with props passed to vue-simple-suggest.</p>
-<p><strong>To work with the <code>vue-simple-suggest</code> your custom input component MUST emit <code>focus</code> and <code>blur</code> events!</strong></p>
 <p><strong>Warning:</strong> <code>v-model</code> on a custom input IS NOT the same as <code>v-model</code> on vue-simple-suggest!</p>
 <pre class="hljs"><code><span class="hljs-comment">&lt;!--  Default HTMLInputElement example:  --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"Text here"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"search"</span> <span class="hljs-attr">pattern</span>=<span class="hljs-string">"[a-z]+"</span>/&gt;</span></code></pre><pre class="hljs"><code><span class="hljs-comment">&lt;!--  Vanilla HTMLInputElement example 1:  --&gt;</span>
@@ -701,15 +700,31 @@ Defaults to a simple input with props passed to vue-simple-suggest.</p>
 <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">placeholder</span>=<span class="hljs-string">"Text here"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"search"</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><pre class="hljs"><code><span class="hljs-comment">&lt;!--  Vanilla HTMLInputElement example 4 (nested):  --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">section</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"email"</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-name">section</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><pre class="hljs"><code><span class="hljs-comment">&lt;!--  Vue component example (also supports nesting):  --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">my-custom-input-somponent</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-custom-input-somponent</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"vModelGoesHere"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">my-custom-input-somponent</span> <span class="hljs-attr">:value</span>=<span class="hljs-string">"initialInputValueGoesHere"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-custom-input-somponent</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><p><strong>Custom input component caveats:</strong></p>
+<p>To work with the <code>vue-simple-suggest</code> your custom input component has to follow certain standard behaviours.</p>
+<p>Custom input component <strong>must</strong> (in order to work properly):</p>
+<ul class="list">
+<li>Emit an <code>input</code> event.</li>
+<li>Emit <code>focus</code> and <code>blur</code> events.</li>
+<li>Have a <code>value</code> prop.</li>
+</ul>
+<p>Custom input component <strong>should</strong> (in order to avoid usage limitations):</p>
+<ul class="list">
+<li>Not stop any event propagations from internal input HTML element.</li>
+<li>Forward an original event argument with <code>focus</code> and <code>blur</code> events.</li>
+</ul>
+<p>If <code>vue-simple-suggest</code> with your custom component doesn&#39;t seem to react to outside variable changes - bind both components&#39; v-model to the same variable, like so:</p>
+<pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">my-custom-input-somponent</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-custom-input-somponent</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><h5 id="custom-suggestion-item"><a class="header-link" href="#custom-suggestion-item"></a>Custom suggestion item</h5>
 <blockquote>
 <p><code>suggestion-item</code> slot (optional)</p>
@@ -746,7 +761,11 @@ Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</c
 <p>One of the simplest examples - highlighting the query text in the results:</p>
 <pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">slot</span>=<span class="hljs-string">"suggestion-item"</span> <span class="hljs-attr">slot-scope</span>=<span class="hljs-string">"scope"</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">v-html</span>=<span class="hljs-string">"boldenSuggestion(scope)"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre><pre class="hljs"><code>boldenSuggestion({ suggestion, query }) {
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code></pre><pre class="hljs"><code>boldenSuggestion(scope) {
+  <span class="hljs-keyword">if</span> (!scope) <span class="hljs-keyword">return</span> scope;
+
+  <span class="hljs-keyword">const</span> { suggestion, query } = scope;
+
   <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">this</span>.$refs.suggestComponent.displayProperty(suggestion);
 
   <span class="hljs-keyword">if</span> (!query) <span class="hljs-keyword">return</span> result;

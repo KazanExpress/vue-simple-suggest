@@ -11,47 +11,6 @@ const modes = {
   select: Object
 };
 
-const inputProp = {
-  type: String
-};
-
-const inputProps = {
-  type: inputProp,
-  accesskey: inputProp,
-  autocomplete: inputProp,
-  form: inputProp,
-  formaction: inputProp,
-  formenctype: inputProp,
-  formmethod: inputProp,
-  formtarget: inputProp,
-  height: inputProp,
-  width: inputProp,
-  inputmode: inputProp,
-  max: inputProp,
-  min: inputProp,
-  minlength: inputProp,
-  maxlength: inputProp,
-  name: inputProp,
-  pattern: inputProp,
-  placeholder: inputProp,
-  selectionDirection: inputProp,
-  selectionEnd: inputProp,
-  selectionStart: inputProp,
-  size: inputProp,
-  src: inputProp,
-  step: inputProp,
-  tabindex: inputProp,
-  title: inputProp,
-  spellcheck: {},
-  readonly: {},
-  required: {},
-  multiple: {},
-  formnovalidate: {},
-  autofocus: {},
-  checked: {},
-  disabled: {}
-};
-
 function fromPath(obj, path) {
   return path.split('.').reduce((o, i) => o === Object(o) ? o[i] : o, obj);
 }
@@ -91,8 +50,7 @@ function _finally(body, finalizer) {
   if (direct) {
     return then ? then(value) : value;
   }value = Promise.resolve(value);return then ? value.then(then) : value;
-}
-const _async = function () {
+}const _async = function () {
   try {
     if (isNaN.apply(null, {})) {
       return function (f) {
@@ -119,11 +77,13 @@ const _async = function () {
   var result = body();if (result && result.then) {
     return result.then(then);
   }return then(result);
-}function _awaitIgnored(value, direct) {
+}
+function _awaitIgnored(value, direct) {
   if (!direct) {
     return Promise.resolve(value).then(_empty);
   }
-}function _empty() {}
+}
+function _empty() {}
 let event = 'input';
 
 var VueSimpleSuggest = {
@@ -132,9 +92,7 @@ var VueSimpleSuggest = {
           if (!('button' in $event) && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
             return null;
           }_vm.isTabbed = true;
-        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", on: { "click": _vm.showSuggestions, "keydown": function ($event) {
-          _vm.moveSelection($event), _vm.onAutocomplete($event);
-        }, "keyup": _vm.onListKeyUp } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input" }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", on: { "mouseenter": function ($event) {
+        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper" }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", on: { "mouseenter": function ($event) {
           _vm.hoverList(true);
         }, "mouseleave": function ($event) {
           _vm.hoverList(false);
@@ -149,7 +107,7 @@ var VueSimpleSuggest = {
           }, "click": function ($event) {
             _vm.suggestionClick(suggestion, $event);
           } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { autocomplete: function () {
-          return _vm.autocompleteText(suggestion);
+          return _vm.autocompleteText(_vm.displayProperty(suggestion));
         }, suggestion: suggestion, query: _vm.text })], 2);
     }), _vm._v(" "), _vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()]);
   },
@@ -161,7 +119,7 @@ var VueSimpleSuggest = {
       return event;
     }
   },
-  props: Object.assign({}, inputProps, {
+  props: {
     controls: {
       type: Object,
       default: () => defaultControls
@@ -172,7 +130,8 @@ var VueSimpleSuggest = {
     },
     maxSuggestions: {
       type: Number,
-      default: 10 },
+      default: 10
+    },
     displayAttribute: {
       type: String,
       default: 'title'
@@ -185,15 +144,13 @@ var VueSimpleSuggest = {
       type: [Function, Array],
       default: () => []
     },
-    removeList: {
-      type: Boolean,
+    removeList: { type: Boolean,
       default: false
     },
     destyled: {
       type: Boolean,
       default: false
-    },
-    filterByQuery: {
+    }, filterByQuery: {
       type: Boolean,
       default: false
     },
@@ -213,7 +170,7 @@ var VueSimpleSuggest = {
       default: event,
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
-  }),
+  },
   // Handle run-time mode changes (not working):
   watch: {
     mode: {
@@ -273,16 +230,36 @@ var VueSimpleSuggest = {
   },
   mounted() {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
-    this.input[this.on]('blur', this.onBlur);
-    this.input[this.on]('focus', this.onFocus);
-    this.input[this.on]('input', this.onInput);
+
+    this.prepareEventHandlers(true);
   },
   beforeDestroy() {
-    this.input[this.off]('blur', this.onBlur);
-    this.input[this.off]('focus', this.onFocus);
-    this.input[this.off]('input', this.onInput);
+    this.prepareEventHandlers(false);
   },
   methods: {
+    prepareEventHandlers(enable) {
+      const binder = this[enable ? 'on' : 'off'];
+      const keyEventsList = {
+        keydown: $event => (this.moveSelection($event), this.onAutocomplete($event)),
+        keyup: this.onListKeyUp
+      };
+      const eventsList = Object.assign({
+        blur: this.onBlur,
+        focus: this.onFocus,
+        input: this.onInput,
+        click: this.showSuggestions
+      }, keyEventsList);
+
+      for (const event in eventsList) {
+        this.input[binder](event, eventsList[event]);
+      }
+
+      const listenerBinder = enable ? 'addEventListener' : 'removeEventListener';
+
+      for (const event in keyEventsList) {
+        this.inputElement[listenerBinder](event, keyEventsList[event]);
+      }
+    },
     isScopedSlotEmpty(slot) {
       if (slot) {
         const vNode = slot(this);
@@ -302,11 +279,14 @@ var VueSimpleSuggest = {
 
       return this.isScopedSlotEmpty.call(this, slot);
     },
+    getPropertyByAttribute(obj, attr) {
+      return this.isPlainSuggestion ? obj : typeof obj !== undefined ? fromPath(obj, attr) : obj;
+    },
     displayProperty(obj) {
-      return String(this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute));
+      return String(this.getPropertyByAttribute(obj, this.displayAttribute));
     },
     valueProperty(obj) {
-      return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
+      return this.getPropertyByAttribute(obj, this.valueAttribute);
     },
     autocompleteText(text) {
       this.$emit('input', text);
@@ -425,7 +405,7 @@ var VueSimpleSuggest = {
           this.hideList();
 
           this.$emit('blur', e);
-        } else if (e.isTrusted && !this.isTabbed) {
+        } else if (e && e.isTrusted && !this.isTabbed) {
           this.inputElement.focus();
         }
       } else {
@@ -440,7 +420,7 @@ var VueSimpleSuggest = {
       this.isInFocus = true;
 
       // Only emit, if it was a native input focus
-      if (e.sourceCapabilities) {
+      if (e && e.sourceCapabilities) {
         this.$emit('focus', e);
       }
 
