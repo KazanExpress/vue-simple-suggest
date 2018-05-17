@@ -46,7 +46,6 @@ import {
   defaultControls,
   modes,
   fromPath,
-  inputProps,
   hasKeyCode
 } from './misc'
 
