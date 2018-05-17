@@ -14,7 +14,7 @@
       <vue-suggest class="asdad" pattern="\w+"
         v-model="model"
         :list="getList"
-        :max-count="10"
+        :max-suggestions="10"
         :min-length="3"
         :debounce="200"
         :filter-by-query="false"
@@ -43,7 +43,7 @@
 
         <!-- <div class="g"><input type="text"></div> -->
 
-        <!-- <test-input placeholder="Search information..."/> -->
+        <test-input placeholder="Search information..."/>
 
         <template slot="misc-item-above" slot-scope="{ suggestions, query }">
           <div class="misc-item">
@@ -110,7 +110,11 @@
       }
     },
     methods: {
-      boldenSuggestion({ suggestion, query }) {
+      boldenSuggestion(scope) {
+        if (!scope) return scope;
+
+        const { suggestion, query } = scope;
+
         let result = this.$refs.suggestComponent.displayProperty(suggestion);
 
         if (!query) return result;

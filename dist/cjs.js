@@ -148,9 +148,9 @@ var VueSimpleSuggest = {
           if (!('button' in $event) && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
             return null;
           }_vm.isTabbed = true;
-        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", on: { "click": _vm.showSuggestions, "input": _vm.onInput, "keydown": function keydown($event) {
+        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", on: { "click": _vm.showSuggestions, "keydown": function keydown($event) {
           _vm.moveSelection($event), _vm.onAutocomplete($event);
-        }, "keyup": _vm.onListKeyUp } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", domProps: { "value": _vm.text || '' } }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", on: { "mouseenter": function mouseenter($event) {
+        }, "keyup": _vm.onListKeyUp } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input" }, 'input', _vm.$props, false))])], 2), _vm._v(" "), !!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", on: { "mouseenter": function mouseenter($event) {
           _vm.hoverList(true);
         }, "mouseleave": function mouseleave($event) {
           _vm.hoverList(false);
@@ -238,8 +238,19 @@ var VueSimpleSuggest = {
   }),
   // Handle run-time mode changes (not working):
   watch: {
-    mode: function mode(v) {
-      return event = v;
+    mode: {
+      handler: function handler(current, old) {
+        event = current;
+      },
+
+      immediate: true
+    },
+    value: {
+      handler: function handler(current) {
+        this.text = current;
+      },
+
+      immediate: true
     }
   },
   //
@@ -288,16 +299,17 @@ var VueSimpleSuggest = {
   },
   created: function created() {
     this.controlScheme = Object.assign({}, defaultControls, this.controls);
-    event = this.mode;
   },
   mounted: function mounted() {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
     this.input[this.on]('blur', this.onBlur);
     this.input[this.on]('focus', this.onFocus);
+    this.input[this.on]('input', this.onInput);
   },
   beforeDestroy: function beforeDestroy() {
     this.input[this.off]('blur', this.onBlur);
     this.input[this.off]('focus', this.onFocus);
+    this.input[this.off]('input', this.onInput);
   },
 
   methods: {
@@ -329,7 +341,7 @@ var VueSimpleSuggest = {
       return this.isScopedSlotEmpty.call(this, slot);
     },
     displayProperty: function displayProperty(obj) {
-      return (this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute)) + '';
+      return String(this.isPlainSuggestion ? obj : fromPath(obj, this.displayAttribute));
     },
     valueProperty: function valueProperty(obj) {
       return this.isPlainSuggestion ? obj : fromPath(obj, this.valueAttribute);
@@ -474,7 +486,13 @@ var VueSimpleSuggest = {
       }
     },
     onInput: function onInput(inputEvent) {
-      this.text = inputEvent.target.value;
+      var value = !inputEvent.target ? inputEvent : inputEvent.target.value;
+
+      if (this.text === value) {
+        return;
+      }
+
+      this.text = value;
       this.$emit('input', this.text);
 
       if (this.selected) {
