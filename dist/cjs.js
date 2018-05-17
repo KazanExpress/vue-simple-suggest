@@ -93,13 +93,11 @@ function _finally(body, finalizer) {
   var result = body();if (result && result.then) {
     return result.then(then);
   }return then(result);
-}
-function _awaitIgnored(value, direct) {
+}function _awaitIgnored(value, direct) {
   if (!direct) {
     return Promise.resolve(value).then(_empty);
   }
-}
-function _empty() {}
+}function _empty() {}
 var event = 'input';
 
 var VueSimpleSuggest = {
@@ -164,13 +162,15 @@ var VueSimpleSuggest = {
         return [];
       }
     },
-    removeList: { type: Boolean,
+    removeList: {
+      type: Boolean,
       default: false
     },
     destyled: {
       type: Boolean,
       default: false
-    }, filterByQuery: {
+    },
+    filterByQuery: {
       type: Boolean,
       default: false
     },
