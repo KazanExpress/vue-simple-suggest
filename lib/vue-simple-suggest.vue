@@ -164,9 +164,12 @@ export default {
     },
     hoveredIndex () {
       return this.suggestions.findIndex(el => this.hovered && (this.valueProperty(this.hovered) == this.valueProperty(el)))
+    },
+    textLength () {
+      return (this.text && this.text.length) || (this.inputElement.value.length) || 0
     }
   },
-  created() {
+  created () {
     this.controlScheme = Object.assign({}, defaultControls, this.controls)
   },
   mounted () {
@@ -260,8 +263,7 @@ export default {
     },
     showList () {
       if (!this.listShown) {
-        const textLength = (this.text && this.text.length) || (this.inputElement.value.length) || 0
-        if (textLength >= this.minLength
+        if (this.textLength >= this.minLength
           && ((this.suggestions.length > 0) || !this.miscSlotsAreEmpty())
         ) {
           this.listShown = true
@@ -270,8 +272,7 @@ export default {
       }
     },
     async showSuggestions () {
-      const textLength = (this.text && this.text.length) || (this.inputElement.value.length) || 0
-      if (this.suggestions.length === 0 && this.minLength === textLength) {
+      if (this.suggestions.length === 0 && this.minLength === this.textLength) {
         await this.research()
       }
 
