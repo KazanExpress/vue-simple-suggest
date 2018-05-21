@@ -125,6 +125,9 @@ export default {
         this.text = current
       },
       immediate: true
+    },
+    canSend() {
+      console.log(arguments[0])
     }
   },
   //
@@ -181,6 +184,7 @@ export default {
     prepareEventHandlers(enable) {
       const binder = this[enable ? 'on' : 'off']
       const keyEventsList = {
+        click: this.showSuggestions,
         keydown: $event => (this.moveSelection($event), this.onAutocomplete($event)),
         keyup: this.onListKeyUp
       }
@@ -188,7 +192,6 @@ export default {
         blur: this.onBlur,
         focus: this.onFocus,
         input: this.onInput,
-        click: this.showSuggestions
       }, keyEventsList)
 
       for (const event in eventsList) {
@@ -260,7 +263,7 @@ export default {
     },
     showList () {
       if (!this.listShown) {
-        const textLength = (this.text && this.text.length) || 0
+        const textLength = (this.text && this.text.length) || (this.inputElement.value.length) || 0
         if (textLength >= this.minLength
           && ((this.suggestions.length > 0) || !this.miscSlotsAreEmpty())
         ) {
@@ -270,7 +273,8 @@ export default {
       }
     },
     async showSuggestions () {
-      if (this.suggestions.length === 0 && this.minLength === 0 && !this.text) {
+      const textLength = (this.text && this.text.length) || (this.inputElement.value.length) || 0
+      if (this.suggestions.length === 0 && this.minLength === textLength) {
         await this.research()
       }
 
@@ -370,7 +374,7 @@ export default {
 
       // Show list only if the item has not been clicked
       if (!this.isClicking) {
-        this.showList()
+        this.showSuggestions()
       }
     },
     onInput (inputEvent) {
@@ -398,7 +402,6 @@ export default {
         if (this.canSend) {
           this.canSend = false
           this.$set(this, 'suggestions', await this.getSuggestions(this.text))
-          this.canSend = true
         }
       }
 
@@ -408,6 +411,8 @@ export default {
       }
 
       finally {
+        this.canSend = true
+
         if ((this.suggestions.length === 0) && this.miscSlotsAreEmpty()) {
           this.hideList()
         } else {
@@ -417,13 +422,15 @@ export default {
         return this.suggestions
       }
     },
-    async getSuggestions (value = '') {
-      if (this.listShown && !value && this.minLength > 0) {
-        this.hideList()
-        return []
-      }
+    async getSuggestions (value) {
+      value = value || '';
 
       if (value.length < this.minLength) {
+        if (this.listShown) {
+          this.hideList()
+          return []
+        }
+
         return this.suggestions
       }
 
