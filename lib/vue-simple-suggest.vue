@@ -125,9 +125,6 @@ export default {
         this.text = current
       },
       immediate: true
-    },
-    canSend() {
-      console.log(arguments[0])
     }
   },
   //
