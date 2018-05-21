@@ -15,7 +15,7 @@
         v-model="model"
         :list="getList"
         :max-suggestions="10"
-        :min-length="0"
+        :min-length="3"
         :debounce="200"
         :filter-by-query="false"
         :controls="{
@@ -172,8 +172,7 @@
         this.addToLog('request-failed', e)
       },
       getList (inputValue) {
-        return [ 'apple', 'banana', 'kiwi' ]
-        /* return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
           // let url = `https://www.googleapis.com/books/v1/volumes?printType=books&q=${inputValue}`
           let url = `https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&namespace=*&search=${inputValue}&limit=10&namespace=0&format=json`
           // this.$refs.suggestComponent.clearSuggestions()
@@ -205,7 +204,7 @@
             this.loading = false
             reject(error)
           })
-        }) */
+        })
       }
     }
   }
