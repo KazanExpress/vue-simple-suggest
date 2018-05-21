@@ -223,6 +223,9 @@ var VueSimpleSuggest = {
     },
     hoveredIndex() {
       return this.suggestions.findIndex(el => this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el));
+    },
+    textLength() {
+      return this.text && this.text.length || this.inputElement.value.length || 0;
     }
   },
   created() {
@@ -240,14 +243,14 @@ var VueSimpleSuggest = {
     prepareEventHandlers(enable) {
       const binder = this[enable ? 'on' : 'off'];
       const keyEventsList = {
+        click: this.showSuggestions,
         keydown: $event => (this.moveSelection($event), this.onAutocomplete($event)),
         keyup: this.onListKeyUp
       };
       const eventsList = Object.assign({
         blur: this.onBlur,
         focus: this.onFocus,
-        input: this.onInput,
-        click: this.showSuggestions
+        input: this.onInput
       }, keyEventsList);
 
       for (const event in eventsList) {
@@ -319,8 +322,7 @@ var VueSimpleSuggest = {
     },
     showList() {
       if (!this.listShown) {
-        const textLength = this.text && this.text.length || 0;
-        if (textLength >= this.minLength && (this.suggestions.length > 0 || !this.miscSlotsAreEmpty())) {
+        if (this.textLength >= this.minLength && (this.suggestions.length > 0 || !this.miscSlotsAreEmpty())) {
           this.listShown = true;
           this.$emit('show-list');
         }
@@ -330,7 +332,7 @@ var VueSimpleSuggest = {
       var _this = this;
 
       return _invoke(function () {
-        if (_this.suggestions.length === 0 && _this.minLength === 0 && !_this.text) {
+        if (_this.suggestions.length === 0 && _this.minLength === _this.textLength) {
           return _awaitIgnored(_this.research());
         }
       }, function () {
@@ -426,7 +428,7 @@ var VueSimpleSuggest = {
 
       // Show list only if the item has not been clicked
       if (!this.isClicking) {
-        this.showList();
+        this.showSuggestions();
       }
     },
     onInput(inputEvent) {
@@ -462,7 +464,6 @@ var VueSimpleSuggest = {
               var _$set = _this2.$set;
               return _await(_this2.getSuggestions(_this2.text), function (_this2$getSuggestions) {
                 _$set.call(_this2, _this2, 'suggestions', _this2$getSuggestions);
-                _this2.canSend = true;
               });
             }
           });
@@ -471,6 +472,8 @@ var VueSimpleSuggest = {
           throw e;
         });
       }, function () {
+        _this2.canSend = true;
+
         if (_this2.suggestions.length === 0 && _this2.miscSlotsAreEmpty()) {
           _this2.hideList();
         } else {
@@ -480,15 +483,17 @@ var VueSimpleSuggest = {
         return _this2.suggestions;
       });
     }),
-    getSuggestions: _async(function (value = '') {
+    getSuggestions: _async(function (value) {
       var _this3 = this;
 
-      if (_this3.listShown && !value && _this3.minLength > 0) {
-        _this3.hideList();
-        return [];
-      }
+      value = value || '';
 
       if (value.length < _this3.minLength) {
+        if (_this3.listShown) {
+          _this3.hideList();
+          return [];
+        }
+
         return _this3.suggestions;
       }
 

@@ -167,6 +167,9 @@ var VueSimpleSuggest = {
     },
     hoveredIndex() {
       return this.suggestions.findIndex(el => this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el));
+    },
+    textLength() {
+      return this.text && this.text.length || this.inputElement.value.length || 0;
     }
   },
   created() {
@@ -184,14 +187,14 @@ var VueSimpleSuggest = {
     prepareEventHandlers(enable) {
       const binder = this[enable ? 'on' : 'off'];
       const keyEventsList = {
+        click: this.showSuggestions,
         keydown: $event => (this.moveSelection($event), this.onAutocomplete($event)),
         keyup: this.onListKeyUp
       };
       const eventsList = Object.assign({
         blur: this.onBlur,
         focus: this.onFocus,
-        input: this.onInput,
-        click: this.showSuggestions
+        input: this.onInput
       }, keyEventsList);
 
       for (const event in eventsList) {
@@ -263,15 +266,14 @@ var VueSimpleSuggest = {
     },
     showList() {
       if (!this.listShown) {
-        const textLength = this.text && this.text.length || 0;
-        if (textLength >= this.minLength && (this.suggestions.length > 0 || !this.miscSlotsAreEmpty())) {
+        if (this.textLength >= this.minLength && (this.suggestions.length > 0 || !this.miscSlotsAreEmpty())) {
           this.listShown = true;
           this.$emit('show-list');
         }
       }
     },
     async showSuggestions() {
-      if (this.suggestions.length === 0 && this.minLength === 0 && !this.text) {
+      if (this.suggestions.length === 0 && this.minLength === this.textLength) {
         await this.research();
       }
 
@@ -365,7 +367,7 @@ var VueSimpleSuggest = {
 
       // Show list only if the item has not been clicked
       if (!this.isClicking) {
-        this.showList();
+        this.showSuggestions();
       }
     },
     onInput(inputEvent) {
@@ -395,12 +397,13 @@ var VueSimpleSuggest = {
         if (this.canSend) {
           this.canSend = false;
           this.$set(this, 'suggestions', (await this.getSuggestions(this.text)));
-          this.canSend = true;
         }
       } catch (e) {
         this.clearSuggestions();
         throw e;
       } finally {
+        this.canSend = true;
+
         if (this.suggestions.length === 0 && this.miscSlotsAreEmpty()) {
           this.hideList();
         } else {
@@ -410,13 +413,15 @@ var VueSimpleSuggest = {
         return this.suggestions;
       }
     },
-    async getSuggestions(value = '') {
-      if (this.listShown && !value && this.minLength > 0) {
-        this.hideList();
-        return [];
-      }
+    async getSuggestions(value) {
+      value = value || '';
 
       if (value.length < this.minLength) {
+        if (this.listShown) {
+          this.hideList();
+          return [];
+        }
+
         return this.suggestions;
       }
 

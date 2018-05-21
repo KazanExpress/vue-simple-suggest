@@ -252,6 +252,9 @@ var VueSimpleSuggest = {
       return this.suggestions.findIndex(function (el) {
         return _this.hovered && _this.valueProperty(_this.hovered) == _this.valueProperty(el);
       });
+    },
+    textLength: function textLength() {
+      return this.text && this.text.length || this.inputElement.value.length || 0;
     }
   },
   created: function created() {
@@ -272,6 +275,7 @@ var VueSimpleSuggest = {
 
       var binder = this[enable ? 'on' : 'off'];
       var keyEventsList = {
+        click: this.showSuggestions,
         keydown: function keydown($event) {
           return _this2.moveSelection($event), _this2.onAutocomplete($event);
         },
@@ -280,8 +284,7 @@ var VueSimpleSuggest = {
       var eventsList = Object.assign({
         blur: this.onBlur,
         focus: this.onFocus,
-        input: this.onInput,
-        click: this.showSuggestions
+        input: this.onInput
       }, keyEventsList);
 
       for (var _event in eventsList) {
@@ -361,8 +364,7 @@ var VueSimpleSuggest = {
     },
     showList: function showList() {
       if (!this.listShown) {
-        var textLength = this.text && this.text.length || 0;
-        if (textLength >= this.minLength && (this.suggestions.length > 0 || !this.miscSlotsAreEmpty())) {
+        if (this.textLength >= this.minLength && (this.suggestions.length > 0 || !this.miscSlotsAreEmpty())) {
           this.listShown = true;
           this.$emit('show-list');
         }
@@ -372,7 +374,7 @@ var VueSimpleSuggest = {
       var _this4 = this;
 
       return _invoke(function () {
-        if (_this4.suggestions.length === 0 && _this4.minLength === 0 && !_this4.text) {
+        if (_this4.suggestions.length === 0 && _this4.minLength === _this4.textLength) {
           return _awaitIgnored(_this4.research());
         }
       }, function () {
@@ -466,7 +468,7 @@ var VueSimpleSuggest = {
 
       // Show list only if the item has not been clicked
       if (!this.isClicking) {
-        this.showList();
+        this.showSuggestions();
       }
     },
     onInput: function onInput(inputEvent) {
@@ -502,7 +504,6 @@ var VueSimpleSuggest = {
               var _$set = _this5.$set;
               return _await(_this5.getSuggestions(_this5.text), function (_this5$getSuggestions) {
                 _$set.call(_this5, _this5, 'suggestions', _this5$getSuggestions);
-                _this5.canSend = true;
               });
             }
           });
@@ -511,6 +512,8 @@ var VueSimpleSuggest = {
           throw e;
         });
       }, function () {
+        _this5.canSend = true;
+
         if (_this5.suggestions.length === 0 && _this5.miscSlotsAreEmpty()) {
           _this5.hideList();
         } else {
@@ -520,17 +523,17 @@ var VueSimpleSuggest = {
         return _this5.suggestions;
       });
     }),
-    getSuggestions: _async(function () {
+    getSuggestions: _async(function (value) {
       var _this6 = this;
 
-      var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-
-      if (_this6.listShown && !value && _this6.minLength > 0) {
-        _this6.hideList();
-        return [];
-      }
+      value = value || '';
 
       if (value.length < _this6.minLength) {
+        if (_this6.listShown) {
+          _this6.hideList();
+          return [];
+        }
+
         return _this6.suggestions;
       }
 
