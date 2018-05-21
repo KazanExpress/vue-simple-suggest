@@ -346,7 +346,7 @@ If there's a need to customize the appearance of the component, here's the inter
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list. |
 | `remove-list`                   | Boolean  | `false`    | If true - the suggestion list will be always hidden. |
 | `filter-by-query`                | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component). |
-| `filter` | Function | - | A custom function for filtering the suggestion results. Used only if `filter-by-query` is set `true`. |
+| `filter` | Function | - | A custom function for filtering the suggestion results that accepts a single item and a query to filter by as its 2 arguments. Used only if `filter-by-query` is set to `true`. |
 | `mode` <sup>[v1.4.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)</sup>                         | String | `'input'` | The `v-model` event. Determines the event, that triggers `v-model`. Can be one of `'input'` (`v-model` binds a displayed property) or `'select'` (`v-model` binds a selected item). |
 | `type`, `value`, `pattern`, etc...   |          |            | All of the HTML5 input attributes with their respected default values. |
 

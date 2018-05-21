@@ -163,9 +163,12 @@ export default {
     },
     hoveredIndex () {
       return this.suggestions.findIndex(el => this.hovered && (this.valueProperty(this.hovered) == this.valueProperty(el)))
+    },
+    textLength () {
+      return (this.text && this.text.length) || (this.inputElement.value.length) || 0
     }
   },
-  created() {
+  created () {
     this.controlScheme = Object.assign({}, defaultControls, this.controls)
   },
   mounted () {
@@ -180,6 +183,7 @@ export default {
     prepareEventHandlers(enable) {
       const binder = this[enable ? 'on' : 'off']
       const keyEventsList = {
+        click: this.showSuggestions,
         keydown: $event => (this.moveSelection($event), this.onAutocomplete($event)),
         keyup: this.onListKeyUp
       }
@@ -187,7 +191,6 @@ export default {
         blur: this.onBlur,
         focus: this.onFocus,
         input: this.onInput,
-        click: this.showSuggestions
       }, keyEventsList)
 
       for (const event in eventsList) {
@@ -259,8 +262,7 @@ export default {
     },
     showList () {
       if (!this.listShown) {
-        const textLength = (this.text && this.text.length) || 0
-        if (textLength >= this.minLength
+        if (this.textLength >= this.minLength
           && ((this.suggestions.length > 0) || !this.miscSlotsAreEmpty())
         ) {
           this.listShown = true
@@ -269,7 +271,7 @@ export default {
       }
     },
     async showSuggestions () {
-      if (this.suggestions.length === 0 && this.minLength === 0 && !this.text) {
+      if (this.suggestions.length === 0 && this.minLength === this.textLength) {
         await this.research()
       }
 
@@ -369,7 +371,7 @@ export default {
 
       // Show list only if the item has not been clicked
       if (!this.isClicking) {
-        this.showList()
+        this.showSuggestions()
       }
     },
     onInput (inputEvent) {
@@ -397,7 +399,6 @@ export default {
         if (this.canSend) {
           this.canSend = false
           this.$set(this, 'suggestions', await this.getSuggestions(this.text))
-          this.canSend = true
         }
       }
 
@@ -407,6 +408,8 @@ export default {
       }
 
       finally {
+        this.canSend = true
+
         if ((this.suggestions.length === 0) && this.miscSlotsAreEmpty()) {
           this.hideList()
         } else {
@@ -416,13 +419,15 @@ export default {
         return this.suggestions
       }
     },
-    async getSuggestions (value = '') {
-      if (this.listShown && !value && this.minLength > 0) {
-        this.hideList()
-        return []
-      }
+    async getSuggestions (value) {
+      value = value || '';
 
       if (value.length < this.minLength) {
+        if (this.listShown) {
+          this.hideList()
+          return []
+        }
+
         return this.suggestions
       }
 
