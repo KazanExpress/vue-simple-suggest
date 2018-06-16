@@ -4,14 +4,14 @@
     @keydown.tab="isTabbed = true"
   >
     <div class="input-wrapper" ref="inputSlot"
-      v-bind:class="styles.inputWrapper">
+      :class="styles.inputWrapper">
       <slot>
         <input class="default-input" v-bind="$attrs" :value="text || ''"
-          v-bind:class="styles.defaultInput">
+          :class="styles.defaultInput">
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown && !removeList"
-      v-bind:class="styles.suggestions"
+      :class="styles.suggestions"
       @mouseenter="hoverList(true)"
       @mouseleave="hoverList(false)"
     >
