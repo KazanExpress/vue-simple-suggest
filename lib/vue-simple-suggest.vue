@@ -25,11 +25,11 @@
         @mouseleave="hover(null, $event.target)"
         @click="suggestionClick(suggestion, $event)"
         :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
-        :class="{
-          suggestItem,
+        :class="[
+          styles.suggestItem,{
           selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
           hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
-        }">
+          }]">
         <slot name="suggestion-item"
           :autocomplete="() => autocompleteText(displayProperty(suggestion))"
           :suggestion="suggestion"
