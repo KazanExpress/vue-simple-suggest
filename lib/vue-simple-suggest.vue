@@ -1,13 +1,17 @@
 <template>
-  <div class="vue-simple-suggest" :class="{ designed: !destyled, focus: isInFocus }"
+  <div class="vue-simple-suggest" 
+    :class="{ vueSimpleSuggest, designed: !destyled, focus: isInFocus }"
     @keydown.tab="isTabbed = true"
   >
-    <div class="input-wrapper" ref="inputSlot">
+    <div class="input-wrapper" ref="inputSlot"
+      v-bind:class="styles.inputWrapper">
       <slot>
-        <input class="default-input" v-bind="$attrs" :value="text || ''">
+        <input class="default-input" v-bind="$attrs" :value="text || ''"
+          v-bind:class="styles.defaultInput">
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown && !removeList"
+      v-bind:class="styles.suggestions"
       @mouseenter="hoverList(true)"
       @mouseleave="hoverList(false)"
     >
@@ -22,6 +26,7 @@
         @click="suggestionClick(suggestion, $event)"
         :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
         :class="{
+          suggestItem,
           selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
           hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
         }">
@@ -58,6 +63,10 @@ export default {
     get event() { return event }
   },
   props: {
+    styles: {
+      type: Object,
+      default: {}
+    },
     controls: {
       type: Object,
       default: () => defaultControls
@@ -545,4 +554,3 @@ export default {
   color: #fff;
 }
 </style>
-
