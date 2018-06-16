@@ -330,6 +330,50 @@ If there's a need to customize the appearance of the component, here's the inter
     .suggest-item
 ```
 
+If you wish to use your existing classes, or frameworks like Bootstrap you can inject your own classes using the `'styles'` prop:
+
+```html
+<!-- Some component.vue -->
+<template>
+  <vue-simple-suggest
+    v-model="chosen"
+    :list="simpleSuggestionList"
+    :styles="autoCompleteStyle"
+    :destyled=true
+    :filter-by-query="true">
+  </vue-simple-suggest>
+</template>
+
+<script>
+  ...
+  export default {
+    ...
+    data() {
+      return {
+        autoCompleteStyle : {
+          vueSimpleSuggest: "position-relative",
+          inputWrapper: "",
+          defaultInput : "form-control",
+          suggestions: "position-absolute list-group z-1000",
+          suggestItem: "list-group-item"
+        }
+      }
+    },
+    ...
+  }
+</script>`
+
+<style lang="scss">
+.z-1000 {
+  z-index: 1000;
+}
+.hover {
+  background-color: #007bff;
+  color: #fff;
+}
+</style>
+```
+
 -----
 ### API definitions
 
@@ -345,6 +389,7 @@ If there's a need to customize the appearance of the component, here's the inter
 | `list`                      | Funciton or Array | `() => []` | The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function. |
 | `debounce`                     | Number   | `0`        | Determines the `list` debounce (a time between the input event and a function execution). |
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list. |
+| `styles` <sup>[v1.8.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.8.0)</sup>                    | Object  | `{}`    | CSS classes to attach with current component style. |
 | `remove-list`                   | Boolean  | `false`    | If true - the suggestion list will be always hidden. |
 | `filter-by-query`                | Boolean  | `false`    | Whether to filter the resulting suggestions by input's text query (make it a search component). |
 | `filter` | Function | - | A custom function for filtering the suggestion results that accepts a single item and a query to filter by as its 2 arguments. Used only if `filter-by-query` is set to `true`. |
