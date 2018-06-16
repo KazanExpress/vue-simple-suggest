@@ -11,13 +11,14 @@
       </slot>
     </div>
     <div class="suggestions" v-if="!!listShown && !removeList"
-      v-bind:class="styles.suggestions"
+      :class="styles.suggestions"
       @mouseenter="hoverList(true)"
       @mouseleave="hoverList(false)"
     >
       <slot name="misc-item-above"
         :suggestions="suggestions"
         :query="text"
+        :class="styles.miscItemAbove"
       ></slot>
 
       <div class="suggest-item" v-for="(suggestion, index) in suggestions"
@@ -41,6 +42,7 @@
       <slot name="misc-item-below"
         :suggestions="suggestions"
         :query="text"
+        :class="styles.miscItemBelow"
       ></slot>
     </div>
   </div>
