@@ -1,6 +1,6 @@
 <template>
   <div class="vue-simple-suggest" 
-    :class="{ vueSimpleSuggest, designed: !destyled, focus: isInFocus }"
+    :class="[styles.vueSimpleSuggest, { designed: !destyled, focus: isInFocus }]"
     @keydown.tab="isTabbed = true"
   >
     <div class="input-wrapper" ref="inputSlot"
