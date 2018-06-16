@@ -367,6 +367,10 @@ If you wish to use your existing classes, or frameworks like Bootstrap you can i
 .z-1000 {
   z-index: 1000;
 }
+.hover {
+  background-color: #007bff;
+  color: #fff;
+}
 </style>
 ```
 
