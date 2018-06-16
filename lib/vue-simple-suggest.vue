@@ -65,7 +65,7 @@ export default {
   props: {
     styles: {
       type: Object,
-      default: {}
+      default: () => {return {}}
     },
     controls: {
       type: Object,
