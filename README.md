@@ -355,7 +355,7 @@ If you wish to use your existing classes, or frameworks like Bootstrap you can i
           inputWrapper: "",
           defaultInput : "form-control",
           suggestions: "position-absolute list-group z-1000",
-          suggestItem: "list-group-item list-group-item-action"
+          suggestItem: "list-group-item"
         }
       }
     },
