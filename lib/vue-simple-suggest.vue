@@ -1,5 +1,5 @@
 <template>
-  <div class="vue-simple-suggest" 
+  <div class="vue-simple-suggest"
     :class="[styles.vueSimpleSuggest, { designed: !destyled, focus: isInFocus }]"
     @keydown.tab="isTabbed = true"
   >
@@ -10,39 +10,41 @@
           :class="styles.defaultInput">
       </slot>
     </div>
-    <div class="suggestions" v-if="!!listShown && !removeList"
-      :class="styles.suggestions"
-      @mouseenter="hoverList(true)"
-      @mouseleave="hoverList(false)"
-    >
-      <slot name="misc-item-above"
-        :suggestions="suggestions"
-        :query="text"
-      ></slot>
+    <transition name="vue-simple-suggest">
+      <div class="suggestions" v-if="!!listShown && !removeList"
+        :class="styles.suggestions"
+        @mouseenter="hoverList(true)"
+        @mouseleave="hoverList(false)"
+      >
+        <slot name="misc-item-above"
+          :suggestions="suggestions"
+          :query="text"
+        ></slot>
 
-      <div class="suggest-item" v-for="(suggestion, index) in suggestions"
-        @mouseenter="hover(suggestion, $event.target)"
-        @mouseleave="hover(null, $event.target)"
-        @click="suggestionClick(suggestion, $event)"
-        :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
-        :class="[
-          styles.suggestItem,{
-          selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
-          hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
-          }]">
-        <slot name="suggestion-item"
-          :autocomplete="() => autocompleteText(displayProperty(suggestion))"
-          :suggestion="suggestion"
-          :query="text">
-          <span>{{ displayProperty(suggestion) }}</span>
-        </slot>
+        <div class="suggest-item" v-for="(suggestion, index) in suggestions"
+          @mouseenter="hover(suggestion, $event.target)"
+          @mouseleave="hover(null, $event.target)"
+          @click="suggestionClick(suggestion, $event)"
+          :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
+          :class="[
+            styles.suggestItem,{
+            selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
+            hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
+            }]">
+          <slot name="suggestion-item"
+            :autocomplete="() => autocompleteText(displayProperty(suggestion))"
+            :suggestion="suggestion"
+            :query="text">
+            <span>{{ displayProperty(suggestion) }}</span>
+          </slot>
+        </div>
+
+        <slot name="misc-item-below"
+          :suggestions="suggestions"
+          :query="text"
+        ></slot>
       </div>
-
-      <slot name="misc-item-below"
-        :suggestions="suggestions"
-        :query="text"
-      ></slot>
-    </div>
+    </transition>
   </div>
 </template>
 
