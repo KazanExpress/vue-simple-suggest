@@ -67,7 +67,7 @@ export default {
   props: {
     styles: {
       type: Object,
-      default: () => {return {}}
+      default: () => ({})
     },
     controls: {
       type: Object,
@@ -533,6 +533,7 @@ export default {
   border-radius: 3px;
   border: 1px solid #aaa;
   background-color: #fff;
+  opacity: 1;
   z-index: 1000;
 }
 
