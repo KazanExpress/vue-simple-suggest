@@ -299,7 +299,46 @@ npm run docs</code></pre><hr>
   <span class="hljs-selector-class">.input-wrapper</span>
     <span class="hljs-selector-class">.default-input</span> <span class="hljs-comment">// Replaced with your custom input if default slot is provided</span>
   <span class="hljs-selector-class">.suggestions</span>
-    <span class="hljs-selector-class">.suggest-item</span></code></pre><hr>
+    <span class="hljs-selector-class">.suggest-item</span></code></pre><p>If you wish to use your existing classes, or frameworks like Bootstrap you can inject your own classes using the <code>&#39;styles&#39;</code> prop:</p>
+<pre class="hljs"><code><span class="hljs-comment">&lt;!-- Some component.vue --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span>
+    <span class="hljs-attr">v-model</span>=<span class="hljs-string">"chosen"</span>
+    <span class="hljs-attr">:list</span>=<span class="hljs-string">"simpleSuggestionList"</span>
+    <span class="hljs-attr">:styles</span>=<span class="hljs-string">"autoCompleteStyle"</span>
+    <span class="hljs-attr">:destyled</span>=<span class="hljs-string">true</span>
+    <span class="hljs-attr">:filter-by-query</span>=<span class="hljs-string">"true"</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="actionscript">
+  ...
+  export <span class="hljs-keyword">default</span> {
+    ...
+    data() {
+      <span class="hljs-keyword">return</span> {
+        autoCompleteStyle : {
+          vueSimpleSuggest: <span class="hljs-string">"position-relative"</span>,
+          inputWrapper: <span class="hljs-string">""</span>,
+          defaultInput : <span class="hljs-string">"form-control"</span>,
+          suggestions: <span class="hljs-string">"position-absolute list-group z-1000"</span>,
+          suggestItem: <span class="hljs-string">"list-group-item"</span>
+        }
+      }
+    },
+    ...
+  }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>`
+
+<span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"scss"</span>&gt;</span><span class="css">
+<span class="hljs-selector-class">.z-1000</span> {
+  <span class="hljs-attribute">z-index</span>: <span class="hljs-number">1000</span>;
+}
+<span class="hljs-selector-class">.hover</span> {
+  <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#007bff</span>;
+  <span class="hljs-attribute">color</span>: <span class="hljs-number">#fff</span>;
+}
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></code></pre><hr>
 <h3 id="api-definitions"><a class="header-link" href="#api-definitions"></a>API definitions</h3>
 <h4 id="props"><a class="header-link" href="#props"></a>Props</h4>
 <table>
@@ -359,6 +398,12 @@ npm run docs</code></pre><hr>
 <td>Boolean</td>
 <td><code>false</code></td>
 <td>Whether to cancel the default styling of input and suggestions list.</td>
+</tr>
+<tr>
+<td><code>styles</code> <sup><a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.8.0">v1.8.0</a></sup></td>
+<td>Object</td>
+<td><code>{}</code></td>
+<td>CSS classes to attach with current component style.</td>
 </tr>
 <tr>
 <td><code>remove-list</code></td>

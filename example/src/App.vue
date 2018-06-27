@@ -300,4 +300,14 @@
     line-height: 1;
     margin-left: 4px;
   }
+
+  .vue-simple-suggest-enter-active.suggestions,
+  .vue-simple-suggest-leave-active.suggestions {
+    transition: opacity .2s;
+  }
+
+  .vue-simple-suggest-enter.suggestions,
+  .vue-simple-suggest-leave-to.suggestions {
+    opacity: 0 !important;
+  }
 </style>

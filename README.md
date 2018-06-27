@@ -25,7 +25,7 @@ See [installation guide](#installation) for more options.
 - [Controls](#default-controls)
 - [Component API](#component-api)
   - [TLDR](#tldr)
-  - [CSS class structure](#css-class-structure)
+  - [CSS class structure & Transitions](#css-class-structure)
   - [API Definitions](#api-definitions)
     - [Props](#props)
     - [Emitted Events](#emitted-events)
@@ -322,11 +322,11 @@ JS object:
 If there's a need to customize the appearance of the component, here's the internal class-structure:
 
 ```less
-// .designed is applied only if `destyled` prop is false
+// .designed is applied only if `destyled` prop is false.
 .vue-simple-suggest.designed.focus // .focus is applied whenever the component is focused.
   .input-wrapper
-    .default-input // Replaced with your custom input if default slot is provided
-  .suggestions
+    .default-input // Replaced with your custom input if default slot is provided.
+  .suggestions // Also has transition classes, see below.
     .suggest-item
 ```
 
@@ -373,6 +373,31 @@ If you wish to use your existing classes, or frameworks like Bootstrap you can i
 }
 </style>
 ```
+
+#### Transitions
+
+You can also define custom list transitions by defining css rules for the transition named `vue-simple-suggest` on the `.suggestions` div:
+
+```css
+.suggestions {
+  /* It's improtant to have a cpecific pivot point for transition:*/
+  opacity: 1;
+}
+
+.vue-simple-suggest-enter-active.suggestions,
+.vue-simple-suggest-leave-active.suggestions {
+  /* Transition length here:*/
+  transition: opacity .2s;
+}
+
+.vue-simple-suggest-enter.suggestions,
+.vue-simple-suggest-leave-to.suggestions {
+  /* Transition rule for "disengaged" element:*/
+  opacity: 0;
+}
+```
+
+
 
 -----
 ### API definitions
