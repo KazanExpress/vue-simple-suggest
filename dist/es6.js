@@ -46,11 +46,11 @@ function _finally(body, finalizer) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
-}function _await(value, then, direct) {
+}
+function _await(value, then, direct) {
   if (direct) {
     return then ? then(value) : value;
-  }
-  value = Promise.resolve(value);return then ? value.then(then) : value;
+  }value = Promise.resolve(value);return then ? value.then(then) : value;
 }const _async = function () {
   try {
     if (isNaN.apply(null, {})) {
@@ -117,16 +117,14 @@ var VueSimpleSuggest = {
     get event() {
       return event;
     }
-  },
-  props: {
+  }, props: {
     styles: {
       type: Object,
-      default: () => {
-        return {};
-      }
+      default: () => ({})
     },
     controls: {
-      type: Object, default: () => defaultControls
+      type: Object,
+      default: () => defaultControls
     },
     minLength: {
       type: Number,
@@ -138,8 +136,7 @@ var VueSimpleSuggest = {
     },
     displayAttribute: {
       type: String,
-      default: 'title'
-    },
+      default: 'title' },
     valueAttribute: {
       type: String,
       default: 'id'

@@ -64,9 +64,7 @@ var VueSimpleSuggest = {
   props: {
     styles: {
       type: Object,
-      default: () => {
-        return {};
-      }
+      default: () => ({})
     },
     controls: {
       type: Object,
