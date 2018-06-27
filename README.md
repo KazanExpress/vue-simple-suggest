@@ -375,6 +375,7 @@ If you wish to use your existing classes, or frameworks like Bootstrap you can i
 ```
 
 #### Transitions
+> New in v1.8.0
 
 You can also define custom list transitions by defining css rules for the transition named `vue-simple-suggest` on the `.suggestions` div:
 
