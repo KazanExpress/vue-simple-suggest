@@ -199,7 +199,6 @@ export default {
   methods: {
     onSubmit (e) {
       if (this.preventSubmit) {
-        console.log('inner submit method')
         e.stopPropagation()
         e.preventDefault()
       }
