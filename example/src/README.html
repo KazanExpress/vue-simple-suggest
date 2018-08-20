@@ -28,7 +28,7 @@
 <li><a href="#default-controls">Controls</a></li>
 <li><a href="#component-api">Component API</a><ul class="list">
 <li><a href="#tldr">TLDR</a></li>
-<li><a href="#css-class-structure">CSS class structure</a></li>
+<li><a href="#css-class-structure">CSS class structure &amp; Transitions</a></li>
 <li><a href="#api-definitions">API Definitions</a><ul class="list">
 <li><a href="#props">Props</a></li>
 <li><a href="#emitted-events">Emitted Events</a></li>
@@ -294,11 +294,11 @@ npm run docs</code></pre><hr>
 <hr>
 <h3 id="css-class-structure"><a class="header-link" href="#css-class-structure"></a>CSS class structure</h3>
 <p>If there&#39;s a need to customize the appearance of the component, here&#39;s the internal class-structure:</p>
-<pre class="hljs"><code><span class="hljs-comment">// .designed is applied only if `destyled` prop is false</span>
+<pre class="hljs"><code><span class="hljs-comment">// .designed is applied only if `destyled` prop is false.</span>
 <span class="hljs-selector-class">.vue-simple-suggest</span><span class="hljs-selector-class">.designed</span><span class="hljs-selector-class">.focus</span> <span class="hljs-comment">// .focus is applied whenever the component is focused.</span>
   <span class="hljs-selector-class">.input-wrapper</span>
-    <span class="hljs-selector-class">.default-input</span> <span class="hljs-comment">// Replaced with your custom input if default slot is provided</span>
-  <span class="hljs-selector-class">.suggestions</span>
+    <span class="hljs-selector-class">.default-input</span> <span class="hljs-comment">// Replaced with your custom input if default slot is provided.</span>
+  <span class="hljs-selector-class">.suggestions</span> <span class="hljs-comment">// Also has transition classes, see below.</span>
     <span class="hljs-selector-class">.suggest-item</span></code></pre><p>If you wish to use your existing classes, or frameworks like Bootstrap you can inject your own classes using the <code>&#39;styles&#39;</code> prop:</p>
 <pre class="hljs"><code><span class="hljs-comment">&lt;!-- Some component.vue --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">template</span>&gt;</span>
@@ -338,7 +338,24 @@ npm run docs</code></pre><hr>
   <span class="hljs-attribute">background-color</span>: <span class="hljs-number">#007bff</span>;
   <span class="hljs-attribute">color</span>: <span class="hljs-number">#fff</span>;
 }
-</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></code></pre><hr>
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></code></pre><h4 id="transitions"><a class="header-link" href="#transitions"></a>Transitions</h4>
+<p>You can also define custom list transitions by defining css rules for the transition named <code>vue-simple-suggest</code> on the <code>.suggestions</code> div:</p>
+<pre class="hljs"><code><span class="hljs-selector-class">.suggestions</span> {
+  <span class="hljs-comment">/* It's improtant to have a cpecific pivot point for transition:*/</span>
+  <span class="hljs-attribute">opacity</span>: <span class="hljs-number">1</span>;
+}
+
+<span class="hljs-selector-class">.vue-simple-suggest-enter-active</span><span class="hljs-selector-class">.suggestions</span>,
+<span class="hljs-selector-class">.vue-simple-suggest-leave-active</span><span class="hljs-selector-class">.suggestions</span> {
+  <span class="hljs-comment">/* Transition length here:*/</span>
+  <span class="hljs-attribute">transition</span>: opacity .<span class="hljs-number">2s</span>;
+}
+
+<span class="hljs-selector-class">.vue-simple-suggest-enter</span><span class="hljs-selector-class">.suggestions</span>,
+<span class="hljs-selector-class">.vue-simple-suggest-leave-to</span><span class="hljs-selector-class">.suggestions</span> {
+  <span class="hljs-comment">/* Transition rule for "disengaged" element:*/</span>
+  <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0</span>;
+}</code></pre><hr>
 <h3 id="api-definitions"><a class="header-link" href="#api-definitions"></a>API definitions</h3>
 <h4 id="props"><a class="header-link" href="#props"></a>Props</h4>
 <table>
