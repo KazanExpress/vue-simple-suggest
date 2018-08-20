@@ -101,6 +101,10 @@ export default {
       type: Boolean,
       default: false
     },
+    preventSubmit: {
+      type: Boolean,
+      default: true
+    },
     filterByQuery: {
       type: Boolean,
       default: false
@@ -191,6 +195,12 @@ export default {
     this.prepareEventHandlers(false)
   },
   methods: {
+    onSubmit (e) {
+      if (this.preventSubmit && e.key === 'Enter') {
+        e.stopPropagation()
+        e.preventDefault()
+      }
+    },
     prepareEventHandlers(enable) {
       const binder = this[enable ? 'on' : 'off']
       const keyEventsList = {
@@ -212,6 +222,13 @@ export default {
 
       for (const event in keyEventsList) {
         this.inputElement[listenerBinder](event, keyEventsList[event])
+      }
+
+      if (this.preventSubmit === true) {
+        let form = this.$el.closest('form')
+        if (form) {
+          form[listenerBinder]('keydown', this.onSubmit)
+        }
       }
     },
     isScopedSlotEmpty (slot) {
