@@ -175,6 +175,10 @@ var VueSimpleSuggest = {
       type: Boolean,
       default: false
     },
+    preventSubmit: {
+      type: Boolean,
+      default: true
+    },
     filterByQuery: {
       type: Boolean,
       default: false
@@ -275,6 +279,12 @@ var VueSimpleSuggest = {
   },
 
   methods: {
+    onSubmit: function onSubmit(e) {
+      if (this.preventSubmit && e.key === 'Enter') {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    },
     prepareEventHandlers: function prepareEventHandlers(enable) {
       var _this2 = this;
 
@@ -300,6 +310,13 @@ var VueSimpleSuggest = {
 
       for (var _event2 in keyEventsList) {
         this.inputElement[listenerBinder](_event2, keyEventsList[_event2]);
+      }
+
+      if (this.preventSubmit === true) {
+        var form = this.$el.closest('form');
+        if (form) {
+          form[listenerBinder]('keydown', this.onSubmit);
+        }
       }
     },
     isScopedSlotEmpty: function isScopedSlotEmpty(slot) {
