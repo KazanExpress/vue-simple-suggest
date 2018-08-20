@@ -62,11 +62,11 @@ function _finally(body, finalizer) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
-}function _await(value, then, direct) {
+}
+function _await(value, then, direct) {
   if (direct) {
     return then ? then(value) : value;
-  }
-  value = Promise.resolve(value);return then ? value.then(then) : value;
+  }value = Promise.resolve(value);return then ? value.then(then) : value;
 }var _async = function () {
   try {
     if (isNaN.apply(null, {})) {
@@ -133,8 +133,7 @@ var VueSimpleSuggest = {
     get event() {
       return event;
     }
-  },
-  props: {
+  }, props: {
     styles: {
       type: Object,
       default: function _default() {
@@ -142,7 +141,8 @@ var VueSimpleSuggest = {
       }
     },
     controls: {
-      type: Object, default: function _default() {
+      type: Object,
+      default: function _default() {
         return defaultControls;
       }
     },
@@ -156,8 +156,7 @@ var VueSimpleSuggest = {
     },
     displayAttribute: {
       type: String,
-      default: 'title'
-    },
+      default: 'title' },
     valueAttribute: {
       type: String,
       default: 'id'
