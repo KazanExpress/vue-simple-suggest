@@ -3,50 +3,48 @@
     :class="[styles.vueSimpleSuggest, { designed: !destyled, focus: isInFocus }]"
     @keydown.tab="isTabbed = true"
   >
-    <form @submit="onSubmit">
-      <div class="input-wrapper" ref="inputSlot"
-        :class="styles.inputWrapper">
-        <slot>
-          <input class="default-input" v-bind="$attrs" :value="text || ''"
-            :class="styles.defaultInput">
-        </slot>
-      </div>
-      <transition name="vue-simple-suggest">
-        <div class="suggestions" v-if="!!listShown && !removeList"
-          :class="styles.suggestions"
-          @mouseenter="hoverList(true)"
-          @mouseleave="hoverList(false)"
-        >
-          <slot name="misc-item-above"
-            :suggestions="suggestions"
-            :query="text"
-          ></slot>
+    <div class="input-wrapper" ref="inputSlot"
+      :class="styles.inputWrapper">
+      <slot>
+        <input class="default-input" v-bind="$attrs" :value="text || ''"
+          :class="styles.defaultInput">
+      </slot>
+    </div>
+    <transition name="vue-simple-suggest">
+      <div class="suggestions" v-if="!!listShown && !removeList"
+        :class="styles.suggestions"
+        @mouseenter="hoverList(true)"
+        @mouseleave="hoverList(false)"
+      >
+        <slot name="misc-item-above"
+          :suggestions="suggestions"
+          :query="text"
+        ></slot>
 
-          <div class="suggest-item" v-for="(suggestion, index) in suggestions"
-            @mouseenter="hover(suggestion, $event.target)"
-            @mouseleave="hover(null, $event.target)"
-            @click="suggestionClick(suggestion, $event)"
-            :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
-            :class="[
-              styles.suggestItem,{
-              selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
-              hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
-              }]">
-            <slot name="suggestion-item"
-              :autocomplete="() => autocompleteText(displayProperty(suggestion))"
-              :suggestion="suggestion"
-              :query="text">
-              <span>{{ displayProperty(suggestion) }}</span>
-            </slot>
-          </div>
-
-          <slot name="misc-item-below"
-            :suggestions="suggestions"
-            :query="text"
-          ></slot>
+        <div class="suggest-item" v-for="(suggestion, index) in suggestions"
+          @mouseenter="hover(suggestion, $event.target)"
+          @mouseleave="hover(null, $event.target)"
+          @click="suggestionClick(suggestion, $event)"
+          :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
+          :class="[
+            styles.suggestItem,{
+            selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
+            hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
+            }]">
+          <slot name="suggestion-item"
+            :autocomplete="() => autocompleteText(displayProperty(suggestion))"
+            :suggestion="suggestion"
+            :query="text">
+            <span>{{ displayProperty(suggestion) }}</span>
+          </slot>
         </div>
-      </transition>
-    </form>
+
+        <slot name="misc-item-below"
+          :suggestions="suggestions"
+          :query="text"
+        ></slot>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -105,7 +103,7 @@ export default {
     },
     preventSubmit: {
       type: Boolean,
-      default: false
+      default: true
     },
     filterByQuery: {
       type: Boolean,
@@ -198,7 +196,7 @@ export default {
   },
   methods: {
     onSubmit (e) {
-      if (this.preventSubmit) {
+      if (this.preventSubmit && e.key === 'Enter') {
         e.stopPropagation()
         e.preventDefault()
       }
@@ -224,6 +222,13 @@ export default {
 
       for (const event in keyEventsList) {
         this.inputElement[listenerBinder](event, keyEventsList[event])
+      }
+
+      if (this.preventSubmit === true) {
+        let form = this.$el.closest('form')
+        if (form) {
+          form[listenerBinder]('keydown', this.onSubmit)
+        }
       }
     },
     isScopedSlotEmpty (slot) {

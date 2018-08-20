@@ -18,7 +18,7 @@
         :min-length="3"
         :debounce="200"
         :filter-by-query="false"
-        :prevent-submit="false"
+        :prevent-submit="true"
         :controls="{
           selectionUp: [38, 33],
           selectionDown: [40, 34],
