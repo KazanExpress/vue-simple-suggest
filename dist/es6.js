@@ -208,6 +208,7 @@ var VueSimpleSuggest = {
       isClicking: false,
       isOverList: false,
       isInFocus: false,
+      isFalseFocus: false,
       isTabbed: false,
       controlScheme: {}
     };
@@ -428,7 +429,10 @@ var VueSimpleSuggest = {
 
           this.$emit('blur', e);
         } else if (e && e.isTrusted && !this.isTabbed) {
-          this.inputElement.focus();
+          this.isFalseFocus = true;
+          this.$nextTick(() => {
+            this.inputElement.focus();
+          });
         }
       } else {
         this.inputElement.blur();
@@ -442,9 +446,10 @@ var VueSimpleSuggest = {
       this.isInFocus = true;
 
       // Only emit, if it was a native input focus
-      if (e && e.sourceCapabilities) {
+      if (e && !this.isFalseFocus) {
         this.$emit('focus', e);
       }
+      this.isFalseFocus = false;
 
       // Show list only if the item has not been clicked
       if (!this.isClicking) {

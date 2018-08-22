@@ -234,6 +234,7 @@ var VueSimpleSuggest = {
       isClicking: false,
       isOverList: false,
       isInFocus: false,
+      isFalseFocus: false,
       isTabbed: false,
       controlScheme: {}
     };
@@ -459,6 +460,8 @@ var VueSimpleSuggest = {
       this.isClicking = this.isOverList = false;
     },
     onBlur: function onBlur(e) {
+      var _this5 = this;
+
       if (this.isInFocus) {
 
         /// Clicking starts here, because input's blur occurs before the suggestionClick
@@ -471,7 +474,10 @@ var VueSimpleSuggest = {
 
           this.$emit('blur', e);
         } else if (e && e.isTrusted && !this.isTabbed) {
-          this.inputElement.focus();
+          this.isFalseFocus = true;
+          this.$nextTick(function () {
+            _this5.inputElement.focus();
+          });
         }
       } else {
         this.inputElement.blur();
@@ -484,9 +490,10 @@ var VueSimpleSuggest = {
       this.isInFocus = true;
 
       // Only emit, if it was a native input focus
-      if (e && e.sourceCapabilities) {
+      if (e && !this.isFalseFocus) {
         this.$emit('focus', e);
       }
+      this.isFalseFocus = false;
 
       // Show list only if the item has not been clicked
       if (!this.isClicking) {
@@ -516,57 +523,57 @@ var VueSimpleSuggest = {
       }
     },
     research: _async(function () {
-      var _this5 = this;
+      var _this6 = this;
 
       return _finally(function () {
         return _catch(function () {
           return _invokeIgnored(function () {
-            if (_this5.canSend) {
-              _this5.canSend = false;
-              var _$set = _this5.$set;
-              return _await(_this5.getSuggestions(_this5.text), function (_this5$getSuggestions) {
-                _$set.call(_this5, _this5, 'suggestions', _this5$getSuggestions);
+            if (_this6.canSend) {
+              _this6.canSend = false;
+              var _$set = _this6.$set;
+              return _await(_this6.getSuggestions(_this6.text), function (_this6$getSuggestions) {
+                _$set.call(_this6, _this6, 'suggestions', _this6$getSuggestions);
               });
             }
           });
         }, function (e) {
-          _this5.clearSuggestions();
+          _this6.clearSuggestions();
           throw e;
         });
       }, function () {
-        _this5.canSend = true;
+        _this6.canSend = true;
 
-        if (_this5.suggestions.length === 0 && _this5.miscSlotsAreEmpty()) {
-          _this5.hideList();
-        } else {
-          _this5.showList();
-        }
-
-        return _this5.suggestions;
-      });
-    }),
-    getSuggestions: _async(function (value) {
-      var _this6 = this;
-
-      value = value || '';
-
-      if (value.length < _this6.minLength) {
-        if (_this6.listShown) {
+        if (_this6.suggestions.length === 0 && _this6.miscSlotsAreEmpty()) {
           _this6.hideList();
-          return [];
+        } else {
+          _this6.showList();
         }
 
         return _this6.suggestions;
+      });
+    }),
+    getSuggestions: _async(function (value) {
+      var _this7 = this;
+
+      value = value || '';
+
+      if (value.length < _this7.minLength) {
+        if (_this7.listShown) {
+          _this7.hideList();
+          return [];
+        }
+
+        return _this7.suggestions;
       }
 
-      _this6.selected = null;
+      _this7.selected = null;
 
       // Start request if can
-      if (_this6.listIsRequest) {
-        _this6.$emit('request-start', value);
+      if (_this7.listIsRequest) {
+        _this7.$emit('request-start', value);
 
-        if (_this6.suggestions.length > 0 || !_this6.miscSlotsAreEmpty()) {
-          _this6.showList();
+        if (_this7.suggestions.length > 0 || !_this7.miscSlotsAreEmpty()) {
+          _this7.showList();
         }
       }
 
@@ -574,12 +581,12 @@ var VueSimpleSuggest = {
       return _finally(function () {
         return _catch(function () {
           return _invoke(function () {
-            if (_this6.listIsRequest) {
-              return _await(_this6.list(value), function (_this6$list) {
-                result = _this6$list || [];
+            if (_this7.listIsRequest) {
+              return _await(_this7.list(value), function (_this7$list) {
+                result = _this7$list || [];
               });
             } else {
-              result = _this6.list;
+              result = _this7.list;
             }
           }, function () {
             // IFF the result is not an array (just in case!) - make it an array
@@ -587,28 +594,28 @@ var VueSimpleSuggest = {
               result = [result];
             }
 
-            _this6.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
+            _this7.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
 
-            if (_this6.filterByQuery) {
+            if (_this7.filterByQuery) {
               result = result.filter(function (el) {
-                return _this6.filter(el, value);
+                return _this7.filter(el, value);
               });
             }
 
-            if (_this6.listIsRequest) {
-              _this6.$emit('request-done', result);
+            if (_this7.listIsRequest) {
+              _this7.$emit('request-done', result);
             }
           });
         }, function (e) {
-          if (_this6.listIsRequest) {
-            _this6.$emit('request-failed', e);
+          if (_this7.listIsRequest) {
+            _this7.$emit('request-failed', e);
           } else {
             throw e;
           }
         });
       }, function () {
-        if (_this6.maxSuggestions) {
-          result.splice(_this6.maxSuggestions);
+        if (_this7.maxSuggestions) {
+          result.splice(_this7.maxSuggestions);
         }
 
         return result;
