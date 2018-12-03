@@ -8,7 +8,7 @@ const uglify = require('rollup-plugin-uglify');
 module.exports = exports = function(
   compress = false,
   polyfills = {
-    arrow: true,
+    arrows: true,
     assign: true,
     async: true,
     promise: true
