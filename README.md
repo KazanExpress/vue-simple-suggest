@@ -74,6 +74,7 @@ And, as a bonus, it is very light.
 - [CSS classes](#css-class-structure) for quick and easy restyling.
 - Many build variants to choose from.
 - Flexible and customizable component design.
+- Optional polyfills for IE importable from the lib.
 
 All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.
 
