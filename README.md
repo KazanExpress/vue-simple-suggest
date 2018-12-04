@@ -18,24 +18,36 @@ See [installation guide](#installation) for more options.
 
 ## Table of contents
 
-- [What is it?](#what-is-it)
-- [Simple example](#simple-example)
-- [Installation](#installation)
-- [Build](#build-setup)
-- [Controls](#default-controls)
-- [Component API](#component-api)
-  - [TLDR](#tldr)
-  - [CSS class structure & Transitions](#css-class-structure)
-  - [API Definitions](#api-definitions)
-    - [Props](#props)
-    - [Emitted Events](#emitted-events)
-    - [Ref Methods](#ref-methods)
-    - [Ref Event Handlers](#ref-event-handlers)
-    - [Ref Data](#ref-data)
-  - [Slots](#slots)
-    - [Custom input](#custom-input)
-    - [Custom suggestion item](#custom-suggestion-item)
-    - [Custom miscellanious item slots](#custom-miscellanious-item-slots)
+- [vue-simple-suggest](#vue-simple-suggest)
+  - [Install](#install)
+  - [Table of contents](#table-of-contents)
+  - [What is it](#what-is-it)
+    - [Features](#features)
+    - [New features?](#new-features)
+  - [Simple example](#simple-example)
+  - [Installation](#installation)
+    - [NPM](#npm)
+    - [Unpkg](#unpkg)
+    - [Importing](#importing)
+      - [Polyfills](#polyfills)
+    - [Usage](#usage)
+  - [Build Setup](#build-setup)
+  - [Default Controls](#default-controls)
+  - [Component API](#component-api)
+    - [TLDR](#tldr)
+    - [CSS class structure](#css-class-structure)
+      - [Transitions](#transitions)
+    - [API definitions](#api-definitions)
+      - [Props](#props)
+        - [mode](#mode)
+      - [Emitted Events](#emitted-events)
+      - [Ref Methods](#ref-methods)
+      - [Ref Event Handlers](#ref-event-handlers)
+      - [Ref Data](#ref-data)
+    - [Slots](#slots)
+        - [Custom input](#custom-input)
+        - [Custom suggestion item](#custom-suggestion-item)
+        - [Custom miscellanious item slots](#custom-miscellanious-item-slots)
 
 
 ## What is it
@@ -62,6 +74,7 @@ And, as a bonus, it is very light.
 - [CSS classes](#css-class-structure) for quick and easy restyling.
 - Many build variants to choose from.
 - Flexible and customizable component design.
+- Optional polyfills for IE importable from the lib.
 
 All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.
 
@@ -174,6 +187,17 @@ const VueSimpleSuggest = require('vue-simple-suggest/dist/cjs')
 
 // Optional - import css separately with css loaders:
 import 'vue-simple-suggest/dist/styles.css'
+```
+
+#### Polyfills
+> New in `v1.8.3`
+
+`vue-simple-suggest` comes with minimal optional polyfills for IE11+ - `Object.assign`, `Element.prototype.closest` and `Element.prototype.matches`.
+You can import them like this:
+```js
+import 'vue-simple-suggest/lib/polyfills';
+// or
+require('vue-simple-suggest/lib/polyfills');
 ```
 
 ### Usage
