@@ -21,16 +21,38 @@
 <pre class="hljs"><code>npm install --save vue-simple-suggest</code></pre><p>See <a href="#installation">installation guide</a> for more options.</p>
 <h2 id="table-of-contents"><a class="header-link" href="#table-of-contents"></a>Table of contents</h2>
 <ul class="list">
-<li><a href="#what-is-it">What is it?</a></li>
+<li><a href="#vue-simple-suggest">vue-simple-suggest</a><ul class="list">
+<li><a href="#install">Install</a></li>
+<li><a href="#table-of-contents">Table of contents</a></li>
+<li><a href="#what-is-it">What is it</a><ul class="list">
+<li><a href="#features">Features</a></li>
+<li><a href="#new-features">New features?</a></li>
+</ul>
+</li>
 <li><a href="#simple-example">Simple example</a></li>
-<li><a href="#installation">Installation</a></li>
-<li><a href="#build-setup">Build</a></li>
-<li><a href="#default-controls">Controls</a></li>
+<li><a href="#installation">Installation</a><ul class="list">
+<li><a href="#npm">NPM</a></li>
+<li><a href="#unpkg">Unpkg</a></li>
+<li><a href="#importing">Importing</a><ul class="list">
+<li><a href="#polyfills">Polyfills</a></li>
+</ul>
+</li>
+<li><a href="#usage">Usage</a></li>
+</ul>
+</li>
+<li><a href="#build-setup">Build Setup</a></li>
+<li><a href="#default-controls">Default Controls</a></li>
 <li><a href="#component-api">Component API</a><ul class="list">
 <li><a href="#tldr">TLDR</a></li>
-<li><a href="#css-class-structure">CSS class structure &amp; Transitions</a></li>
-<li><a href="#api-definitions">API Definitions</a><ul class="list">
-<li><a href="#props">Props</a></li>
+<li><a href="#css-class-structure">CSS class structure</a><ul class="list">
+<li><a href="#transitions">Transitions</a></li>
+</ul>
+</li>
+<li><a href="#api-definitions">API definitions</a><ul class="list">
+<li><a href="#props">Props</a><ul class="list">
+<li><a href="#mode">mode</a></li>
+</ul>
+</li>
 <li><a href="#emitted-events">Emitted Events</a></li>
 <li><a href="#ref-methods">Ref Methods</a></li>
 <li><a href="#ref-event-handlers">Ref Event Handlers</a></li>
@@ -41,6 +63,8 @@
 <li><a href="#custom-input">Custom input</a></li>
 <li><a href="#custom-suggestion-item">Custom suggestion item</a></li>
 <li><a href="#custom-miscellanious-item-slots">Custom miscellanious item slots</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -68,6 +92,7 @@
 <li><a href="#css-class-structure">CSS classes</a> for quick and easy restyling.</li>
 <li>Many build variants to choose from.</li>
 <li>Flexible and customizable component design.</li>
+<li>Optional polyfills for IE importable from the lib.</li>
 </ul>
 <p>All of the props, events and slots are OPTIONAL for this component, so it can be used without any configuration at all.</p>
 <h3 id="new-features?"><a class="header-link" href="#new-features?"></a>New features?</h3>
@@ -153,7 +178,15 @@ yarn add vue-simple-suggest</code></pre><h3 id="unpkg"><a class="header-link" hr
 <span class="hljs-comment">///</span>
 
 <span class="hljs-comment">// Optional - import css separately with css loaders:</span>
-<span class="hljs-keyword">import</span> <span class="hljs-string">'vue-simple-suggest/dist/styles.css'</span></code></pre><h3 id="usage"><a class="header-link" href="#usage"></a>Usage</h3>
+<span class="hljs-keyword">import</span> <span class="hljs-string">'vue-simple-suggest/dist/styles.css'</span></code></pre><h4 id="polyfills"><a class="header-link" href="#polyfills"></a>Polyfills</h4>
+<blockquote>
+<p>New in <code>v1.8.3</code></p>
+</blockquote>
+<p><code>vue-simple-suggest</code> comes with minimal optional polyfills for IE11+ - <code>Object.assign</code>, <code>Element.prototype.closest</code> and <code>Element.prototype.matches</code>.
+You can import them like this:</p>
+<pre class="hljs"><code><span class="hljs-keyword">import</span> <span class="hljs-string">'vue-simple-suggest/lib/polyfills'</span>;
+<span class="hljs-comment">// or</span>
+<span class="hljs-built_in">require</span>(<span class="hljs-string">'vue-simple-suggest/lib/polyfills'</span>);</code></pre><h3 id="usage"><a class="header-link" href="#usage"></a>Usage</h3>
 <p><strong>Globaly:</strong></p>
 <pre class="hljs"><code><span class="hljs-comment">// You don't need to do it, if including via &lt;script&gt; (umd, iife)</span>
 Vue.component(<span class="hljs-string">'vue-simple-suggest'</span>, VueSimpleSuggest)</code></pre><p><strong>In single-file .vue components:</strong></p>
@@ -457,7 +490,7 @@ npm run docs</code></pre><hr>
 <td>All of the HTML5 input attributes with their respected default values.</td>
 </tr>
 <tr>
-<td><code>prevent-submit</code></td>
+<td><code>prevent-submit</code> <sup>v1.8.1</sup></td>
 <td>Boolean</td>
 <td><code>true</code></td>
 <td>Whether to prevent form submitting when <code>Enter</code> key is pressed.</td>
