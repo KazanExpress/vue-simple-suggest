@@ -411,6 +411,7 @@ export default {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value
 
       if (this.text === value) { return }
+      if (this.hovered) this.hovered = null
 
       this.text = value
       this.$emit('input', this.text)
