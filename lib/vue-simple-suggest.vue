@@ -13,7 +13,7 @@
         <input class="default-input" v-bind="$attrs" :value="text || ''"
           aria-autocomplete='list'
           aria-controls="suggestions"
-          :aria-activedescendant="valueProperty(hovered)"
+          :aria-activedescendant="!!hovered && getId(hovered, hoveredIndex)"
           :class="styles.defaultInput">
       </slot>
     </div>
@@ -36,8 +36,8 @@
           @mouseleave="hover(null, $event.target)"
           @click="suggestionClick(suggestion, $event)"
           :aria-selected="hovered && (valueProperty(hovered) == valueProperty(suggestion)) ? 'true' : 'false'"
-          :id="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
-          :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
+          :id="getId(suggestion, index)"
+          :key="getId(suggestion, index)"
           :class="[
             styles.suggestItem,{
             selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
@@ -530,6 +530,9 @@ export default {
     },
     clearSuggestions () {
       this.suggestions.splice(0)
+    },
+    getId(value, i) {
+      return `suggestion-${this.isPlainSuggestion ? i : this.valueProperty(value)}`
     }
   }
 }
