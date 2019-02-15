@@ -4,27 +4,39 @@
     @keydown.tab="isTabbed = true"
   >
     <div class="input-wrapper" ref="inputSlot"
+      role="combobox"
+      aria-haspopup="listbox"
+      aria-owns="suggestions"
+      :aria-expanded="!!listShown && !removeList ? 'true' : 'false'"
       :class="styles.inputWrapper">
       <slot>
         <input class="default-input" v-bind="$attrs" :value="text || ''"
+          aria-autocomplete='list'
+          aria-controls="suggestions"
+          :aria-activedescendant="valueProperty(hovered)"
           :class="styles.defaultInput">
       </slot>
     </div>
     <transition name="vue-simple-suggest">
-      <div class="suggestions" v-if="!!listShown && !removeList"
+      <ul id="suggestions" class="suggestions" v-if="!!listShown && !removeList"
         :class="styles.suggestions"
         @mouseenter="hoverList(true)"
         @mouseleave="hoverList(false)"
       >
-        <slot name="misc-item-above"
-          :suggestions="suggestions"
-          :query="text"
-        ></slot>
+        <li>
+          <slot name="misc-item-above"
+            :suggestions="suggestions"
+            :query="text"
+          ></slot>
+        </li>
 
-        <div class="suggest-item" v-for="(suggestion, index) in suggestions"
+        <li class="suggest-item" v-for="(suggestion, index) in suggestions"
+          role="option"
           @mouseenter="hover(suggestion, $event.target)"
           @mouseleave="hover(null, $event.target)"
           @click="suggestionClick(suggestion, $event)"
+          :aria-selected="hovered && (valueProperty(hovered) == valueProperty(suggestion)) ? 'true' : 'false'"
+          :id="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
           :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
           :class="[
             styles.suggestItem,{
@@ -37,13 +49,15 @@
             :query="text">
             <span>{{ displayProperty(suggestion) }}</span>
           </slot>
-        </div>
+        </li>
 
-        <slot name="misc-item-below"
-          :suggestions="suggestions"
-          :query="text"
-        ></slot>
-      </div>
+        <li>
+          <slot name="misc-item-below"
+            :suggestions="suggestions"
+            :query="text"
+          ></slot>
+        </li>
+      </ul>
     </transition>
   </div>
 </template>
@@ -548,6 +562,9 @@ export default {
 }
 
 .vue-simple-suggest.designed .suggestions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   position: absolute;
   left: 0;
   right: 0;
