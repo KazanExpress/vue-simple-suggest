@@ -320,6 +320,7 @@ export default {
       this.showList()
     },
     moveSelection (e) {
+      if (!this.listShown || !this.suggestions.length) return
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
         e.preventDefault()
         this.showSuggestions()
