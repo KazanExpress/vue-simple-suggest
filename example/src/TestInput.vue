@@ -1,5 +1,12 @@
 <template>
-  <input type="text" @input.stop="onInput" @blur.stop="onBlur" @focus.stop="onFocus" :value="value">
+  <input
+  v-bind="$attrs"
+  type="text"
+  @input.stop="onInput"
+  @blur.stop="onBlur"
+  @focus.stop="onFocus"
+  aria-autocomplete='list'
+  aria-controls="suggestions">
 </template>
 
 <script>

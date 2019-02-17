@@ -13,7 +13,7 @@
         <input class="default-input" v-bind="$attrs" :value="text || ''"
           aria-autocomplete='list'
           aria-controls="suggestions"
-          :aria-activedescendant="!!hovered && getId(hovered, hoveredIndex)"
+          :aria-activedescendant="!!hovered ? getId(hovered, hoveredIndex) : ''"
           :class="styles.defaultInput">
       </slot>
     </div>
@@ -32,8 +32,8 @@
 
         <li class="suggest-item" v-for="(suggestion, index) in suggestions"
           role="option"
-          @mouseenter="hover(suggestion, $event.target)"
-          @mouseleave="hover(null, $event.target)"
+          @mouseenter="hover(suggestion, $event.target, getId(suggestion, index))"
+          @mouseleave="hover(undefined)"
           @click="suggestionClick(suggestion, $event)"
           :aria-selected="hovered && (valueProperty(hovered) == valueProperty(suggestion)) ? 'true' : 'false'"
           :id="getId(suggestion, index)"
@@ -280,18 +280,16 @@ export default {
       this.text = text
     },
     select (item) {
-      this.hovered = null
       this.selected = item
 
       this.$emit('select', item)
-
+      this.hover(null)
       this.autocompleteText(this.displayProperty(item))
     },
-    hover (item, elem) {
+    hover (item, elem, elemId) {
       this.hovered = item
-
-      if (this.hovered != null) {
-        this.$emit('hover', item, elem)
+      if (item !== undefined) {
+        this.$emit('hover', item, elem, elemId)
       }
     },
     hoverList (isOverList) {
@@ -300,6 +298,7 @@ export default {
     hideList () {
       if (this.listShown) {
         this.listShown = false
+        this.hover(null)
         this.$emit('hide-list')
       }
     },
@@ -334,13 +333,14 @@ export default {
 
         if (!this.hovered) {
           item = this.selected || this.suggestions[listEdge]
+          this.hover(item, undefined, this.getId(item, listEdge))
         } else if (hoversBetweenEdges) {
           item = this.suggestions[this.hoveredIndex + direction]
+          this.hover(item, undefined, this.getId(item, this.hoveredIndex + direction))
         } else /* if hovers on edge */ {
           item = this.suggestions[listEdge]
+          this.hover(item, undefined, this.getId(item, listEdge))
         }
-
-        this.hover(item)
       }
     },
     onListKeyUp (e) {
@@ -425,7 +425,6 @@ export default {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value
 
       if (this.text === value) { return }
-      if (this.hovered) this.hovered = null
 
       this.text = value
       this.$emit('input', this.text)
@@ -434,6 +433,8 @@ export default {
         this.selected = null
         this.$emit('select', null)
       }
+
+      if (this.hovered) this.hover(null)
 
       if (this.debounce) {
         clearTimeout(this.timeoutInstance)
