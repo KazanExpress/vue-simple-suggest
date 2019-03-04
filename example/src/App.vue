@@ -46,15 +46,15 @@
           aria-controls="suggestions"
           type="text"> -->
 
-        <!-- <div class="g">
+        <div class="g">
           <input
             :aria-activedescendant="hoveredId || ''"
             aria-autocomplete='list'
             aria-controls="suggestions"
             type="text">
-        </div> -->
+        </div>
 
-        <test-input placeholder="Search information..." :aria-activedescendant="hoveredId"/>
+        <!-- <test-input placeholder="Search information..." :aria-activedescendant="hoveredId"/> -->
 
         <template slot="misc-item-above" slot-scope="{ suggestions, query }">
           <div class="misc-item">
