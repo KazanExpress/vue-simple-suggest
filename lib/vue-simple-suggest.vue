@@ -6,19 +6,18 @@
     <div class="input-wrapper" ref="inputSlot"
       role="combobox"
       aria-haspopup="listbox"
-      aria-owns="suggestions"
+      :aria-owns="listId"
       :aria-expanded="!!listShown && !removeList ? 'true' : 'false'"
       :class="styles.inputWrapper">
       <slot>
         <input class="default-input" v-bind="$attrs" :value="text || ''"
-          aria-autocomplete='list'
-          aria-controls="suggestions"
-          :aria-activedescendant="!!hovered ? getId(hovered, hoveredIndex) : ''"
           :class="styles.defaultInput">
       </slot>
     </div>
     <transition name="vue-simple-suggest">
-      <ul id="suggestions" class="suggestions" v-if="!!listShown && !removeList"
+      <ul :id="listId" class="suggestions" v-if="!!listShown && !removeList"
+        role="listbox"
+        :aria-labelledby="listId"
         :class="styles.suggestions"
         @mouseenter="hoverList(true)"
         @mouseleave="hoverList(false)"
@@ -172,7 +171,8 @@ export default {
       isInFocus: false,
       isFalseFocus: false,
       isTabbed: false,
-      controlScheme: {}
+      controlScheme: {},
+      listId: `${this._uid}-suggestions`
     }
   },
   computed: {
@@ -204,6 +204,7 @@ export default {
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
 
+    this.setInputAriaAttributes()
     this.prepareEventHandlers(true)
   },
   beforeDestroy () {
@@ -215,6 +216,11 @@ export default {
         e.stopPropagation()
         e.preventDefault()
       }
+    },
+    setInputAriaAttributes () {
+      this.inputElement.setAttribute('aria-activedescendant', '')
+      this.inputElement.setAttribute('aria-autocomplete', 'list')
+      this.inputElement.setAttribute('aria-controls', this.listId)
     },
     prepareEventHandlers(enable) {
       const binder = this[enable ? 'on' : 'off']
@@ -288,6 +294,7 @@ export default {
     },
     hover (item, elem, elemId) {
       this.hovered = item
+      this.inputElement.setAttribute('aria-activedescendant',  !!item ? this.getId(item, this.hoveredIndex) : '')
       if (item !== undefined) {
         this.$emit('hover', item, elem, elemId)
       }
@@ -534,7 +541,7 @@ export default {
       this.suggestions.splice(0)
     },
     getId(value, i) {
-      return `suggestion-${this.isPlainSuggestion ? i : this.valueProperty(value)}`
+      return `${this.listId}-suggestion-${this.isPlainSuggestion ? i : this.valueProperty(value)}`
     }
   }
 }
