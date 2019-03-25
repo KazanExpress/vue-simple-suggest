@@ -548,6 +548,12 @@ export default {
 </script>
 
 <style>
+.vue-simple-suggest .suggestions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .vue-simple-suggest.designed {
   position: relative;
 }
@@ -574,9 +580,6 @@ export default {
 }
 
 .vue-simple-suggest.designed .suggestions {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   position: absolute;
   left: 0;
   right: 0;
