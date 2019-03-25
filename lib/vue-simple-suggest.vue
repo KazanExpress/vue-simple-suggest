@@ -31,7 +31,7 @@
 
         <li class="suggest-item" v-for="(suggestion, index) in suggestions"
           role="option"
-          @mouseenter="hover(suggestion, $event.target, getId(suggestion, index))"
+          @mouseenter="hover(suggestion, $event.target)"
           @mouseleave="hover(undefined)"
           @click="suggestionClick(suggestion, $event)"
           :aria-selected="hovered && (valueProperty(hovered) == valueProperty(suggestion)) ? 'true' : 'false'"
@@ -292,11 +292,13 @@ export default {
       this.hover(null)
       this.autocompleteText(this.displayProperty(item))
     },
-    hover (item, elem, elemId) {
+    hover (item, elem) {
       this.hovered = item
-      this.inputElement.setAttribute('aria-activedescendant',  !!item ? this.getId(item, this.hoveredIndex) : '')
+      const elemId = !!item ? this.getId(item, this.hoveredIndex) : ''
+
+      this.inputElement.setAttribute('aria-activedescendant',  elemId)
       if (item !== undefined) {
-        this.$emit('hover', item, elem, elemId)
+        this.$emit('hover', item, elem)
       }
     },
     hoverList (isOverList) {
@@ -341,14 +343,12 @@ export default {
 
         if (!this.hovered) {
           item = this.selected || this.suggestions[listEdge]
-          this.hover(item, undefined, this.getId(item, listEdge))
         } else if (hoversBetweenEdges) {
           item = this.suggestions[this.hoveredIndex + direction]
-          this.hover(item, undefined, this.getId(item, this.hoveredIndex + direction))
         } else /* if hovers on edge */ {
           item = this.suggestions[listEdge]
-          this.hover(item, undefined, this.getId(item, listEdge))
         }
+        this.hover(item)
       }
     },
     onListKeyUp (e) {
@@ -540,7 +540,7 @@ export default {
     clearSuggestions () {
       this.suggestions.splice(0)
     },
-    getId(value, i) {
+    getId (value, i) {
       return `${this.listId}-suggestion-${this.isPlainSuggestion ? i : this.valueProperty(value)}`
     }
   }
