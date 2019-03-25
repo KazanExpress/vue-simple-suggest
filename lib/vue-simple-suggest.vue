@@ -202,10 +202,6 @@ export default {
     this.controlScheme = Object.assign({}, defaultControls, this.controls)
   },
   mounted () {
-
-    console.log('$misc-item-below',!!this.$scopedSlots['misc-item-below']);
-    console.log('$misc-item-above',!!this.$scopedSlots['misc-item-above']);
-    
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
 
     this.setInputAriaAttributes()
