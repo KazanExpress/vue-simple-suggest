@@ -22,7 +22,7 @@
         @mouseenter="hoverList(true)"
         @mouseleave="hoverList(false)"
       >
-        <li>
+        <li v-if="!!this.$scopedSlots['misc-item-above']">
           <slot name="misc-item-above"
             :suggestions="suggestions"
             :query="text"
@@ -50,7 +50,7 @@
           </slot>
         </li>
 
-        <li>
+        <li v-if="!!this.$scopedSlots['misc-item-below']">
           <slot name="misc-item-below"
             :suggestions="suggestions"
             :query="text"
@@ -202,6 +202,10 @@ export default {
     this.controlScheme = Object.assign({}, defaultControls, this.controls)
   },
   mounted () {
+
+    console.log('$misc-item-below',!!this.$scopedSlots['misc-item-below']);
+    console.log('$misc-item-above',!!this.$scopedSlots['misc-item-above']);
+    
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
 
     this.setInputAriaAttributes()
