@@ -46,6 +46,7 @@ See [installation guide](#installation) for more options.
       - [Ref Data](#ref-data)
     - [Slots](#slots)
         - [Custom input](#custom-input)
+          - [Accessibility on custom input](#accessibility-on-custom-input)
         - [Custom suggestion item](#custom-suggestion-item)
         - [Custom miscellanious item slots](#custom-miscellanious-item-slots)
 
@@ -473,7 +474,7 @@ A proper use-case for it being when one wants to use the component only for sele
 | `focus`         | HTML focus event            | An outward projection of the current input's event.                                                    |
 | `blur`          | HTML focus event            | An outward projection of the current input's event.                                                    |
 | `select`        | Selected suggestion         | Fires on suggestion selection (via a mouse click or enter keypress).                                   |
-| `hover`         | Hovered suggestion, target element, target element `id` property          | Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).            |
+| `hover`         | Hovered suggestion, target element          | Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).            |
 | `suggestion-click`        | Selected suggestion, HTML click event        | Fires on suggestion element click.                                   |
 | `show-list`      | -                           | Fires each time the suggestion list is toggled to be shown.                                            |
 | `hide-list`      | -                           | Fires each time the suggestion list is being hidden.                                                   |
@@ -611,37 +612,19 @@ If `vue-simple-suggest` with your custom component doesn't seem to react to outs
 </vue-simple-suggest>
 ```
 
-**Accessibility on custom input:**
+##### Accessibility on custom input:
 
-`vue-simple-suggest`'s default `input` element includes these ARIA attributes:
+`vue-simple-suggest` automatically injects 3 necessary ARIA attributes for the default `<input>` element
+and any custom input, as long as your custom input component contains an html `<input>` element.
 
-| Name                | Value                 | Description                            |
-|---------------------|-------------------------|----------------------------------------|
-| aria-autocomplete     | `"list"`                | Indicates that the autocomplete behavior of the text input is to suggest a list of possible values in a popup. |
-| aria-controls         | `"suggestions"`         | IDREF of the popup element that lists suggested values. |
-| aria-activedescendant | IDREF of hovered option | Enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element. IDREF is returned as the 3rd parameter of the `hover` event. |
+These attributes ensure that the autocomplete can be used by users who rely on Screen Readers.
 
-When using a custom `input` element make sure to include these 3 attributes.
-```html
-<!-- Example: -->
-<vue-simple-suggest @hover="onSuggestHover">
-  <input
-    type="text"
-    :aria-activedescendant="hoveredId || ''"
-    aria-autocomplete='list'
-    aria-controls="suggestions">
-</vue-simple-suggest>
-```
+| Name                  | Value                              | Description                            |
+|-----------------------|------------------------------------|----------------------------------------|
+| aria-autocomplete     | `"list"`                           | Indicates that the autocomplete behavior of the text input is to suggest a list of possible values in a popup. |
+| aria-controls         | IDREF of `suggestions` list        | IDREF of the popup element that lists suggested values. |
+| aria-activedescendant | IDREF of hovered option            | Enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element. |
 
-```javascript
-...
-methods: {
-  onSuggestHover (suggestion, elem, elemId) {
-    this.hoveredId = elemId
-  },
-  ...
-}
-```
 
 ##### Custom suggestion item
 > `suggestion-item` slot (optional)
