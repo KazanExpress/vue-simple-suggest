@@ -40,21 +40,13 @@
         @request-failed="onRequestFailed"
         @show-list="onShowList"
         @hide-list="onHideList">
-        <!-- <input
-          :aria-activedescendant="hoveredId || ''"
-          aria-autocomplete='list'
-          aria-controls="suggestions"
-          type="text"> -->
+        <!-- <input type="text"> -->
 
         <div class="g">
-          <input
-            :aria-activedescendant="hoveredId || ''"
-            aria-autocomplete='list'
-            aria-controls="suggestions"
-            type="text">
+          <input type="text">
         </div>
 
-        <!-- <test-input placeholder="Search information..." :aria-activedescendant="hoveredId"/> -->
+        <!-- <test-input placeholder="Search information..." /> -->
 
         <template slot="misc-item-above" slot-scope="{ suggestions, query }">
           <div class="misc-item">
@@ -117,8 +109,7 @@
         model: null,
         mode: 'input',
         loading: false,
-        log: [],
-        hoveredId: null
+        log: []
       }
     },
     methods: {
@@ -165,9 +156,8 @@
         this.addToLog('select', suggest)
         this.selected = suggest
       },
-      onSuggestHover (suggestion, elem, elemId) {
+      onSuggestHover (suggestion) {
         this.addToLog('hover', suggestion);
-        this.hoveredId = elemId
       },
       onRequestStart (value) {
         this.loading = true
