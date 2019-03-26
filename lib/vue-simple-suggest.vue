@@ -548,7 +548,8 @@ export default {
 </script>
 
 <style>
-.vue-simple-suggest .suggestions {
+
+.vue-simple-suggest ul {
   list-style: none;
   margin: 0;
   padding: 0;
