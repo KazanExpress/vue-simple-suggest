@@ -1,5 +1,5 @@
 <template>
-  <input type="text" @input.stop="onInput" @blur.stop="onBlur" @focus.stop="onFocus" :value="value">
+  <input type="text" @input.stop="onInput" @blur.stop="onBlur" @focus.stop="onFocus">
 </template>
 
 <script>

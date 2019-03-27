@@ -4,6 +4,10 @@
     @keydown.tab="isTabbed = true"
   >
     <div class="input-wrapper" ref="inputSlot"
+      role="combobox"
+      aria-haspopup="listbox"
+      :aria-owns="listId"
+      :aria-expanded="!!listShown && !removeList ? 'true' : 'false'"
       :class="styles.inputWrapper">
       <slot>
         <input class="default-input" v-bind="$attrs" :value="text || ''"
@@ -11,21 +15,28 @@
       </slot>
     </div>
     <transition name="vue-simple-suggest">
-      <div class="suggestions" v-if="!!listShown && !removeList"
+      <ul :id="listId" class="suggestions" v-if="!!listShown && !removeList"
+        role="listbox"
+        :aria-labelledby="listId"
         :class="styles.suggestions"
         @mouseenter="hoverList(true)"
         @mouseleave="hoverList(false)"
       >
-        <slot name="misc-item-above"
-          :suggestions="suggestions"
-          :query="text"
-        ></slot>
+        <li v-if="!!this.$scopedSlots['misc-item-above']">
+          <slot name="misc-item-above"
+            :suggestions="suggestions"
+            :query="text"
+          ></slot>
+        </li>
 
-        <div class="suggest-item" v-for="(suggestion, index) in suggestions"
+        <li class="suggest-item" v-for="(suggestion, index) in suggestions"
+          role="option"
           @mouseenter="hover(suggestion, $event.target)"
-          @mouseleave="hover(null, $event.target)"
+          @mouseleave="hover(undefined)"
           @click="suggestionClick(suggestion, $event)"
-          :key="isPlainSuggestion ? 'suggestion-' + index : valueProperty(suggestion)"
+          :aria-selected="hovered && (valueProperty(hovered) == valueProperty(suggestion)) ? 'true' : 'false'"
+          :id="getId(suggestion, index)"
+          :key="getId(suggestion, index)"
           :class="[
             styles.suggestItem,{
             selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
@@ -37,13 +48,15 @@
             :query="text">
             <span>{{ displayProperty(suggestion) }}</span>
           </slot>
-        </div>
+        </li>
 
-        <slot name="misc-item-below"
-          :suggestions="suggestions"
-          :query="text"
-        ></slot>
-      </div>
+        <li v-if="!!this.$scopedSlots['misc-item-below']">
+          <slot name="misc-item-below"
+            :suggestions="suggestions"
+            :query="text"
+          ></slot>
+        </li>
+      </ul>
     </transition>
   </div>
 </template>
@@ -158,7 +171,8 @@ export default {
       isInFocus: false,
       isFalseFocus: false,
       isTabbed: false,
-      controlScheme: {}
+      controlScheme: {},
+      listId: `${this._uid}-suggestions`
     }
   },
   computed: {
@@ -190,6 +204,7 @@ export default {
   mounted () {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
 
+    this.setInputAriaAttributes()
     this.prepareEventHandlers(true)
   },
   beforeDestroy () {
@@ -201,6 +216,11 @@ export default {
         e.stopPropagation()
         e.preventDefault()
       }
+    },
+    setInputAriaAttributes () {
+      this.inputElement.setAttribute('aria-activedescendant', '')
+      this.inputElement.setAttribute('aria-autocomplete', 'list')
+      this.inputElement.setAttribute('aria-controls', this.listId)
     },
     prepareEventHandlers(enable) {
       const binder = this[enable ? 'on' : 'off']
@@ -266,17 +286,18 @@ export default {
       this.text = text
     },
     select (item) {
-      this.hovered = null
       this.selected = item
 
       this.$emit('select', item)
-
+      this.hover(null)
       this.autocompleteText(this.displayProperty(item))
     },
     hover (item, elem) {
       this.hovered = item
+      const elemId = !!item ? this.getId(item, this.hoveredIndex) : ''
 
-      if (this.hovered != null) {
+      this.inputElement.setAttribute('aria-activedescendant',  elemId)
+      if (item !== undefined) {
         this.$emit('hover', item, elem)
       }
     },
@@ -286,6 +307,7 @@ export default {
     hideList () {
       if (this.listShown) {
         this.listShown = false
+        this.hover(null)
         this.$emit('hide-list')
       }
     },
@@ -307,6 +329,7 @@ export default {
       this.showList()
     },
     moveSelection (e) {
+      if (!this.listShown || !this.suggestions.length) return
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
         e.preventDefault()
         this.showSuggestions()
@@ -325,7 +348,6 @@ export default {
         } else /* if hovers on edge */ {
           item = this.suggestions[listEdge]
         }
-
         this.hover(item)
       }
     },
@@ -419,6 +441,8 @@ export default {
         this.selected = null
         this.$emit('select', null)
       }
+
+      if (this.hovered) this.hover(null)
 
       if (this.debounce) {
         clearTimeout(this.timeoutInstance)
@@ -515,12 +539,22 @@ export default {
     },
     clearSuggestions () {
       this.suggestions.splice(0)
+    },
+    getId (value, i) {
+      return `${this.listId}-suggestion-${this.isPlainSuggestion ? i : this.valueProperty(value)}`
     }
   }
 }
 </script>
 
 <style>
+
+.vue-simple-suggest > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .vue-simple-suggest.designed {
   position: relative;
 }

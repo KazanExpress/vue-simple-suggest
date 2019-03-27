@@ -42,9 +42,11 @@
         @hide-list="onHideList">
         <!-- <input type="text"> -->
 
-        <!-- <div class="g"><input type="text"></div> -->
+        <div class="g">
+          <input type="text">
+        </div>
 
-        <test-input placeholder="Search information..."/>
+        <!-- <test-input placeholder="Search information..." /> -->
 
         <template slot="misc-item-above" slot-scope="{ suggestions, query }">
           <div class="misc-item">
