@@ -389,10 +389,13 @@ export default {
     suggestionClick (suggestion, e) {
       this.$emit('suggestion-click', suggestion, e)
       this.select(suggestion)
-      this.hideList()
 
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = this.isOverList = false
+
+      this.$nextTick(() => {
+        this.hideList()
+      })
     },
     onBlur (e) {
       if (this.isInFocus) {
