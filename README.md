@@ -47,7 +47,7 @@ See [installation guide](#installation) for more options.
       - [Ref Data](#ref-data)
     - [Slots](#slots)
         - [Custom input](#custom-input)
-        - [Accessibility on custom input:](#accessibility-on-custom-input)
+        - [Accessibility on custom input](#accessibility-on-custom-input)
         - [Custom suggestion item](#custom-suggestion-item)
         - [Custom miscellanious item slots](#custom-miscellanious-item-slots)
   - [Contributors](#contributors)
@@ -617,7 +617,9 @@ If `vue-simple-suggest` with your custom component doesn't seem to react to outs
 </vue-simple-suggest>
 ```
 
-##### Accessibility on custom input:
+##### Accessibility on custom input
+
+> New in [v1.9.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.9.0)
 
 `vue-simple-suggest` automatically injects 3 necessary ARIA attributes for the default `<input>` element
 and any custom input, as long as your custom input component contains an html `<input>` element.

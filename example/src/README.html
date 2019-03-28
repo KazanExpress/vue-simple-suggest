@@ -15,8 +15,9 @@
 </blockquote>
 <p><a href="https://www.npmjs.com/package/vue-simple-suggest"><img src="https://img.shields.io/npm/v/vue-simple-suggest.svg?style=flat-square" alt="npm"></a>
 <a href="https://kazanexpress.github.io/vue-simple-suggest/"><img src="https://img.shields.io/badge/demo-live-brightgreen.svg?style=flat-square" alt="live demo"></a>
-<a href="https://github.com/KazanExpress/vue-simple-suggest"><img src="https://img.shields.io/badge/github-repo-lightgray.svg?style=flat-square" alt=""></a>
-<a href="https://github.com/vuejs/awesome-vue#autocomplete"><img src="https://img.shields.io/badge/very-awesome-orange.svg?style=flat-square" alt=""></a> <a href="https://www.npmjs.com/package/vue-simple-suggest"><img src="https://img.shields.io/npm/dt/vue-simple-suggest.svg?style=flat-square" alt="npm"></a></p>
+<a href="https://github.com/KazanExpress/vue-simple-suggest"><img src="https://img.shields.io/badge/github-repo-lightgray.svg?style=flat-square" alt="github repo"></a>
+<a href="https://github.com/vuejs/awesome-vue#autocomplete"><img src="https://img.shields.io/badge/very-awesome-orange.svg?style=flat-square" alt="vue-awesome link"></a> <a href="https://www.npmjs.com/package/vue-simple-suggest"><img src="https://img.shields.io/npm/dt/vue-simple-suggest.svg?style=flat-square" alt="npm"></a>
+<a href="#contributors"><img src="https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square" alt="All Contributors"></a></p>
 <h2 id="install"><a class="header-link" href="#install"></a>Install</h2>
 <pre class="hljs"><code>npm install --save vue-simple-suggest</code></pre><p>See <a href="#installation">installation guide</a> for more options.</p>
 <h2 id="table-of-contents"><a class="header-link" href="#table-of-contents"></a>Table of contents</h2>
@@ -61,12 +62,14 @@
 </li>
 <li><a href="#slots">Slots</a><ul class="list">
 <li><a href="#custom-input">Custom input</a></li>
+<li><a href="#accessibility-on-custom-input">Accessibility on custom input:</a></li>
 <li><a href="#custom-suggestion-item">Custom suggestion item</a></li>
 <li><a href="#custom-miscellanious-item-slots">Custom miscellanious item slots</a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li><a href="#contributors">Contributors</a></li>
 </ul>
 </li>
 </ul>
@@ -490,10 +493,16 @@ npm run docs</code></pre><hr>
 <td>All of the HTML5 input attributes with their respected default values.</td>
 </tr>
 <tr>
-<td><code>prevent-submit</code> <sup>v1.8.1</sup></td>
+<td><code>prevent-submit</code> <sup><a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.8.1">v1.8.1</a></sup></td>
 <td>Boolean</td>
 <td><code>true</code></td>
 <td>Whether to prevent form submitting when <code>Enter</code> key is pressed.</td>
+</tr>
+<tr>
+<td><code>nullable-select</code> <sup><a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0">v1.9.0</a></sup></td>
+<td>Boolean</td>
+<td><code>false</code></td>
+<td>Whether the <code>select</code> should accept <code>null</code> or not.</td>
 </tr>
 </tbody>
 </table>
@@ -540,7 +549,7 @@ npm run docs</code></pre><hr>
 </tr>
 <tr>
 <td><code>hover</code></td>
-<td>Hovered suggestion, target element, target element <code>id</code> property</td>
+<td>Hovered suggestion, target element</td>
 <td>Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).</td>
 </tr>
 <tr>
@@ -633,6 +642,11 @@ npm run docs</code></pre><hr>
 <td><code>valueProperty</code></td>
 <td>suggestion</td>
 <td>Returns the value property of a suggestion.</td>
+</tr>
+<tr>
+<td><code>setText</code> <sup>v1.9.0</sup></td>
+<td>text</td>
+<td>Reliably sets custom text to the input field.</td>
 </tr>
 </tbody>
 </table>
@@ -836,8 +850,10 @@ Defaults to a simple input with props passed to vue-simple-suggest.</p>
 <p>If <code>vue-simple-suggest</code> with your custom component doesn&#39;t seem to react to outside variable changes - bind both components&#39; v-model to the same variable, like so:</p>
 <pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">my-custom-input-somponent</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">"model"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-custom-input-somponent</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><p><strong>Accessibility on custom input:</strong></p>
-<p><code>vue-simple-suggest</code>&#39;s default <code>input</code> element includes these ARIA attributes:</p>
+<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><h5 id="accessibility-on-custom-input:"><a class="header-link" href="#accessibility-on-custom-input:"></a>Accessibility on custom input:</h5>
+<p><code>vue-simple-suggest</code> automatically injects 3 necessary ARIA attributes for the default <code>&lt;input&gt;</code> element
+and any custom input, as long as your custom input component contains an html <code>&lt;input&gt;</code> element.</p>
+<p>These attributes ensure that the autocomplete can be used by users who rely on Screen Readers.</p>
 <table>
 <thead>
 <tr>
@@ -854,31 +870,17 @@ Defaults to a simple input with props passed to vue-simple-suggest.</p>
 </tr>
 <tr>
 <td>aria-controls</td>
-<td><code>&quot;suggestions&quot;</code></td>
+<td>IDREF of <code>suggestions</code> list</td>
 <td>IDREF of the popup element that lists suggested values.</td>
 </tr>
 <tr>
 <td>aria-activedescendant</td>
 <td>IDREF of hovered option</td>
-<td>Enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element. IDREF is returned as the 3rd parameter of the <code>hover</code> event.</td>
+<td>Enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element.</td>
 </tr>
 </tbody>
 </table>
-<p>When using a custom <code>input</code> element make sure to include these 3 attributes.</p>
-<pre class="hljs"><code><span class="hljs-comment">&lt;!-- Example: --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> @<span class="hljs-attr">hover</span>=<span class="hljs-string">"onSuggestHover"</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">input</span>
-    <span class="hljs-attr">type</span>=<span class="hljs-string">"text"</span>
-    <span class="hljs-attr">:aria-activedescendant</span>=<span class="hljs-string">"hoveredId || ''"</span>
-    <span class="hljs-attr">aria-autocomplete</span>=<span class="hljs-string">'list'</span>
-    <span class="hljs-attr">aria-controls</span>=<span class="hljs-string">"suggestions"</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><pre class="hljs"><code>...
-methods: {
-  onSuggestHover (suggestion, elem, elemId) {
-    <span class="hljs-keyword">this</span>.hoveredId = elemId
-  },
-  ...
-}</code></pre><h5 id="custom-suggestion-item"><a class="header-link" href="#custom-suggestion-item"></a>Custom suggestion item</h5>
+<h5 id="custom-suggestion-item"><a class="header-link" href="#custom-suggestion-item"></a>Custom suggestion item</h5>
 <blockquote>
 <p><code>suggestion-item</code> slot (optional)</p>
 </blockquote>
@@ -968,6 +970,12 @@ Defaults to <code>&lt;span&gt;{{ displayAttribute(suggestion) }}&lt;/span&gt;</c
   <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"misc-item"</span> <span class="hljs-attr">v-else-if</span>=<span class="hljs-string">"!loading"</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">span</span>&gt;</span>No results<span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></code></pre>    </article>
+<span class="hljs-tag">&lt;/<span class="hljs-name">template</span>&gt;</span></code></pre><h2 id="contributors"><a class="header-link" href="#contributors"></a>Contributors</h2>
+<p>Thanks goes to these wonderful people (<a href="https://allcontributors.org/docs/en/emoji-key">emoji key</a>):</p>
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+<p>This project follows the <a href="https://github.com/all-contributors/all-contributors">all-contributors</a> specification. Contributions of any kind welcome!</p>
+    </article>
   </body>
 </html>
