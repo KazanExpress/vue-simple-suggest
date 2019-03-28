@@ -184,7 +184,7 @@ import VueSimpleSuggest from 'vue-simple-suggest/dist/es6'
 import VueSimpleSuggest from 'vue-simple-suggest/dist/es7'
 ///
 
-/// CommonJS (async, Object.assign and promises are polyfilled)
+/// CommonJS (async, arrow-functions and promises are polyfilled)
 const VueSimpleSuggest = require('vue-simple-suggest')
 // or, if you have problems importing:
 const VueSimpleSuggest = require('vue-simple-suggest/dist/cjs')
