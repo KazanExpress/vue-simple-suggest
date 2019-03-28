@@ -145,13 +145,28 @@ export default {
   watch: {
     mode: {
       handler(current, old) {
-        this.constructor.options.model.event = current;
+        this.constructor.options.model.event = current
+
+        if (this.$parent) {
+          this.$parent.$forceUpdate()
+        } else {
+          this.$emit('input', this.text)
+          this.$emit('select', this.selected)
+        }
+        this.$nextTick(() => {
+          this.$emit('input', this.text)
+          this.$emit('select', this.selected)
+        })
       },
       immediate: true
     },
     value: {
       handler(current) {
-        this.text = current
+        if (typeof current === 'string') {
+          this.text = current
+        } else if (current) {
+          this.text = this.displayProperty(current)
+        }
       },
       immediate: true
     }
