@@ -8,15 +8,184 @@
   ],
   "imageSize": 100,
   "commit": false,
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "sssmi",
+      "name": "Simeon Kerkola",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/28311328?v=4",
+      "profile": "http://simeon.fyi",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas"
+      ]
+    },
+    {
+      "login": "rcostalenz",
+      "name": "Roberson Costa",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/4765136?v=4",
+      "profile": "https://github.com/rcostalenz",
+      "contributions": [
+        "code",
+        "doc",
+        "ideas"
+      ]
+    },
+    {
+      "login": "rosdi",
+      "name": "Rosdi Kasim",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5094028?v=4",
+      "profile": "https://github.com/rosdi",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "antoinematyja",
+      "name": "antoinematyja",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/9961462?v=4",
+      "profile": "https://github.com/antoinematyja",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "matthiascw",
+      "name": "Matthias Martin",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/24254923?v=4",
+      "profile": "http://www.contoweb.ch/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "robjbrain",
+      "name": "Rob Brain",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/10143910?v=4",
+      "profile": "http://robjbrain.com",
+      "contributions": [
+        "bug",
+        "bug"
+      ]
+    },
+    {
+      "login": "MrWook",
+      "name": "MrWook",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/20294042?v=4",
+      "profile": "https://github.com/MrWook",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "nattam",
+      "name": "nattam",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/19463672?v=4",
+      "profile": "https://github.com/nattam",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "petyunchik",
+      "name": "Petr",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/673497?v=4",
+      "profile": "https://github.com/petyunchik",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "RMFogarty",
+      "name": "RMFogarty",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/10094132?v=4",
+      "profile": "https://github.com/RMFogarty",
+      "contributions": [
+        "question"
+      ]
+    },
+    {
+      "login": "brickgale",
+      "name": "Brian Monsales",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6366161?v=4",
+      "profile": "https://brickgale.github.io",
+      "contributions": [
+        "question"
+      ]
+    },
+    {
+      "login": "mila76",
+      "name": "Mila76",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/378500?v=4",
+      "profile": "http://www.mila76.it",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Lofbergio",
+      "name": "Andriy Löfberg",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1188259?v=4",
+      "profile": "https://github.com/Lofbergio",
+      "contributions": [
+        "question",
+        "ideas"
+      ]
+    },
+    {
+      "login": "bunomonteiro",
+      "name": "Bruno Monteiro",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5221494?v=4",
+      "profile": "http://buno.com.br",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "hannesaasamets",
+      "name": "hannesaasamets",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/20644595?v=4",
+      "profile": "https://github.com/hannesaasamets",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Geminii",
+      "name": "Jimmy",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9429420?v=4",
+      "profile": "https://github.com/Geminii",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "willplaehn",
+      "name": "Will Plaehn",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/10226784?v=4",
+      "profile": "http://www.lastmileretail.com",
+      "contributions": [
+        "code",
+        "ideas",
+        "doc"
+      ]
+    },
+    {
+      "login": "lauri911",
+      "name": "lauri911",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/12371449?v=4",
+      "profile": "https://github.com/lauri911",
+      "contributions": [
+        "bug"
+      ]
+    }
+  ],
   "contributorsPerLine": 7,
   "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg?style=flat-square)](#contributors)",
-  "contributorTemplate": "<%= avatarBlock %><br /><%= contributions %>",
   "types": {
     "creator": {
       "symbol": "🔭",
-      "description": "Original component creator",
-      "link": "[<%= symbol %>](<%= url %> \"<%= description %>\"),"
+      "description": "Original component creator"
     }
   }
 }
