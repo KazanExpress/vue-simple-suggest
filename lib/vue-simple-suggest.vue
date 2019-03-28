@@ -303,10 +303,8 @@ export default {
 
       this.$emit('select', item)
 
-      if (item !== null) {
-        this.hover(null)
-        this.setText(this.displayProperty(item))
-      }
+      this.hover(null)
+      this.setText(this.displayProperty(item))
     },
     hover (item, elem) {
       this.hovered = item
