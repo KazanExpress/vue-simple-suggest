@@ -69,6 +69,7 @@ And, as a bonus, it is very light.
 ### Features
 
 - `v-model` support.
+- Automatic accessibility attributes (WAI-ARIA complete)
 - Switching `v-model` type (select/input).
 - [Custom input](#custom-input) element through default slot.
 - [Custom list items](#custom-suggestion-item) through named scoped slots.
