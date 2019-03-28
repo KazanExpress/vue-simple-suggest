@@ -69,13 +69,11 @@ import {
   hasKeyCode
 } from './misc'
 
-let event = 'input'
-
 export default {
   name: 'vue-simple-suggest',
   model: {
     prop: 'value',
-    get event() { return event }
+    event: 'input'
   },
   props: {
     styles: {
@@ -147,7 +145,7 @@ export default {
   watch: {
     mode: {
       handler(current, old) {
-        event = current
+        this.constructor.options.model.event = current;
       },
       immediate: true
     },
