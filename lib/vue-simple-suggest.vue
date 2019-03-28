@@ -461,9 +461,8 @@ export default {
       this.text = value
       this.$emit('input', this.text)
 
-      if (this.selected) {
-        this.selected = null
-        this.$emit('select', null)
+      if (this.selected && this.nullableSelect) {
+        this.select(null);
       }
 
       if (this.hovered) this.hover(null)
