@@ -200,6 +200,9 @@ export default {
     },
     textLength () {
       return (this.text && this.text.length) || (this.inputElement.value.length) || 0
+    },
+    isSelectedUpToDate () {
+      return !!this.selected && this.displayProperty(this.selected) === this.text
     }
   },
   created () {
@@ -460,10 +463,6 @@ export default {
 
       this.text = value
       this.$emit('input', this.text)
-
-      if (this.selected && this.nullableSelect) {
-        this.select(null);
-      }
 
       if (this.hovered) this.hover(null)
 

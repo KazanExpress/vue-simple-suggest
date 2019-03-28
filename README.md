@@ -545,6 +545,7 @@ You can use these to imitate some of the component's behaviours.
 |`isOverList`| `false` | `true` if the user currently hovers over suggestions list. |
 |`isInFocus`| `false` | `true` if the component is currently in focus. |
 |`isTabbed`| `false` | `true` if the user pressed tab, while the component is in focus. |
+|`isSelectedUpToDate`| `false` | `true` if the user hasn't done any inputs since the last selection, so the selection is still relevant. |
 
 -----
 
