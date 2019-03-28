@@ -132,6 +132,10 @@ export default {
       type: Number,
       default: 0
     },
+    nullableSelect: {
+      type: Boolean,
+      default: false
+    },
     value: {},
     mode: {
       type: String,
@@ -289,8 +293,11 @@ export default {
       this.selected = item
 
       this.$emit('select', item)
-      this.hover(null)
-      this.autocompleteText(this.displayProperty(item))
+
+      if (item !== null) {
+        this.hover(null)
+        this.autocompleteText(this.displayProperty(item))
+      }
     },
     hover (item, elem) {
       this.hovered = item
@@ -358,7 +365,7 @@ export default {
       if (hasKeyCode([select, hideList], e)) {
         e.preventDefault()
         if (this.listShown) {
-          if (hasKeyCode(select, e) && this.hovered) {
+          if (hasKeyCode(select, e) && (this.nullableSelect || this.hovered)) {
             this.select(this.hovered)
           }
 

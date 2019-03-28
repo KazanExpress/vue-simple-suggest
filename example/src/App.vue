@@ -26,6 +26,7 @@
           hideList: [27, 35]
         }"
         :mode="mode"
+        :nullable-select="true"
         ref="suggestComponent"
         placeholder="Search information..."
         value-attribute="id"

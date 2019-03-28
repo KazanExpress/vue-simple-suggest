@@ -449,7 +449,8 @@ You can also define custom list transitions by defining css rules for the transi
 | `filter` | Function | - | A custom function for filtering the suggestion results that accepts a single item and a query to filter by as its 2 arguments. Used only if `filter-by-query` is set to `true`. |
 | `mode` <sup>[v1.4.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)</sup>                         | String | `'input'` | The `v-model` event. Determines the event, that triggers `v-model`. Can be one of `'input'` (`v-model` binds a displayed property) or `'select'` (`v-model` binds a selected item). |
 | `type`, `value`, `pattern`, etc...   |          |            | All of the HTML5 input attributes with their respected default values. |
-| `prevent-submit` <sup>v1.8.1</sup>                    | Boolean  | `true`    | Whether to prevent form submitting when `Enter` key is pressed. |
+| `prevent-submit` <sup>[v1.8.1](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.8.1)</sup>                    | Boolean  | `true`    | Whether to prevent form submitting when `Enter` key is pressed. |
+| `nullable-select` <sup>[v1.9.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)</sup>                    | Boolean  | `false`    | Whether the `select` should accept `null` or not. |
 
 ##### mode
 > New in [v1.4.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)
