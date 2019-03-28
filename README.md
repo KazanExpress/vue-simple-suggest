@@ -47,9 +47,10 @@ See [installation guide](#installation) for more options.
       - [Ref Data](#ref-data)
     - [Slots](#slots)
         - [Custom input](#custom-input)
-          - [Accessibility on custom input](#accessibility-on-custom-input)
+        - [Accessibility on custom input:](#accessibility-on-custom-input)
         - [Custom suggestion item](#custom-suggestion-item)
         - [Custom miscellanious item slots](#custom-miscellanious-item-slots)
+  - [Contributors](#contributors)
 
 
 ## What is it
