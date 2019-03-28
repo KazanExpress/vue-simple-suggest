@@ -10,6 +10,24 @@
   "commit": false,
   "contributors": [
     {
+      "login": "Raiondesu",
+      "name": "Alexey",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/19854420?v=4",
+      "profile": "https://github.com/Raiondesu",
+      "contributions": [
+        "creator"
+      ]
+    },
+    {
+      "login": "kaskar2008",
+      "name": "Karen",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6456858?v=4",
+      "profile": "https://github.com/kaskar2008",
+      "contributions": [
+        "creator"
+      ]
+    },
+    {
       "login": "sssmi",
       "name": "Simeon Kerkola",
       "avatar_url": "https://avatars3.githubusercontent.com/u/28311328?v=4",
@@ -184,8 +202,8 @@
   "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/contributors-<%= contributors.length %>-blueviolet.svg?style=flat-square)](#contributors)",
   "types": {
     "creator": {
-      "symbol": "🔭",
-      "description": "Original component creator"
+      "symbol": "😇",
+      "description": "Original creator"
     }
   }
 }
