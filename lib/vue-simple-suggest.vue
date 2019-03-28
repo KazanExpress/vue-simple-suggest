@@ -43,7 +43,7 @@
             hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
             }]">
           <slot name="suggestion-item"
-            :autocomplete="() => autocompleteText(displayProperty(suggestion))"
+            :autocomplete="() => setText(displayProperty(suggestion))"
             :suggestion="suggestion"
             :query="text">
             <span>{{ displayProperty(suggestion) }}</span>
@@ -284,10 +284,19 @@ export default {
     valueProperty (obj) {
       return this.getPropertyByAttribute(obj, this.valueAttribute)
     },
+
+    /**
+     * @deprecated remove on the next minor release
+     */
     autocompleteText (text) {
-      this.$emit('input', text)
-      this.inputElement.value = text
-      this.text = text
+      this.setText(text)
+    },
+    setText (text) {
+      this.$nextTick(() => {
+        this.$emit('input', text)
+        this.inputElement.value = text
+        this.text = text
+      })
     },
     select (item) {
       this.selected = item
@@ -296,7 +305,7 @@ export default {
 
       if (item !== null) {
         this.hover(null)
-        this.autocompleteText(this.displayProperty(item))
+        this.setText(this.displayProperty(item))
       }
     },
     hover (item, elem) {
@@ -327,6 +336,9 @@ export default {
           this.$emit('show-list')
         }
       }
+    },
+    clearInput() {
+      this.setText('')
     },
     async showSuggestions () {
       if (this.suggestions.length === 0 && this.minLength === this.textLength) {
@@ -383,7 +395,7 @@ export default {
       ) {
         e.preventDefault()
         this.hover(this.suggestions[0])
-        this.autocompleteText(this.displayProperty(this.suggestions[0]))
+        this.setText(this.displayProperty(this.suggestions[0]))
       }
     },
     suggestionClick (suggestion, e) {

@@ -501,6 +501,7 @@ A proper use-case for it being when one wants to use the component only for sele
 |`hover`| suggestion | Hovers over the passed suggestion. Emits the respected [event](#emitted-events). |
 |`displayProperty`| suggestion | Returns the displayed property of a suggestion. |
 |`valueProperty`| suggestion | Returns the value property of a suggestion. |
+|`setText` <sup>v1.9.0</sup> | text | Reliably sets custom text to the input field. |
 
 -----
 
