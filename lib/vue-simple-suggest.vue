@@ -416,7 +416,11 @@ export default {
         this.inputElement.blur()
         console.error(
           `This should never happen!
-          If you encouneterd this error, please report at https://github.com/KazanExpress/vue-simple-suggest/issues`
+          If you encountered this error, please make sure that your input component emits 'focus' events properly.
+          For more info see https://github.com/KazanExpress/vue-simple-suggest#custom-input.
+
+          If your 'vue-simple-suggest' setup does not include a custom input component - please,
+          report to https://github.com/KazanExpress/vue-simple-suggest/issues/new`
         )
       }
 
