@@ -24,7 +24,7 @@
       "avatar_url": "https://avatars3.githubusercontent.com/u/6456858?v=4",
       "profile": "https://github.com/kaskar2008",
       "contributions": [
-        "creator"
+        "creator-pokerface"
       ]
     },
     {
@@ -203,6 +203,10 @@
   "types": {
     "creator": {
       "symbol": "😇",
+      "description": "Original creator"
+    },
+    "creator-pokerface": {
+      "symbol": "😐",
       "description": "Original creator"
     }
   }
