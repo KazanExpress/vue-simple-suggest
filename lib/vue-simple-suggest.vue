@@ -302,7 +302,7 @@ export default {
     },
 
     /**
-     * @deprecated remove on the next minor release
+     * @deprecated remove on the next release
      */
     autocompleteText (text) {
       this.setText(text)
