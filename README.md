@@ -1,13 +1,13 @@
 # vue-simple-suggest
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors)
 
 > Simple yet feature-rich autocomplete component for Vue.js
 
 
 [![npm](https://img.shields.io/npm/v/vue-simple-suggest.svg?style=flat-square)](https://www.npmjs.com/package/vue-simple-suggest)
 [![live demo](https://img.shields.io/badge/demo-live-brightgreen.svg?style=flat-square)](https://kazanexpress.github.io/vue-simple-suggest/)
-[![](https://img.shields.io/badge/github-repo-lightgray.svg?style=flat-square)](https://github.com/KazanExpress/vue-simple-suggest)
-[![](https://img.shields.io/badge/very-awesome-orange.svg?style=flat-square)](https://github.com/vuejs/awesome-vue#autocomplete) [![npm](https://img.shields.io/npm/dt/vue-simple-suggest.svg?style=flat-square)](https://www.npmjs.com/package/vue-simple-suggest)
+[![github repo](https://img.shields.io/badge/github-repo-lightgray.svg?style=flat-square)](https://github.com/KazanExpress/vue-simple-suggest)
+[![vue-awesome link](https://img.shields.io/badge/very-awesome-orange.svg?style=flat-square)](https://github.com/vuejs/awesome-vue#autocomplete) [![npm](https://img.shields.io/npm/dt/vue-simple-suggest.svg?style=flat-square)](https://www.npmjs.com/package/vue-simple-suggest)
+[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors)
 
 ## Install
 
