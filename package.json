@@ -55,6 +55,7 @@
     "not ie <= 8"
   ],
   "devDependencies": {
+    "all-contributors-cli": "^6.2.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
     "babel-plugin-es6-promise": "^1.1.1",
