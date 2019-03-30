@@ -351,9 +351,6 @@ export default {
         }
       }
     },
-    clearInput() {
-      this.setText('')
-    },
     async showSuggestions () {
       if (this.suggestions.length === 0 && this.minLength === this.textLength) {
         await this.research()
