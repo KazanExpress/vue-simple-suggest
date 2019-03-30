@@ -3,10 +3,12 @@
 > Simple yet feature-rich autocomplete component for Vue.js
 
 
-[![npm](https://img.shields.io/npm/v/vue-simple-suggest.svg?style=flat-square)](https://www.npmjs.com/package/vue-simple-suggest)
-[![live demo](https://img.shields.io/badge/demo-live-brightgreen.svg?style=flat-square)](https://kazanexpress.github.io/vue-simple-suggest/)
-[![](https://img.shields.io/badge/github-repo-lightgray.svg?style=flat-square)](https://github.com/KazanExpress/vue-simple-suggest)
-[![](https://img.shields.io/badge/very-awesome-orange.svg?style=flat-square)](https://github.com/vuejs/awesome-vue#autocomplete) [![npm](https://img.shields.io/npm/dt/vue-simple-suggest.svg?style=flat-square)](https://www.npmjs.com/package/vue-simple-suggest)
+[![npm](https://img.shields.io/npm/v/vue-simple-suggest.svg?style=flat-square)](https://www.npmjs.com/package/vue-simple-suggest "NPM package page")
+[![live demo](https://img.shields.io/badge/demo-live-brightgreen.svg?style=flat-square)](https://kazanexpress.github.io/vue-simple-suggest/ "Live playground")
+[![github repo](https://img.shields.io/badge/github-repo-lightgray.svg?style=flat-square)](https://github.com/KazanExpress/vue-simple-suggest "GitHub repository")
+[![vue-awesome link](https://img.shields.io/badge/very-awesome-orange.svg?style=flat-square)](https://github.com/vuejs/awesome-vue#autocomplete "Our section at the vue-awesome repository")
+[![npm](https://img.shields.io/npm/dm/vue-simple-suggest.svg?style=flat-square)](https://www.npmjs.com/package/vue-simple-suggest "Downloads per month")
+[![All Contributors](https://img.shields.io/badge/contributors-18-blueviolet.svg?style=flat-square)](#contributors "Our awesome contributors!")
 
 ## Install
 
@@ -46,8 +48,10 @@ See [installation guide](#installation) for more options.
       - [Ref Data](#ref-data)
     - [Slots](#slots)
         - [Custom input](#custom-input)
+        - [Accessibility on custom input](#accessibility-on-custom-input)
         - [Custom suggestion item](#custom-suggestion-item)
         - [Custom miscellanious item slots](#custom-miscellanious-item-slots)
+  - [Contributors](#contributors)
 
 
 ## What is it
@@ -65,6 +69,7 @@ And, as a bonus, it is very light.
 ### Features
 
 - `v-model` support.
+- Automatic [accessibility attributes](#accessibility-on-custom-input) (WAI-ARIA complete)
 - Switching `v-model` type (select/input).
 - [Custom input](#custom-input) element through default slot.
 - [Custom list items](#custom-suggestion-item) through named scoped slots.
@@ -179,7 +184,7 @@ import VueSimpleSuggest from 'vue-simple-suggest/dist/es6'
 import VueSimpleSuggest from 'vue-simple-suggest/dist/es7'
 ///
 
-/// CommonJS (async, Object.assign and promises are polyfilled)
+/// CommonJS (async, arrow-functions and promises are polyfilled)
 const VueSimpleSuggest = require('vue-simple-suggest')
 // or, if you have problems importing:
 const VueSimpleSuggest = require('vue-simple-suggest/dist/cjs')
@@ -400,7 +405,7 @@ If you wish to use your existing classes, or frameworks like Bootstrap you can i
 ```
 
 #### Transitions
-> New in v1.8.0
+> New in [v1.8.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.8.0)
 
 You can also define custom list transitions by defining css rules for the transition named `vue-simple-suggest` on the `.suggestions` div:
 
@@ -447,6 +452,7 @@ You can also define custom list transitions by defining css rules for the transi
 | `mode` <sup>[v1.4.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)</sup>                         | String | `'input'` | The `v-model` event. Determines the event, that triggers `v-model`. Can be one of `'input'` (`v-model` binds a displayed property) or `'select'` (`v-model` binds a selected item). |
 | `type`, `value`, `pattern`, etc...   |          |            | All of the HTML5 input attributes with their respected default values. |
 | `prevent-submit` <sup>v1.8.1</sup>                    | Boolean  | `true`    | Whether to prevent form submitting when `Enter` key is pressed. |
+| `nullable-select` <sup>[v1.9.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)</sup>                    | Boolean  | `false`    | Whether the `select` should accept `null` or not. |
 
 ##### mode
 > New in [v1.4.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)
@@ -473,7 +479,7 @@ A proper use-case for it being when one wants to use the component only for sele
 | `focus`         | HTML focus event            | An outward projection of the current input's event.                                                    |
 | `blur`          | HTML focus event            | An outward projection of the current input's event.                                                    |
 | `select`        | Selected suggestion         | Fires on suggestion selection (via a mouse click or enter keypress).                                   |
-| `hover`         | Hovered suggestion          | Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).            |
+| `hover`         | Hovered suggestion, target element          | Fires each time a new suggestion is highlighted (via a cursor movement or keyboard arrows).            |
 | `suggestion-click`        | Selected suggestion, HTML click event        | Fires on suggestion element click.                                   |
 | `show-list`      | -                           | Fires each time the suggestion list is toggled to be shown.                                            |
 | `hide-list`      | -                           | Fires each time the suggestion list is being hidden.                                                   |
@@ -497,6 +503,7 @@ A proper use-case for it being when one wants to use the component only for sele
 |`hover`| suggestion | Hovers over the passed suggestion. Emits the respected [event](#emitted-events). |
 |`displayProperty`| suggestion | Returns the displayed property of a suggestion. |
 |`valueProperty`| suggestion | Returns the value property of a suggestion. |
+|`setText` <sup>v1.9.0</sup> | text | Reliably sets custom text to the input field. |
 
 -----
 
@@ -540,6 +547,7 @@ You can use these to imitate some of the component's behaviours.
 |`isOverList`| `false` | `true` if the user currently hovers over suggestions list. |
 |`isInFocus`| `false` | `true` if the component is currently in focus. |
 |`isTabbed`| `false` | `true` if the user pressed tab, while the component is in focus. |
+|`isSelectedUpToDate`| `false` | `true` if the user hasn't done any inputs since the last selection, so the selection is still relevant. |
 
 -----
 
@@ -610,6 +618,22 @@ If `vue-simple-suggest` with your custom component doesn't seem to react to outs
   <my-custom-input-somponent v-model="model"></my-custom-input-somponent>
 </vue-simple-suggest>
 ```
+
+##### Accessibility on custom input
+
+> New in [v1.9.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.9.0)
+
+`vue-simple-suggest` automatically injects 3 necessary ARIA attributes for the default `<input>` element
+and any custom input, as long as your custom input component contains an html `<input>` element.
+
+These attributes ensure that the autocomplete can be used by users who rely on Screen Readers.
+
+| Name                  | Value                              | Description                            |
+|-----------------------|------------------------------------|----------------------------------------|
+| aria-autocomplete     | `"list"`                           | Indicates that the autocomplete behavior of the text input is to suggest a list of possible values in a popup. |
+| aria-controls         | IDREF of `suggestions` list        | IDREF of the popup element that lists suggested values. |
+| aria-activedescendant | IDREF of hovered option            | Enables assistive technologies to know which element the application regards as focused while DOM focus remains on the input element. |
+
 
 ##### Custom suggestion item
 > `suggestion-item` slot (optional)
@@ -744,3 +768,15 @@ These slots can also be used to handle empty results, like this:
   </div>
 </template>
 ```
+
+## Contributors
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore -->
+<table><tr><td align="center"><a href="https://github.com/Raiondesu"><img src="https://avatars3.githubusercontent.com/u/19854420?v=4" width="100px;" alt="Alexey"/><br /><sub><b>Alexey</b></sub></a><br /><a href="#creator-Raiondesu" title="Original creator">😇</a></td><td align="center"><a href="https://github.com/kaskar2008"><img src="https://avatars3.githubusercontent.com/u/6456858?v=4" width="100px;" alt="Karen"/><br /><sub><b>Karen</b></sub></a><br /><a href="#creator-pokerface-kaskar2008" title="Original creator">😐</a></td><td align="center"><a href="http://simeon.fyi"><img src="https://avatars3.githubusercontent.com/u/28311328?v=4" width="100px;" alt="Simeon Kerkola"/><br /><sub><b>Simeon Kerkola</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/commits?author=sssmi" title="Code">💻</a> <a href="https://github.com/KazanExpress/vue-simple-suggest/commits?author=sssmi" title="Documentation">📖</a> <a href="#ideas-sssmi" title="Ideas, Planning, & Feedback">🤔</a></td><td align="center"><a href="https://github.com/rcostalenz"><img src="https://avatars0.githubusercontent.com/u/4765136?v=4" width="100px;" alt="Roberson Costa"/><br /><sub><b>Roberson Costa</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/commits?author=rcostalenz" title="Code">💻</a> <a href="https://github.com/KazanExpress/vue-simple-suggest/commits?author=rcostalenz" title="Documentation">📖</a> <a href="#ideas-rcostalenz" title="Ideas, Planning, & Feedback">🤔</a></td><td align="center"><a href="https://github.com/rosdi"><img src="https://avatars2.githubusercontent.com/u/5094028?v=4" width="100px;" alt="Rosdi Kasim"/><br /><sub><b>Rosdi Kasim</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/commits?author=rosdi" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/antoinematyja"><img src="https://avatars2.githubusercontent.com/u/9961462?v=4" width="100px;" alt="antoinematyja"/><br /><sub><b>antoinematyja</b></sub></a><br /><a href="#ideas-antoinematyja" title="Ideas, Planning, & Feedback">🤔</a></td><td align="center"><a href="http://www.contoweb.ch/"><img src="https://avatars1.githubusercontent.com/u/24254923?v=4" width="100px;" alt="Matthias Martin"/><br /><sub><b>Matthias Martin</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/issues?q=author%3Amatthiascw" title="Bug reports">🐛</a></td></tr><tr><td align="center"><a href="http://robjbrain.com"><img src="https://avatars0.githubusercontent.com/u/10143910?v=4" width="100px;" alt="Rob Brain"/><br /><sub><b>Rob Brain</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/issues?q=author%3Arobjbrain" title="Bug reports">🐛</a> <a href="https://github.com/KazanExpress/vue-simple-suggest/issues?q=author%3Arobjbrain" title="Bug reports">🐛</a></td><td align="center"><a href="https://github.com/MrWook"><img src="https://avatars1.githubusercontent.com/u/20294042?v=4" width="100px;" alt="MrWook"/><br /><sub><b>MrWook</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/issues?q=author%3AMrWook" title="Bug reports">🐛</a></td><td align="center"><a href="https://github.com/nattam"><img src="https://avatars3.githubusercontent.com/u/19463672?v=4" width="100px;" alt="nattam"/><br /><sub><b>nattam</b></sub></a><br /><a href="#ideas-nattam" title="Ideas, Planning, & Feedback">🤔</a></td><td align="center"><a href="https://github.com/petyunchik"><img src="https://avatars1.githubusercontent.com/u/673497?v=4" width="100px;" alt="Petr"/><br /><sub><b>Petr</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/issues?q=author%3Apetyunchik" title="Bug reports">🐛</a></td><td align="center"><a href="https://github.com/RMFogarty"><img src="https://avatars0.githubusercontent.com/u/10094132?v=4" width="100px;" alt="RMFogarty"/><br /><sub><b>RMFogarty</b></sub></a><br /><a href="#question-RMFogarty" title="Answering Questions">💬</a></td><td align="center"><a href="https://brickgale.github.io"><img src="https://avatars3.githubusercontent.com/u/6366161?v=4" width="100px;" alt="Brian Monsales"/><br /><sub><b>Brian Monsales</b></sub></a><br /><a href="#question-brickgale" title="Answering Questions">💬</a></td><td align="center"><a href="http://www.mila76.it"><img src="https://avatars3.githubusercontent.com/u/378500?v=4" width="100px;" alt="Mila76"/><br /><sub><b>Mila76</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/issues?q=author%3Amila76" title="Bug reports">🐛</a></td></tr><tr><td align="center"><a href="https://github.com/Lofbergio"><img src="https://avatars3.githubusercontent.com/u/1188259?v=4" width="100px;" alt="Andriy Löfberg"/><br /><sub><b>Andriy Löfberg</b></sub></a><br /><a href="#question-Lofbergio" title="Answering Questions">💬</a> <a href="#ideas-Lofbergio" title="Ideas, Planning, & Feedback">🤔</a></td><td align="center"><a href="http://buno.com.br"><img src="https://avatars3.githubusercontent.com/u/5221494?v=4" width="100px;" alt="Bruno Monteiro"/><br /><sub><b>Bruno Monteiro</b></sub></a><br /><a href="#ideas-bunomonteiro" title="Ideas, Planning, & Feedback">🤔</a></td><td align="center"><a href="https://github.com/hannesaasamets"><img src="https://avatars1.githubusercontent.com/u/20644595?v=4" width="100px;" alt="hannesaasamets"/><br /><sub><b>hannesaasamets</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/issues?q=author%3Ahannesaasamets" title="Bug reports">🐛</a></td><td align="center"><a href="https://github.com/Geminii"><img src="https://avatars1.githubusercontent.com/u/9429420?v=4" width="100px;" alt="Jimmy"/><br /><sub><b>Jimmy</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/issues?q=author%3AGeminii" title="Bug reports">🐛</a></td><td align="center"><a href="http://www.lastmileretail.com"><img src="https://avatars0.githubusercontent.com/u/10226784?v=4" width="100px;" alt="Will Plaehn"/><br /><sub><b>Will Plaehn</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/commits?author=willplaehn" title="Code">💻</a> <a href="#ideas-willplaehn" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/KazanExpress/vue-simple-suggest/commits?author=willplaehn" title="Documentation">📖</a></td><td align="center"><a href="https://github.com/lauri911"><img src="https://avatars2.githubusercontent.com/u/12371449?v=4" width="100px;" alt="lauri911"/><br /><sub><b>lauri911</b></sub></a><br /><a href="https://github.com/KazanExpress/vue-simple-suggest/issues?q=author%3Alauri911" title="Bug reports">🐛</a></td></tr></table>
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind are welcome!
