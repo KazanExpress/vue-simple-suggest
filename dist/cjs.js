@@ -62,8 +62,7 @@ function _finally(body, finalizer) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
-}
-function _await(value, then, direct) {
+}function _await(value, then, direct) {
   if (direct) {
     return then ? then(value) : value;
   }value = Promise.resolve(value);return then ? value.then(then) : value;
@@ -99,41 +98,36 @@ function _await(value, then, direct) {
     return Promise.resolve(value).then(_empty);
   }
 }function _empty() {}
-var event = 'input';
-
 var VueSimpleSuggest = {
   render: function render() {
     var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: [_vm.styles.vueSimpleSuggest, { designed: !_vm.destyled, focus: _vm.isInFocus }], on: { "keydown": function keydown($event) {
           if (!('button' in $event) && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
             return null;
           }_vm.isTabbed = true;
-        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", class: _vm.styles.suggestions, on: { "mouseenter": function mouseenter($event) {
+        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId }, on: { "mouseenter": function mouseenter($event) {
           _vm.hoverList(true);
         }, "mouseleave": function mouseleave($event) {
           _vm.hoverList(false);
-        } } }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
-      return _c('div', { key: _vm.isPlainSuggestion ? 'suggestion-' + index : _vm.valueProperty(suggestion), staticClass: "suggest-item", class: [_vm.styles.suggestItem, {
-          selected: _vm.selected && _vm.valueProperty(suggestion) == _vm.valueProperty(_vm.selected),
+        } } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+      return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, { selected: _vm.selected && _vm.valueProperty(suggestion) == _vm.valueProperty(_vm.selected),
           hover: _vm.hovered && _vm.valueProperty(_vm.hovered) == _vm.valueProperty(suggestion)
-        }], on: { "mouseenter": function mouseenter($event) {
+        }], attrs: { "role": "option", "aria-selected": _vm.hovered && _vm.valueProperty(_vm.hovered) == _vm.valueProperty(suggestion) ? 'true' : 'false', "id": _vm.getId(suggestion, index) }, on: { "mouseenter": function mouseenter($event) {
             _vm.hover(suggestion, $event.target);
           }, "mouseleave": function mouseleave($event) {
-            _vm.hover(null, $event.target);
+            _vm.hover(undefined);
           }, "click": function click($event) {
             _vm.suggestionClick(suggestion, $event);
           } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { autocomplete: function autocomplete() {
-          return _vm.autocompleteText(_vm.displayProperty(suggestion));
+          return _vm.setText(_vm.displayProperty(suggestion));
         }, suggestion: suggestion, query: _vm.text })], 2);
-    }), _vm._v(" "), _vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()])], 1);
+    }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
   },
   staticRenderFns: [],
-  name: 'vue-simple-suggest',
-  model: {
+  name: 'vue-simple-suggest', model: {
     prop: 'value',
-    get event() {
-      return event;
-    }
-  }, props: {
+    event: 'input'
+  },
+  props: {
     styles: {
       type: Object,
       default: function _default() {
@@ -156,7 +150,8 @@ var VueSimpleSuggest = {
     },
     displayAttribute: {
       type: String,
-      default: 'title' },
+      default: 'title'
+    },
     valueAttribute: {
       type: String,
       default: 'id'
@@ -193,6 +188,10 @@ var VueSimpleSuggest = {
       type: Number,
       default: 0
     },
+    nullableSelect: {
+      type: Boolean,
+      default: false
+    },
     value: {},
     mode: {
       type: String,
@@ -206,14 +205,31 @@ var VueSimpleSuggest = {
   watch: {
     mode: {
       handler: function handler(current, old) {
-        event = current;
+        var _this = this;
+
+        this.constructor.options.model.event = current;
+
+        if (this.$parent) {
+          this.$parent.$forceUpdate();
+        } else {
+          this.$emit('input', this.text);
+          this.$emit('select', this.selected);
+        }
+        this.$nextTick(function () {
+          _this.$emit('input', _this.text);
+          _this.$emit('select', _this.selected);
+        });
       },
 
       immediate: true
     },
     value: {
       handler: function handler(current) {
-        this.text = current;
+        if (typeof current === 'string') {
+          this.text = current;
+        } else if (current) {
+          this.text = this.displayProperty(current);
+        }
       },
 
       immediate: true
@@ -236,7 +252,8 @@ var VueSimpleSuggest = {
       isInFocus: false,
       isFalseFocus: false,
       isTabbed: false,
-      controlScheme: {}
+      controlScheme: {},
+      listId: this._uid + '-suggestions'
     };
   },
 
@@ -257,14 +274,17 @@ var VueSimpleSuggest = {
       return this.inputIsComponent ? '$off' : 'removeEventListener';
     },
     hoveredIndex: function hoveredIndex() {
-      var _this = this;
+      var _this2 = this;
 
       return this.suggestions.findIndex(function (el) {
-        return _this.hovered && _this.valueProperty(_this.hovered) == _this.valueProperty(el);
+        return _this2.hovered && _this2.valueProperty(_this2.hovered) == _this2.valueProperty(el);
       });
     },
     textLength: function textLength() {
       return this.text && this.text.length || this.inputElement.value.length || 0;
+    },
+    isSelectedUpToDate: function isSelectedUpToDate() {
+      return !!this.selected && this.displayProperty(this.selected) === this.text;
     }
   },
   created: function created() {
@@ -273,6 +293,7 @@ var VueSimpleSuggest = {
   mounted: function mounted() {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
 
+    this.setInputAriaAttributes();
     this.prepareEventHandlers(true);
   },
   beforeDestroy: function beforeDestroy() {
@@ -286,14 +307,19 @@ var VueSimpleSuggest = {
         e.preventDefault();
       }
     },
+    setInputAriaAttributes: function setInputAriaAttributes() {
+      this.inputElement.setAttribute('aria-activedescendant', '');
+      this.inputElement.setAttribute('aria-autocomplete', 'list');
+      this.inputElement.setAttribute('aria-controls', this.listId);
+    },
     prepareEventHandlers: function prepareEventHandlers(enable) {
-      var _this2 = this;
+      var _this3 = this;
 
       var binder = this[enable ? 'on' : 'off'];
       var keyEventsList = {
         click: this.showSuggestions,
         keydown: function keydown($event) {
-          return _this2.moveSelection($event), _this2.onAutocomplete($event);
+          return _this3.moveSelection($event), _this3.onAutocomplete($event);
         },
         keyup: this.onListKeyUp
       };
@@ -329,10 +355,10 @@ var VueSimpleSuggest = {
       return true;
     },
     miscSlotsAreEmpty: function miscSlotsAreEmpty() {
-      var _this3 = this;
+      var _this4 = this;
 
       var slots = ['misc-item-above', 'misc-item-below'].map(function (s) {
-        return _this3.$scopedSlots[s];
+        return _this4.$scopedSlots[s];
       });
 
       if (slots.every(function (s) {
@@ -356,23 +382,37 @@ var VueSimpleSuggest = {
     valueProperty: function valueProperty(obj) {
       return this.getPropertyByAttribute(obj, this.valueAttribute);
     },
+
+
+    /**
+     * @deprecated remove on the next release
+     */
     autocompleteText: function autocompleteText(text) {
-      this.$emit('input', text);
-      this.inputElement.value = text;
-      this.text = text;
+      this.setText(text);
+    },
+    setText: function setText(text) {
+      var _this5 = this;
+
+      this.$nextTick(function () {
+        _this5.$emit('input', text);
+        _this5.inputElement.value = text;
+        _this5.text = text;
+      });
     },
     select: function select(item) {
-      this.hovered = null;
       this.selected = item;
 
       this.$emit('select', item);
 
-      this.autocompleteText(this.displayProperty(item));
+      this.hover(null);
+      this.setText(this.displayProperty(item));
     },
     hover: function hover(item, elem) {
       this.hovered = item;
+      var elemId = !!item ? this.getId(item, this.hoveredIndex) : '';
 
-      if (this.hovered != null) {
+      this.inputElement.setAttribute('aria-activedescendant', elemId);
+      if (item !== undefined) {
         this.$emit('hover', item, elem);
       }
     },
@@ -382,6 +422,7 @@ var VueSimpleSuggest = {
     hideList: function hideList() {
       if (this.listShown) {
         this.listShown = false;
+        this.hover(null);
         this.$emit('hide-list');
       }
     },
@@ -394,17 +435,18 @@ var VueSimpleSuggest = {
       }
     },
     showSuggestions: _async(function () {
-      var _this4 = this;
+      var _this6 = this;
 
       return _invoke(function () {
-        if (_this4.suggestions.length === 0 && _this4.minLength === _this4.textLength) {
-          return _awaitIgnored(_this4.research());
+        if (_this6.suggestions.length === 0 && _this6.minLength === _this6.textLength) {
+          return _awaitIgnored(_this6.research());
         }
       }, function () {
-        _this4.showList();
+        _this6.showList();
       });
     }),
     moveSelection: function moveSelection(e) {
+      if (!this.listShown || !this.suggestions.length) return;
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
         e.preventDefault();
         this.showSuggestions();
@@ -423,7 +465,6 @@ var VueSimpleSuggest = {
         } else /* if hovers on edge */{
             item = this.suggestions[listEdge];
           }
-
         this.hover(item);
       }
     },
@@ -434,7 +475,7 @@ var VueSimpleSuggest = {
       if (hasKeyCode([select, hideList], e)) {
         e.preventDefault();
         if (this.listShown) {
-          if (hasKeyCode(select, e) && this.hovered) {
+          if (hasKeyCode(select, e) && (this.nullableSelect || this.hovered)) {
             this.select(this.hovered);
           }
 
@@ -448,19 +489,24 @@ var VueSimpleSuggest = {
       if (hasKeyCode(this.controlScheme.autocomplete, e) && (e.ctrlKey || e.shiftKey) && this.suggestions.length > 0 && this.suggestions[0] && this.listShown) {
         e.preventDefault();
         this.hover(this.suggestions[0]);
-        this.autocompleteText(this.displayProperty(this.suggestions[0]));
+        this.setText(this.displayProperty(this.suggestions[0]));
       }
     },
     suggestionClick: function suggestionClick(suggestion, e) {
+      var _this7 = this;
+
       this.$emit('suggestion-click', suggestion, e);
       this.select(suggestion);
-      this.hideList();
 
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = this.isOverList = false;
+
+      this.$nextTick(function () {
+        _this7.hideList();
+      });
     },
     onBlur: function onBlur(e) {
-      var _this5 = this;
+      var _this8 = this;
 
       if (this.isInFocus) {
 
@@ -476,12 +522,12 @@ var VueSimpleSuggest = {
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true;
           this.$nextTick(function () {
-            _this5.inputElement.focus();
+            _this8.inputElement.focus();
           });
         }
       } else {
         this.inputElement.blur();
-        console.error('This should never happen!\n          If you encouneterd this error, please report at https://github.com/KazanExpress/vue-simple-suggest/issues');
+        console.error('This should never happen!\n          If you encountered this error, please make sure that your input component emits \'focus\' events properly.\n          For more info see https://github.com/KazanExpress/vue-simple-suggest#custom-input.\n\n          If your \'vue-simple-suggest\' setup does not include a custom input component - please,\n          report to https://github.com/KazanExpress/vue-simple-suggest/issues/new');
       }
 
       this.isTabbed = false;
@@ -510,10 +556,7 @@ var VueSimpleSuggest = {
       this.text = value;
       this.$emit('input', this.text);
 
-      if (this.selected) {
-        this.selected = null;
-        this.$emit('select', null);
-      }
+      if (this.hovered) this.hover(null);
 
       if (this.debounce) {
         clearTimeout(this.timeoutInstance);
@@ -523,57 +566,57 @@ var VueSimpleSuggest = {
       }
     },
     research: _async(function () {
-      var _this6 = this;
+      var _this9 = this;
 
       return _finally(function () {
         return _catch(function () {
           return _invokeIgnored(function () {
-            if (_this6.canSend) {
-              _this6.canSend = false;
-              var _$set = _this6.$set;
-              return _await(_this6.getSuggestions(_this6.text), function (_this6$getSuggestions) {
-                _$set.call(_this6, _this6, 'suggestions', _this6$getSuggestions);
+            if (_this9.canSend) {
+              _this9.canSend = false;
+              var _$set = _this9.$set;
+              return _await(_this9.getSuggestions(_this9.text), function (_this9$getSuggestions) {
+                _$set.call(_this9, _this9, 'suggestions', _this9$getSuggestions);
               });
             }
           });
         }, function (e) {
-          _this6.clearSuggestions();
+          _this9.clearSuggestions();
           throw e;
         });
       }, function () {
-        _this6.canSend = true;
+        _this9.canSend = true;
 
-        if (_this6.suggestions.length === 0 && _this6.miscSlotsAreEmpty()) {
-          _this6.hideList();
+        if (_this9.suggestions.length === 0 && _this9.miscSlotsAreEmpty()) {
+          _this9.hideList();
         } else {
-          _this6.showList();
+          _this9.showList();
         }
 
-        return _this6.suggestions;
+        return _this9.suggestions;
       });
     }),
     getSuggestions: _async(function (value) {
-      var _this7 = this;
+      var _this10 = this;
 
       value = value || '';
 
-      if (value.length < _this7.minLength) {
-        if (_this7.listShown) {
-          _this7.hideList();
+      if (value.length < _this10.minLength) {
+        if (_this10.listShown) {
+          _this10.hideList();
           return [];
         }
 
-        return _this7.suggestions;
+        return _this10.suggestions;
       }
 
-      _this7.selected = null;
+      _this10.selected = null;
 
       // Start request if can
-      if (_this7.listIsRequest) {
-        _this7.$emit('request-start', value);
+      if (_this10.listIsRequest) {
+        _this10.$emit('request-start', value);
 
-        if (_this7.suggestions.length > 0 || !_this7.miscSlotsAreEmpty()) {
-          _this7.showList();
+        if (_this10.suggestions.length > 0 || !_this10.miscSlotsAreEmpty()) {
+          _this10.showList();
         }
       }
 
@@ -581,12 +624,12 @@ var VueSimpleSuggest = {
       return _finally(function () {
         return _catch(function () {
           return _invoke(function () {
-            if (_this7.listIsRequest) {
-              return _await(_this7.list(value), function (_this7$list) {
-                result = _this7$list || [];
+            if (_this10.listIsRequest) {
+              return _await(_this10.list(value), function (_this10$list) {
+                result = _this10$list || [];
               });
             } else {
-              result = _this7.list;
+              result = _this10.list;
             }
           }, function () {
             // IFF the result is not an array (just in case!) - make it an array
@@ -594,28 +637,28 @@ var VueSimpleSuggest = {
               result = [result];
             }
 
-            _this7.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
+            _this10.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
 
-            if (_this7.filterByQuery) {
+            if (_this10.filterByQuery) {
               result = result.filter(function (el) {
-                return _this7.filter(el, value);
+                return _this10.filter(el, value);
               });
             }
 
-            if (_this7.listIsRequest) {
-              _this7.$emit('request-done', result);
+            if (_this10.listIsRequest) {
+              _this10.$emit('request-done', result);
             }
           });
         }, function (e) {
-          if (_this7.listIsRequest) {
-            _this7.$emit('request-failed', e);
+          if (_this10.listIsRequest) {
+            _this10.$emit('request-failed', e);
           } else {
             throw e;
           }
         });
       }, function () {
-        if (_this7.maxSuggestions) {
-          result.splice(_this7.maxSuggestions);
+        if (_this10.maxSuggestions) {
+          result.splice(_this10.maxSuggestions);
         }
 
         return result;
@@ -623,6 +666,9 @@ var VueSimpleSuggest = {
     }),
     clearSuggestions: function clearSuggestions() {
       this.suggestions.splice(0);
+    },
+    getId: function getId(value, i) {
+      return this.listId + '-suggestion-' + (this.isPlainSuggestion ? i : this.valueProperty(value));
     }
   }
 };

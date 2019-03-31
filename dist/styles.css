@@ -1,4 +1,11 @@
 
+
+.vue-simple-suggest > ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 .vue-simple-suggest.designed {
   position: relative;
 }

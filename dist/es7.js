@@ -26,40 +26,36 @@ function hasKeyCode(arr, event) {
   }
 }
 
-let event = 'input';
-
 var VueSimpleSuggest = {
   render: function () {
     var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: [_vm.styles.vueSimpleSuggest, { designed: !_vm.destyled, focus: _vm.isInFocus }], on: { "keydown": function ($event) {
           if (!('button' in $event) && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
             return null;
           }_vm.isTabbed = true;
-        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('div', { staticClass: "suggestions", class: _vm.styles.suggestions, on: { "mouseenter": function ($event) {
+        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId }, on: { "mouseenter": function ($event) {
           _vm.hoverList(true);
         }, "mouseleave": function ($event) {
           _vm.hoverList(false);
-        } } }, [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text }), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
-      return _c('div', { key: _vm.isPlainSuggestion ? 'suggestion-' + index : _vm.valueProperty(suggestion), staticClass: "suggest-item", class: [_vm.styles.suggestItem, {
+        } } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+      return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, {
           selected: _vm.selected && _vm.valueProperty(suggestion) == _vm.valueProperty(_vm.selected),
           hover: _vm.hovered && _vm.valueProperty(_vm.hovered) == _vm.valueProperty(suggestion)
-        }], on: { "mouseenter": function ($event) {
+        }], attrs: { "role": "option", "aria-selected": _vm.hovered && _vm.valueProperty(_vm.hovered) == _vm.valueProperty(suggestion) ? 'true' : 'false', "id": _vm.getId(suggestion, index) }, on: { "mouseenter": function ($event) {
             _vm.hover(suggestion, $event.target);
           }, "mouseleave": function ($event) {
-            _vm.hover(null, $event.target);
+            _vm.hover(undefined);
           }, "click": function ($event) {
             _vm.suggestionClick(suggestion, $event);
           } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { autocomplete: function () {
-          return _vm.autocompleteText(_vm.displayProperty(suggestion));
+          return _vm.setText(_vm.displayProperty(suggestion));
         }, suggestion: suggestion, query: _vm.text })], 2);
-    }), _vm._v(" "), _vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()])], 1);
+    }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
   },
   staticRenderFns: [],
   name: 'vue-simple-suggest',
   model: {
     prop: 'value',
-    get event() {
-      return event;
-    }
+    event: 'input'
   },
   props: {
     styles: {
@@ -116,6 +112,10 @@ var VueSimpleSuggest = {
       type: Number,
       default: 0
     },
+    nullableSelect: {
+      type: Boolean,
+      default: false
+    },
     value: {},
     mode: {
       type: String,
@@ -127,13 +127,28 @@ var VueSimpleSuggest = {
   watch: {
     mode: {
       handler(current, old) {
-        event = current;
+        this.constructor.options.model.event = current;
+
+        if (this.$parent) {
+          this.$parent.$forceUpdate();
+        } else {
+          this.$emit('input', this.text);
+          this.$emit('select', this.selected);
+        }
+        this.$nextTick(() => {
+          this.$emit('input', this.text);
+          this.$emit('select', this.selected);
+        });
       },
       immediate: true
     },
     value: {
       handler(current) {
-        this.text = current;
+        if (typeof current === 'string') {
+          this.text = current;
+        } else if (current) {
+          this.text = this.displayProperty(current);
+        }
       },
       immediate: true
     }
@@ -155,7 +170,8 @@ var VueSimpleSuggest = {
       isInFocus: false,
       isFalseFocus: false,
       isTabbed: false,
-      controlScheme: {}
+      controlScheme: {},
+      listId: `${this._uid}-suggestions`
     };
   },
   computed: {
@@ -179,6 +195,9 @@ var VueSimpleSuggest = {
     },
     textLength() {
       return this.text && this.text.length || this.inputElement.value.length || 0;
+    },
+    isSelectedUpToDate() {
+      return !!this.selected && this.displayProperty(this.selected) === this.text;
     }
   },
   created() {
@@ -187,6 +206,7 @@ var VueSimpleSuggest = {
   mounted() {
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
 
+    this.setInputAriaAttributes();
     this.prepareEventHandlers(true);
   },
   beforeDestroy() {
@@ -198,6 +218,11 @@ var VueSimpleSuggest = {
         e.stopPropagation();
         e.preventDefault();
       }
+    },
+    setInputAriaAttributes() {
+      this.inputElement.setAttribute('aria-activedescendant', '');
+      this.inputElement.setAttribute('aria-autocomplete', 'list');
+      this.inputElement.setAttribute('aria-controls', this.listId);
     },
     prepareEventHandlers(enable) {
       const binder = this[enable ? 'on' : 'off'];
@@ -257,23 +282,34 @@ var VueSimpleSuggest = {
     valueProperty(obj) {
       return this.getPropertyByAttribute(obj, this.valueAttribute);
     },
+
+    /**
+     * @deprecated remove on the next release
+     */
     autocompleteText(text) {
-      this.$emit('input', text);
-      this.inputElement.value = text;
-      this.text = text;
+      this.setText(text);
+    },
+    setText(text) {
+      this.$nextTick(() => {
+        this.$emit('input', text);
+        this.inputElement.value = text;
+        this.text = text;
+      });
     },
     select(item) {
-      this.hovered = null;
       this.selected = item;
 
       this.$emit('select', item);
 
-      this.autocompleteText(this.displayProperty(item));
+      this.hover(null);
+      this.setText(this.displayProperty(item));
     },
     hover(item, elem) {
       this.hovered = item;
+      const elemId = !!item ? this.getId(item, this.hoveredIndex) : '';
 
-      if (this.hovered != null) {
+      this.inputElement.setAttribute('aria-activedescendant', elemId);
+      if (item !== undefined) {
         this.$emit('hover', item, elem);
       }
     },
@@ -283,6 +319,7 @@ var VueSimpleSuggest = {
     hideList() {
       if (this.listShown) {
         this.listShown = false;
+        this.hover(null);
         this.$emit('hide-list');
       }
     },
@@ -302,6 +339,7 @@ var VueSimpleSuggest = {
       this.showList();
     },
     moveSelection(e) {
+      if (!this.listShown || !this.suggestions.length) return;
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
         e.preventDefault();
         this.showSuggestions();
@@ -320,7 +358,6 @@ var VueSimpleSuggest = {
         } else /* if hovers on edge */{
             item = this.suggestions[listEdge];
           }
-
         this.hover(item);
       }
     },
@@ -331,7 +368,7 @@ var VueSimpleSuggest = {
       if (hasKeyCode([select, hideList], e)) {
         e.preventDefault();
         if (this.listShown) {
-          if (hasKeyCode(select, e) && this.hovered) {
+          if (hasKeyCode(select, e) && (this.nullableSelect || this.hovered)) {
             this.select(this.hovered);
           }
 
@@ -345,16 +382,19 @@ var VueSimpleSuggest = {
       if (hasKeyCode(this.controlScheme.autocomplete, e) && (e.ctrlKey || e.shiftKey) && this.suggestions.length > 0 && this.suggestions[0] && this.listShown) {
         e.preventDefault();
         this.hover(this.suggestions[0]);
-        this.autocompleteText(this.displayProperty(this.suggestions[0]));
+        this.setText(this.displayProperty(this.suggestions[0]));
       }
     },
     suggestionClick(suggestion, e) {
       this.$emit('suggestion-click', suggestion, e);
       this.select(suggestion);
-      this.hideList();
 
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = this.isOverList = false;
+
+      this.$nextTick(() => {
+        this.hideList();
+      });
     },
     onBlur(e) {
       if (this.isInFocus) {
@@ -377,7 +417,11 @@ var VueSimpleSuggest = {
       } else {
         this.inputElement.blur();
         console.error(`This should never happen!
-          If you encouneterd this error, please report at https://github.com/KazanExpress/vue-simple-suggest/issues`);
+          If you encountered this error, please make sure that your input component emits 'focus' events properly.
+          For more info see https://github.com/KazanExpress/vue-simple-suggest#custom-input.
+
+          If your 'vue-simple-suggest' setup does not include a custom input component - please,
+          report to https://github.com/KazanExpress/vue-simple-suggest/issues/new`);
       }
 
       this.isTabbed = false;
@@ -406,10 +450,7 @@ var VueSimpleSuggest = {
       this.text = value;
       this.$emit('input', this.text);
 
-      if (this.selected) {
-        this.selected = null;
-        this.$emit('select', null);
-      }
+      if (this.hovered) this.hover(null);
 
       if (this.debounce) {
         clearTimeout(this.timeoutInstance);
@@ -500,6 +541,9 @@ var VueSimpleSuggest = {
     },
     clearSuggestions() {
       this.suggestions.splice(0);
+    },
+    getId(value, i) {
+      return `${this.listId}-suggestion-${this.isPlainSuggestion ? i : this.valueProperty(value)}`;
     }
   }
 };
