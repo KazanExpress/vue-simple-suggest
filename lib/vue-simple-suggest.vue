@@ -141,21 +141,21 @@ export default {
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
   },
-  // Handle run-time mode changes (not working):
+  // Handle run-time mode changes (now working):
   watch: {
     mode: {
       handler(current, old) {
         this.constructor.options.model.event = current
 
-        if (this.$parent) {
-          this.$parent.$forceUpdate()
-        } else {
-          this.$emit('input', this.text)
-          this.$emit('select', this.selected)
-        }
+        // Can be null if the component is root
+        this.$parent && this.$parent.$forceUpdate()
+
         this.$nextTick(() => {
-          this.$emit('input', this.text)
-          this.$emit('select', this.selected)
+          if (current === 'input') {
+            this.$emit('input', this.text)
+          } else {
+            this.$emit('select', this.selected)
+          }
         })
       },
       immediate: true
