@@ -123,21 +123,21 @@ var VueSimpleSuggest = {
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
   },
-  // Handle run-time mode changes (not working):
+  // Handle run-time mode changes (now working):
   watch: {
     mode: {
       handler(current, old) {
         this.constructor.options.model.event = current;
 
-        if (this.$parent) {
-          this.$parent.$forceUpdate();
-        } else {
-          this.$emit('input', this.text);
-          this.$emit('select', this.selected);
-        }
+        // Can be null if the component is root
+        this.$parent && this.$parent.$forceUpdate();
+
         this.$nextTick(() => {
-          this.$emit('input', this.text);
-          this.$emit('select', this.selected);
+          if (current === 'input') {
+            this.$emit('input', this.text);
+          } else {
+            this.$emit('select', this.selected);
+          }
         });
       },
       immediate: true
@@ -297,21 +297,24 @@ var VueSimpleSuggest = {
       });
     },
     select(item) {
-      this.selected = item;
-
-      this.$emit('select', item);
+      if (this.selected !== item) {
+        this.selected = item;
+        this.$emit('select', item);
+        this.setText(this.displayProperty(item));
+      }
 
       this.hover(null);
-      this.setText(this.displayProperty(item));
     },
     hover(item, elem) {
-      this.hovered = item;
       const elemId = !!item ? this.getId(item, this.hoveredIndex) : '';
 
       this.inputElement.setAttribute('aria-activedescendant', elemId);
-      if (item !== undefined) {
+
+      if (item && item !== this.hovered) {
         this.$emit('hover', item, elem);
       }
+
+      this.hovered = item;
     },
     hoverList(isOverList) {
       this.isOverList = isOverList;
