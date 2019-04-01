@@ -324,7 +324,6 @@ export default {
       this.hover(null)
     },
     hover (item, elem) {
-      this.hovered = item
       const elemId = !!item ? this.getId(item, this.hoveredIndex) : ''
 
       this.inputElement.setAttribute('aria-activedescendant',  elemId)
@@ -332,6 +331,8 @@ export default {
       if (item && (item !== this.hovered)) {
         this.$emit('hover', item, elem)
       }
+
+      this.hovered = item
     },
     hoverList (isOverList) {
       this.isOverList = isOverList
