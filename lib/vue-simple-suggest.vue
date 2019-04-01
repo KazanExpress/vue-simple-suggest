@@ -324,15 +324,12 @@ export default {
       this.hover(null)
     },
     hover (item, elem) {
-      if (this.hovered === item) {
-        return
-      }
-
       this.hovered = item
       const elemId = !!item ? this.getId(item, this.hoveredIndex) : ''
 
       this.inputElement.setAttribute('aria-activedescendant',  elemId)
-      if (item !== undefined) {
+
+      if (item !== this.hovered) {
         this.$emit('hover', item, elem)
       }
     },
