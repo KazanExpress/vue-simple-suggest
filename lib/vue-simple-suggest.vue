@@ -315,14 +315,19 @@ export default {
       })
     },
     select (item) {
-      this.selected = item
-
-      this.$emit('select', item)
+      if (this.selected !== item) {
+        this.selected = item
+        this.$emit('select', item)
+        this.setText(this.displayProperty(item))
+      }
 
       this.hover(null)
-      this.setText(this.displayProperty(item))
     },
     hover (item, elem) {
+      if (this.hovered === item) {
+        return
+      }
+
       this.hovered = item
       const elemId = !!item ? this.getId(item, this.hoveredIndex) : ''
 
