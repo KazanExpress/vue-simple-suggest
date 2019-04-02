@@ -315,10 +315,13 @@ export default {
       })
     },
     select (item) {
-      if (this.selected !== item) {
+      if (this.selected !== item || (this.nullableSelect && !item)) {
         this.selected = item
         this.$emit('select', item)
-        this.setText(this.displayProperty(item))
+
+        if (item) {
+          this.setText(this.displayProperty(item))
+        }
       }
 
       this.hover(null)
@@ -391,7 +394,7 @@ export default {
       if (hasKeyCode([select, hideList], e)) {
         e.preventDefault()
         if (this.listShown) {
-          if (hasKeyCode(select, e) && (this.nullableSelect || this.hovered)) {
+          if (hasKeyCode(select, e)) {
             this.select(this.hovered)
           }
 
