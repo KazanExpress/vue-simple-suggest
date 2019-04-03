@@ -33,7 +33,8 @@ function _finally(body, finalizer) {
     return finalizer();
   }if (result && result.then) {
     return result.then(finalizer, finalizer);
-  }return finalizer();
+  }
+  return finalizer();
 }function _catch(body, recover) {
   try {
     var result = body();
@@ -76,8 +77,7 @@ function _finally(body, finalizer) {
 }();function _invoke(body, then) {
   var result = body();if (result && result.then) {
     return result.then(then);
-  }
-  return then(result);
+  }return then(result);
 }function _awaitIgnored(value, direct) {
   if (!direct) {
     return Promise.resolve(value).then(_empty);
@@ -173,7 +173,7 @@ var VueSimpleSuggest = {
     value: {},
     mode: {
       type: String,
-      default: event,
+      default: 'input',
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
   },

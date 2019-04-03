@@ -49,7 +49,8 @@ function _finally(body, finalizer) {
     return finalizer();
   }if (result && result.then) {
     return result.then(finalizer, finalizer);
-  }return finalizer();
+  }
+  return finalizer();
 }function _catch(body, recover) {
   try {
     var result = body();
@@ -92,8 +93,7 @@ function _finally(body, finalizer) {
 }();function _invoke(body, then) {
   var result = body();if (result && result.then) {
     return result.then(then);
-  }
-  return then(result);
+  }return then(result);
 }function _awaitIgnored(value, direct) {
   if (!direct) {
     return Promise.resolve(value).then(_empty);
@@ -195,7 +195,7 @@ var VueSimpleSuggest = {
     value: {},
     mode: {
       type: String,
-      default: event,
+      default: 'input',
       validator: function validator(value) {
         return !!~Object.keys(modes).indexOf(value.toLowerCase());
       }
@@ -338,14 +338,14 @@ var VueSimpleSuggest = {
         input: this.onInput
       }, keyEventsList);
 
-      for (var _event in eventsList) {
-        this.input[binder](_event, eventsList[_event]);
+      for (var event in eventsList) {
+        this.input[binder](event, eventsList[event]);
       }
 
       var listenerBinder = enable ? 'addEventListener' : 'removeEventListener';
 
-      for (var _event2 in keyEventsList) {
-        this.inputElement[listenerBinder](_event2, keyEventsList[_event2]);
+      for (var _event in keyEventsList) {
+        this.inputElement[listenerBinder](_event, keyEventsList[_event]);
       }
 
       if (this.preventSubmit === true) {

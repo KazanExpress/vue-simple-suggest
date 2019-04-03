@@ -119,7 +119,7 @@ var VueSimpleSuggest = {
     value: {},
     mode: {
       type: String,
-      default: event,
+      default: 'input',
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
     }
   },
