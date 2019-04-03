@@ -76,7 +76,8 @@ function _finally(body, finalizer) {
 }();function _invoke(body, then) {
   var result = body();if (result && result.then) {
     return result.then(then);
-  }return then(result);
+  }
+  return then(result);
 }function _awaitIgnored(value, direct) {
   if (!direct) {
     return Promise.resolve(value).then(_empty);
@@ -93,9 +94,9 @@ var VueSimpleSuggest = {
         }, "mouseleave": function ($event) {
           _vm.hoverList(false);
         } } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
-      return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, { selected: _vm.selected && _vm.valueProperty(suggestion) == _vm.valueProperty(_vm.selected),
-          hover: _vm.hovered && _vm.valueProperty(_vm.hovered) == _vm.valueProperty(suggestion)
-        }], attrs: { "role": "option", "aria-selected": _vm.hovered && _vm.valueProperty(_vm.hovered) == _vm.valueProperty(suggestion) ? 'true' : 'false', "id": _vm.getId(suggestion, index) }, on: { "mouseenter": function ($event) {
+      return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, { selected: _vm.isSelected(suggestion),
+          hover: _vm.isHovered(suggestion)
+        }], attrs: { "role": "option", "aria-selected": _vm.isHovered(suggestion) || _vm.isSelected(suggestion) ? 'true' : 'false', "id": _vm.getId(suggestion, index) }, on: { "mouseenter": function ($event) {
             _vm.hover(suggestion, $event.target);
           }, "mouseleave": function ($event) {
             _vm.hover(undefined);
@@ -105,9 +106,9 @@ var VueSimpleSuggest = {
           return _vm.setText(_vm.displayProperty(suggestion));
         }, suggestion: suggestion, query: _vm.text })], 2);
     }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
-  },
-  staticRenderFns: [],
-  name: 'vue-simple-suggest', model: {
+  }, staticRenderFns: [],
+  name: 'vue-simple-suggest',
+  model: {
     prop: 'value',
     event: 'input'
   },
@@ -115,8 +116,7 @@ var VueSimpleSuggest = {
     styles: {
       type: Object,
       default: () => ({})
-    },
-    controls: {
+    }, controls: {
       type: Object,
       default: () => defaultControls
     },
@@ -267,6 +267,15 @@ var VueSimpleSuggest = {
     this.prepareEventHandlers(false);
   },
   methods: {
+    isEqual(suggestion, item) {
+      return item && this.valueProperty(suggestion) == this.valueProperty(item);
+    },
+    isSelected(suggestion) {
+      return this.isEqual(suggestion, this.selected);
+    },
+    isHovered(suggestion) {
+      return this.isEqual(suggestion, this.hovered);
+    },
     onSubmit(e) {
       if (this.preventSubmit && e.key === 'Enter') {
         e.stopPropagation();
@@ -331,10 +340,35 @@ var VueSimpleSuggest = {
       return this.isPlainSuggestion ? obj : typeof obj !== undefined ? fromPath(obj, attr) : obj;
     },
     displayProperty(obj) {
-      return String(this.getPropertyByAttribute(obj, this.displayAttribute));
+      if (this.isPlainSuggestion) {
+        return obj;
+      }
+
+      let display = this.getPropertyByAttribute(obj, this.displayAttribute);
+
+      if (typeof display === 'undefined') {
+        display = JSON.stringify(obj);
+
+        if (process && ~process.env.NODE_ENV.indexOf('dev')) {
+          console.warn('[vue-simple-suggest]: Please, provide `display-attribute` as a key or a dotted path for a property from your object.');
+        }
+      }
+
+      return String(display);
     },
     valueProperty(obj) {
-      return this.getPropertyByAttribute(obj, this.valueAttribute);
+      if (this.isPlainSuggestion) {
+        return obj;
+      }
+
+      const value = this.getPropertyByAttribute(obj, this.valueAttribute);
+
+      if (typeof value === 'undefined') {
+        console.error(`[vue-simple-suggest]: Please, check if you passed 'value-attribute' (default is 'id') and 'display-attribute' (default is 'title') props correctly.
+        Your list objects should always contain a unique identifier.`);
+      }
+
+      return value;
     },
 
     /**
@@ -351,10 +385,13 @@ var VueSimpleSuggest = {
       });
     },
     select(item) {
-      if (this.selected !== item) {
+      if (this.selected !== item || this.nullableSelect && !item) {
         this.selected = item;
         this.$emit('select', item);
-        this.setText(this.displayProperty(item));
+
+        if (item) {
+          this.setText(this.displayProperty(item));
+        }
       }
 
       this.hover(null);
@@ -430,7 +467,7 @@ var VueSimpleSuggest = {
       if (hasKeyCode([select, hideList], e)) {
         e.preventDefault();
         if (this.listShown) {
-          if (hasKeyCode(select, e) && (this.nullableSelect || this.hovered)) {
+          if (hasKeyCode(select, e)) {
             this.select(this.hovered);
           }
 
@@ -501,7 +538,8 @@ var VueSimpleSuggest = {
       if (!this.isClicking) {
         this.showSuggestions();
       }
-    }, onInput(inputEvent) {
+    },
+    onInput(inputEvent) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value;
 
       if (this.text === value) {
@@ -622,7 +660,7 @@ var VueSimpleSuggest = {
       this.suggestions.splice(0);
     },
     getId(value, i) {
-      return `${this.listId}-suggestion-${this.isPlainSuggestion ? i : this.valueProperty(value)}`;
+      return `${this.listId}-suggestion-${this.isPlainSuggestion ? i : this.valueProperty(value) || i}`;
     }
   }
 };
