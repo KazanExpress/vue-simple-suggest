@@ -15,7 +15,7 @@
       </slot>
     </div>
     <transition name="vue-simple-suggest">
-      <ul :id="listId" class="suggestions" v-show="!!listShown && !removeList"
+      <ul :id="listId" class="suggestions" v-if="!!listShown && !removeList"
         role="listbox"
         :aria-labelledby="listId"
         :class="styles.suggestions"
