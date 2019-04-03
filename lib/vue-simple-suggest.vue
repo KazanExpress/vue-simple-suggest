@@ -34,13 +34,13 @@
           @mouseenter="hover(suggestion, $event.target)"
           @mouseleave="hover(undefined)"
           @click="suggestionClick(suggestion, $event)"
-          :aria-selected="hovered && (valueProperty(hovered) == valueProperty(suggestion)) ? 'true' : 'false'"
+          :aria-selected="(isHovered(suggestion) || isSelected(suggestion)) ? 'true' : 'false'"
           :id="getId(suggestion, index)"
           :key="getId(suggestion, index)"
           :class="[
             styles.suggestItem,{
-            selected: selected && (valueProperty(suggestion) == valueProperty(selected)),
-            hover: hovered && (valueProperty(hovered) == valueProperty(suggestion))
+            selected: isSelected(suggestion),
+            hover: isHovered(suggestion)
             }]">
           <slot name="suggestion-item"
             :autocomplete="() => setText(displayProperty(suggestion))"
@@ -231,6 +231,15 @@ export default {
     this.prepareEventHandlers(false)
   },
   methods: {
+    isEqual(suggestion, item) {
+      return item && (this.valueProperty(suggestion) == this.valueProperty(item))
+    },
+    isSelected (suggestion) {
+      return this.isEqual(suggestion, this.selected)
+    },
+    isHovered (suggestion) {
+      return this.isEqual(suggestion, this.hovered)
+    },
     onSubmit (e) {
       if (this.preventSubmit && e.key === 'Enter') {
         e.stopPropagation()
@@ -295,10 +304,37 @@ export default {
       return this.isPlainSuggestion ? obj : typeof obj !== undefined ? fromPath(obj, attr) : obj
     },
     displayProperty (obj) {
-      return String(this.getPropertyByAttribute(obj, this.displayAttribute))
+      if (this.isPlainSuggestion) {
+        return obj
+      }
+
+      let display = this.getPropertyByAttribute(obj, this.displayAttribute);
+
+      if (typeof display === 'undefined') {
+        display = JSON.stringify(obj)
+
+        if (process && ~process.env.NODE_ENV.indexOf('dev')) {
+          console.warn('[vue-simple-suggest]: Please, provide `display-attribute` as a key or a dotted path for a property from your object.')
+        }
+      }
+
+      return String(display)
     },
     valueProperty (obj) {
-      return this.getPropertyByAttribute(obj, this.valueAttribute)
+      if (this.isPlainSuggestion) {
+        return obj
+      }
+
+      const value = this.getPropertyByAttribute(obj, this.valueAttribute);
+
+      if (typeof value === 'undefined') {
+        console.error(
+          `[vue-simple-suggest]: Please, check if you passed 'value-attribute' (default is 'id') and 'display-attribute' (default is 'title') props correctly.
+        Your list objects should always contain a unique identifier.`
+        )
+      }
+
+      return value
     },
 
     /**
@@ -579,7 +615,7 @@ export default {
       this.suggestions.splice(0)
     },
     getId (value, i) {
-      return `${this.listId}-suggestion-${this.isPlainSuggestion ? i : this.valueProperty(value)}`
+      return `${this.listId}-suggestion-${this.isPlainSuggestion ? i : (this.valueProperty(value) || i)}`
     }
   }
 }
