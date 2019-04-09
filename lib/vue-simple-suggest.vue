@@ -71,6 +71,7 @@ import {
 
 export default {
   name: 'vue-simple-suggest',
+  inheritAttrs: false,
   model: {
     prop: 'value',
     event: 'input'
