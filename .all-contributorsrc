@@ -215,6 +215,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "hay",
+      "name": "Hay Kranen",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/129681?v=4",
+      "profile": "http://www.haykranen.nl",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
