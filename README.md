@@ -291,7 +291,7 @@ JS object:
   value-attribute="id"
   display-attribute="title"
   mode="input"
-  :placeholder="placeholder!!!"
+  placeholder="placeholder!!!"
   :list="getListFunction"
   :max-suggestions="10"
   :min-length="3"
@@ -302,6 +302,7 @@ JS object:
   :prevent-submit="true"
   :filter="customFilterFunction"
   :value="defaultValue"
+  :nullable-select="true"
   :controls="{
     selectionUp: [38, 33],
     selectionDown: [40, 34],
