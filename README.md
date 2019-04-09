@@ -515,13 +515,13 @@ You can use these to imitate some of the component's behaviours.
 
 | Name | Arguments | Description |
 |------|-----------|-------------|
-|`showSuggestions`| Alias for `onInputClick`. Will replace it in the future releases |
+|`showSuggestions`|| Alias for `onInputClick`. Will replace it in the future releases |
 |`onInput`| HTML input event | Fires whenever the input text is changed. Emits the [`input`](#emitted-events) event. |
 |`onFocus`| HTML focus event | Fires whenever the input comes into focus, emits the [`focus`](#emitted-events) event. |
 |`onBlur`| HTML focus event | Antonym to `onFocus`. |
 |`onAutocomplete`| - | Fires when the autocomplete [keyboard shortcut](#default-controls) is pressed. Selects the first suggestion. |
 |`onListKeyUp`| HTML keyup event | Fires on component keyup. Internally used for hiding the list. |
-|`moveSelection`| Alias for `onArrowKeyDown`. Will replace it in the future releases. |
+|`moveSelection`|| Alias for `onArrowKeyDown`. Will replace it in the future releases. |
 
 -----
 
