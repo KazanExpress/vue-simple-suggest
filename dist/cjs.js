@@ -49,8 +49,7 @@ function _finally(body, finalizer) {
     return finalizer();
   }if (result && result.then) {
     return result.then(finalizer, finalizer);
-  }
-  return finalizer();
+  }return finalizer();
 }function _catch(body, recover) {
   try {
     var result = body();
@@ -91,9 +90,12 @@ function _finally(body, finalizer) {
     };
   };
 }();function _invoke(body, then) {
-  var result = body();if (result && result.then) {
+  var result = body();
+  if (result && result.then) {
     return result.then(then);
-  }return then(result);
+  }
+
+  return then(result);
 }function _awaitIgnored(value, direct) {
   if (!direct) {
     return Promise.resolve(value).then(_empty);
@@ -124,6 +126,7 @@ var VueSimpleSuggest = {
     }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
   }, staticRenderFns: [],
   name: 'vue-simple-suggest',
+  inheritAttrs: false,
   model: {
     prop: 'value',
     event: 'input'
@@ -134,7 +137,8 @@ var VueSimpleSuggest = {
       default: function _default() {
         return {};
       }
-    }, controls: {
+    },
+    controls: {
       type: Object,
       default: function _default() {
         return defaultControls;
@@ -551,9 +555,7 @@ var VueSimpleSuggest = {
 
         /// Clicking starts here, because input's blur occurs before the suggestionClick
         /// and exactly when the user clicks the mouse button or taps the screen.
-        this.isClicking = this.isOverList && !this.isTabbed;
-
-        if (!this.isClicking) {
+        this.isClicking = this.isOverList && !this.isTabbed;if (!this.isClicking) {
           this.isInFocus = false;
           this.hideList();
 
