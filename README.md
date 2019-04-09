@@ -302,6 +302,7 @@ JS object:
   :prevent-submit="true"
   :filter="customFilterFunction"
   :value="defaultValue"
+  :nullable-select="true"
   :controls="{
     selectionUp: [38, 33],
     selectionDown: [40, 34],
