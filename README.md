@@ -291,7 +291,7 @@ JS object:
   value-attribute="id"
   display-attribute="title"
   mode="input"
-  :placeholder="placeholder!!!"
+  placeholder="placeholder!!!"
   :list="getListFunction"
   :max-suggestions="10"
   :min-length="3"
