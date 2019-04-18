@@ -504,7 +504,13 @@ var VueSimpleSuggest = {
       try {
         if (this.canSend) {
           this.canSend = false;
-          this.$set(this, 'suggestions', (await this.getSuggestions(this.text)));
+          // @TODO: fix when promises will be cancelable (never :D)
+          let textBeforeRequest = this.text;
+          let newList = await this.getSuggestions(this.text);
+
+          if (textBeforeRequest === this.text) {
+            this.$set(this, 'suggestions', newList);
+          }
         }
       } catch (e) {
         this.clearSuggestions();

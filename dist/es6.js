@@ -33,7 +33,8 @@ function _finally(body, finalizer) {
     return finalizer();
   }if (result && result.then) {
     return result.then(finalizer, finalizer);
-  }return finalizer();
+  }
+  return finalizer();
 }function _catch(body, recover) {
   try {
     var result = body();
@@ -74,12 +75,9 @@ function _finally(body, finalizer) {
     };
   };
 }();function _invoke(body, then) {
-  var result = body();
-  if (result && result.then) {
+  var result = body();if (result && result.then) {
     return result.then(then);
-  }
-
-  return then(result);
+  }return then(result);
 }function _awaitIgnored(value, direct) {
   if (!direct) {
     return Promise.resolve(value).then(_empty);
@@ -96,7 +94,8 @@ var VueSimpleSuggest = {
         }, "mouseleave": function ($event) {
           _vm.hoverList(false);
         } } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
-      return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, { selected: _vm.isSelected(suggestion),
+      return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, {
+          selected: _vm.isSelected(suggestion),
           hover: _vm.isHovered(suggestion)
         }], attrs: { "role": "option", "aria-selected": _vm.isHovered(suggestion) || _vm.isSelected(suggestion) ? 'true' : 'false', "id": _vm.getId(suggestion, index) }, on: { "mouseenter": function ($event) {
             _vm.hover(suggestion, $event.target);
@@ -108,7 +107,8 @@ var VueSimpleSuggest = {
           return _vm.setText(_vm.displayProperty(suggestion));
         }, suggestion: suggestion, query: _vm.text })], 2);
     }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
-  }, staticRenderFns: [],
+  },
+  staticRenderFns: [],
   name: 'vue-simple-suggest',
   inheritAttrs: false,
   model: {
@@ -504,7 +504,9 @@ var VueSimpleSuggest = {
 
         /// Clicking starts here, because input's blur occurs before the suggestionClick
         /// and exactly when the user clicks the mouse button or taps the screen.
-        this.isClicking = this.isOverList && !this.isTabbed;if (!this.isClicking) {
+        this.isClicking = this.isOverList && !this.isTabbed;
+
+        if (!this.isClicking) {
           this.isInFocus = false;
           this.hideList();
 
@@ -568,9 +570,12 @@ var VueSimpleSuggest = {
           return _invokeIgnored(function () {
             if (_this2.canSend) {
               _this2.canSend = false;
-              var _$set = _this2.$set;
-              return _await(_this2.getSuggestions(_this2.text), function (_this2$getSuggestions) {
-                _$set.call(_this2, _this2, 'suggestions', _this2$getSuggestions);
+              // @TODO: fix when promises will be cancelable (never :D)
+              let textBeforeRequest = _this2.text;
+              return _await(_this2.getSuggestions(_this2.text), function (newList) {
+                if (textBeforeRequest === _this2.text) {
+                  _this2.$set(_this2, 'suggestions', newList);
+                }
               });
             }
           });
