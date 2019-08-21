@@ -444,7 +444,7 @@ You can also define custom list transitions by defining css rules for the transi
 | `display-attribute`             | String   | `'title'`  | The property in a suggestion object to display in a list. Supports dotted paths. |
 | `value-attribute`               | String   | `'id'`     | The property in a suggestion object to use as a unique key. Supports dotted paths. |
 | `list`                      | Function or Array | `() => []` | The array provider function, must accept a query as its only argument. Can return an array or a promise. Can be async. The component behaves as a simple input without this function. |
-| `debounce`                     | Number   | `0`        | Determines the `list` debounce (a time between the input event and a function execution). |
+| `debounce`                     | Number or Object | `0`        | Delays the input event by an certain amount of time. The event is invoked on the trailing edge of the timeout by default. <br><br>An `object` can be used as argument for more control:  <br>• await `number` <br> • options `object` <br> • options.leading `boolean` <br> • options.maxWait `number` <br> • options.trailing `boolean` <br>  |
 | `destyled`                     | Boolean  | `false`    | Whether to cancel the default styling of input and suggestions list. |
 | `styles` <sup>[v1.8.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.8.0)</sup>                    | Object  | `{}`    | CSS classes to attach with current component style. |
 | `remove-list`                   | Boolean  | `false`    | If true - the suggestion list will be always hidden. |

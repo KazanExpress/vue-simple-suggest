@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import debounce from 'lodash.debounce'
+
 import {
   defaultControls,
   modes,
@@ -128,7 +130,7 @@ export default {
       }
     },
     debounce: {
-      type: Number,
+      type: [Number, Object],
       default: 0
     },
     nullableSelect: {
@@ -252,6 +254,18 @@ export default {
       this.inputElement.setAttribute('aria-autocomplete', 'list')
       this.inputElement.setAttribute('aria-controls', this.listId)
     },
+    prepareOnInputEvent() {
+      const isPropNumber = (typeof this.debounce === 'number')
+      const isDefaultValue = (isPropNumber && this.debounce === 0)
+
+      const debouncedEvent = isPropNumber
+        ? debounce(this.onInput, this.debounce, { trailing: true, maxWait: this.debounce })
+        : debounce(this.onInput, this.debounce.await, this.debounce.options || {})
+
+      return isDefaultValue
+        ? this.onInput
+        : debouncedEvent
+    },
     prepareEventHandlers(enable) {
       const binder = this[enable ? 'on' : 'off']
       const keyEventsList = {
@@ -259,10 +273,13 @@ export default {
         keydown: $event => (this.moveSelection($event), this.onAutocomplete($event)),
         keyup: this.onListKeyUp
       }
+
+      const onInputEvent = this.prepareOnInputEvent()
+
       const eventsList = Object.assign({
         blur: this.onBlur,
         focus: this.onFocus,
-        input: this.onInput,
+        input: onInputEvent,
       }, keyEventsList)
 
       for (const event in eventsList) {
@@ -519,12 +536,7 @@ export default {
 
       if (this.hovered) this.hover(null)
 
-      if (this.debounce) {
-        clearTimeout(this.timeoutInstance)
-        this.timeoutInstance = setTimeout(this.research, this.debounce)
-      } else {
-        this.research()
-      }
+      this.research()
     },
     async research () {
       try {
