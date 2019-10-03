@@ -395,7 +395,7 @@ export default {
       }
     },
     async showSuggestions () {
-      if (this.suggestions.length === 0 && this.minLength === this.textLength) {
+      if (this.suggestions.length === 0 && this.minLength <= this.textLength) {
         await this.research()
       }
 
