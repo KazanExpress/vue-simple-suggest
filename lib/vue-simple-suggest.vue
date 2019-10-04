@@ -66,6 +66,7 @@ import {
   defaultControls,
   modes,
   fromPath,
+  hasKeyCodeByCode,
   hasKeyCode
 } from './misc'
 
@@ -241,12 +242,6 @@ export default {
     isHovered (suggestion) {
       return this.isEqual(suggestion, this.hovered)
     },
-    onSubmit (e) {
-      if (this.preventSubmit && e.key === 'Enter') {
-        e.stopPropagation()
-        e.preventDefault()
-      }
-    },
     setInputAriaAttributes () {
       this.inputElement.setAttribute('aria-activedescendant', '')
       this.inputElement.setAttribute('aria-autocomplete', 'list')
@@ -256,7 +251,7 @@ export default {
       const binder = this[enable ? 'on' : 'off']
       const keyEventsList = {
         click: this.showSuggestions,
-        keydown: $event => (this.moveSelection($event), this.onAutocomplete($event)),
+        keydown: this.onKeyDown,
         keyup: this.onListKeyUp
       }
       const eventsList = Object.assign({
@@ -273,13 +268,6 @@ export default {
 
       for (const event in keyEventsList) {
         this.inputElement[listenerBinder](event, keyEventsList[event])
-      }
-
-      if (this.preventSubmit === true) {
-        let form = this.$el.closest('form')
-        if (form) {
-          form[listenerBinder]('keydown', this.onSubmit)
-        }
       }
     },
     isScopedSlotEmpty (slot) {
@@ -423,6 +411,18 @@ export default {
         }
         this.hover(item)
       }
+    },
+    onKeyDown(e) {
+      const select = this.controlScheme.select,
+          hideList = this.controlScheme.hideList
+
+      // prevent form submit on keydown if Enter key registered in the keyup list
+      if (this.preventSubmit && e.key === 'Enter' && hasKeyCodeByCode([select, hideList], 13)) {
+        e.preventDefault();
+      }
+
+      this.moveSelection(e);
+      this.onAutocomplete(e);
     },
     onListKeyUp (e) {
       const select = this.controlScheme.select,
