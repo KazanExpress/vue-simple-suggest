@@ -4,7 +4,7 @@ var HtmlWebPackPlugin = require('html-webpack-plugin')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
-  entry: ['whatwg-fetch', 'core-js/fn/promise', path.resolve(__dirname, './src/main.js')],
+  entry: ['whatwg-fetch/fetch.js', 'core-js/fn/promise', path.resolve(__dirname, './src/main.js')],
   module: {
     rules: [
       {
