@@ -20,11 +20,15 @@ function fromPath(obj, path) {
 }
 
 function hasKeyCode(arr, event) {
+  return hasKeyCodeByCode(arr, event.keyCode);
+}
+
+function hasKeyCodeByCode(arr, keyCode) {
   if (arr.length <= 0) return false;
 
   var has = function has(arr) {
     return arr.some(function (code) {
-      return code === event.keyCode;
+      return code === keyCode;
     });
   };
   if (Array.isArray(arr[0])) {
@@ -42,15 +46,24 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
-function _finally(body, finalizer) {
-  try {
-    var result = body();
-  } catch (e) {
-    return finalizer();
-  }if (result && result.then) {
-    return result.then(finalizer, finalizer);
+function _empty() {}function _awaitIgnored(value, direct) {
+  if (!direct) {
+    return value && value.then ? value.then(_empty) : Promise.resolve();
   }
-  return finalizer();
+}function _invoke(body, then) {
+  var result = body();if (result && result.then) {
+    return result.then(then);
+  }return then(result);
+}function _await(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }return then ? value.then(then) : value;
+}function _invokeIgnored(body) {
+  var result = body();if (result && result.then) {
+    return result.then(_empty);
+  }
 }function _catch(body, recover) {
   try {
     var result = body();
@@ -59,70 +72,38 @@ function _finally(body, finalizer) {
   }if (result && result.then) {
     return result.then(void 0, recover);
   }return result;
-}function _invokeIgnored(body) {
-  var result = body();if (result && result.then) {
-    return result.then(_empty);
-  }
-}function _await(value, then, direct) {
-  if (direct) {
-    return then ? then(value) : value;
-  }value = Promise.resolve(value);return then ? value.then(then) : value;
-}var _async = function () {
+}function _finally(body, finalizer) {
   try {
-    if (isNaN.apply(null, {})) {
-      return function (f) {
-        return function () {
-          try {
-            return Promise.resolve(f.apply(this, arguments));
-          } catch (e) {
-            return Promise.reject(e);
-          }
-        };
-      };
-    }
-  } catch (e) {}return function (f) {
-    // Pre-ES5.1 JavaScript runtimes don't accept array-likes in Function.apply
-    return function () {
-      try {
-        return Promise.resolve(f.apply(this, Array.prototype.slice.call(arguments)));
-      } catch (e) {
-        return Promise.reject(e);
-      }
-    };
-  };
-}();function _invoke(body, then) {
-  var result = body();if (result && result.then) {
-    return result.then(then);
-  }return then(result);
-}function _awaitIgnored(value, direct) {
-  if (!direct) {
-    return Promise.resolve(value).then(_empty);
-  }
-}function _empty() {}
-var VueSimpleSuggest = {
+    var result = body();
+  } catch (e) {
+    return finalizer();
+  }if (result && result.then) {
+    return result.then(finalizer, finalizer);
+  }return finalizer();
+}var VueSimpleSuggest = {
   render: function render() {
     var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: [_vm.styles.vueSimpleSuggest, { designed: !_vm.destyled, focus: _vm.isInFocus }], on: { "keydown": function keydown($event) {
-          if (!('button' in $event) && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
+          if (!$event.type.indexOf('key') && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
             return null;
           }_vm.isTabbed = true;
         } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId }, on: { "mouseenter": function mouseenter($event) {
-          _vm.hoverList(true);
+          return _vm.hoverList(true);
         }, "mouseleave": function mouseleave($event) {
-          _vm.hoverList(false);
-        } } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+          return _vm.hoverList(false);
+        } } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, {
           selected: _vm.isSelected(suggestion),
           hover: _vm.isHovered(suggestion)
         }], attrs: { "role": "option", "aria-selected": _vm.isHovered(suggestion) || _vm.isSelected(suggestion) ? 'true' : 'false', "id": _vm.getId(suggestion, index) }, on: { "mouseenter": function mouseenter($event) {
-            _vm.hover(suggestion, $event.target);
+            return _vm.hover(suggestion, $event.target);
           }, "mouseleave": function mouseleave($event) {
-            _vm.hover(undefined);
+            return _vm.hover(undefined);
           }, "click": function click($event) {
-            _vm.suggestionClick(suggestion, $event);
-          } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { autocomplete: function autocomplete() {
+            return _vm.suggestionClick(suggestion, $event);
+          } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { "autocomplete": function autocomplete() {
           return _vm.setText(_vm.displayProperty(suggestion));
-        }, suggestion: suggestion, query: _vm.text })], 2);
-    }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
+        }, "suggestion": suggestion, "query": _vm.text })], 2);
+    }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
   },
   staticRenderFns: [],
   name: 'vue-simple-suggest',
@@ -314,26 +295,16 @@ var VueSimpleSuggest = {
     isHovered: function isHovered(suggestion) {
       return this.isEqual(suggestion, this.hovered);
     },
-    onSubmit: function onSubmit(e) {
-      if (this.preventSubmit && e.key === 'Enter') {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-    },
     setInputAriaAttributes: function setInputAriaAttributes() {
       this.inputElement.setAttribute('aria-activedescendant', '');
       this.inputElement.setAttribute('aria-autocomplete', 'list');
       this.inputElement.setAttribute('aria-controls', this.listId);
     },
     prepareEventHandlers: function prepareEventHandlers(enable) {
-      var _this3 = this;
-
       var binder = this[enable ? 'on' : 'off'];
       var keyEventsList = {
         click: this.showSuggestions,
-        keydown: function keydown($event) {
-          return _this3.moveSelection($event), _this3.onAutocomplete($event);
-        },
+        keydown: this.onKeyDown,
         keyup: this.onListKeyUp
       };
       var eventsList = Object.assign({
@@ -351,13 +322,6 @@ var VueSimpleSuggest = {
       for (var _event in keyEventsList) {
         this.inputElement[listenerBinder](_event, keyEventsList[_event]);
       }
-
-      if (this.preventSubmit === true) {
-        var form = this.$el.closest('form');
-        if (form) {
-          form[listenerBinder]('keydown', this.onSubmit);
-        }
-      }
     },
     isScopedSlotEmpty: function isScopedSlotEmpty(slot) {
       if (slot) {
@@ -368,10 +332,10 @@ var VueSimpleSuggest = {
       return true;
     },
     miscSlotsAreEmpty: function miscSlotsAreEmpty() {
-      var _this4 = this;
+      var _this3 = this;
 
       var slots = ['misc-item-above', 'misc-item-below'].map(function (s) {
-        return _this4.$scopedSlots[s];
+        return _this3.$scopedSlots[s];
       });
 
       if (slots.every(function (s) {
@@ -428,12 +392,12 @@ var VueSimpleSuggest = {
       this.setText(text);
     },
     setText: function setText(text) {
-      var _this5 = this;
+      var _this4 = this;
 
       this.$nextTick(function () {
-        _this5.$emit('input', text);
-        _this5.inputElement.value = text;
-        _this5.text = text;
+        _this4.$emit('input', text);
+        _this4.inputElement.value = text;
+        _this4.text = text;
       });
     },
     select: function select(item) {
@@ -477,17 +441,22 @@ var VueSimpleSuggest = {
         }
       }
     },
-    showSuggestions: _async(function () {
-      var _this6 = this;
+    showSuggestions: function showSuggestions() {
+      try {
+        var _this6 = this;
 
-      return _invoke(function () {
-        if (_this6.suggestions.length === 0 && _this6.minLength === _this6.textLength) {
-          return _awaitIgnored(_this6.research());
-        }
-      }, function () {
-        _this6.showList();
-      });
-    }),
+        return _invoke(function () {
+          if (_this6.suggestions.length === 0 && _this6.minLength === _this6.textLength) {
+            return _awaitIgnored(_this6.research());
+          }
+        }, function () {
+
+          _this6.showList();
+        });
+      } catch (e) {
+        return Promise.reject(e);
+      }
+    },
     moveSelection: function moveSelection(e) {
       if (!this.listShown || !this.suggestions.length) return;
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
@@ -510,6 +479,18 @@ var VueSimpleSuggest = {
           }
         this.hover(item);
       }
+    },
+    onKeyDown: function onKeyDown(e) {
+      var select = this.controlScheme.select,
+          hideList = this.controlScheme.hideList;
+
+      // prevent form submit on keydown if Enter key registered in the keyup list
+      if (this.preventSubmit && e.key === 'Enter' && hasKeyCodeByCode([select, hideList], 13)) {
+        e.preventDefault();
+      }
+
+      this.moveSelection(e);
+      this.onAutocomplete(e);
     },
     onListKeyUp: function onListKeyUp(e) {
       var select = this.controlScheme.select,
@@ -608,108 +589,117 @@ var VueSimpleSuggest = {
         this.research();
       }
     },
-    research: _async(function () {
-      var _this9 = this;
+    research: function research() {
+      try {
+        var _this10 = this;
 
-      return _finally(function () {
-        return _catch(function () {
-          return _invokeIgnored(function () {
-            if (_this9.canSend) {
-              _this9.canSend = false;
-              // @TODO: fix when promises will be cancelable (never :D)
-              var textBeforeRequest = _this9.text;
-              return _await(_this9.getSuggestions(_this9.text), function (newList) {
-                if (textBeforeRequest === _this9.text) {
-                  _this9.$set(_this9, 'suggestions', newList);
-                }
-              });
-            }
-          });
-        }, function (e) {
-          _this9.clearSuggestions();
-          throw e;
-        });
-      }, function () {
-        _this9.canSend = true;
-
-        if (_this9.suggestions.length === 0 && _this9.miscSlotsAreEmpty()) {
-          _this9.hideList();
-        } else {
-          _this9.showList();
-        }
-
-        return _this9.suggestions;
-      });
-    }),
-    getSuggestions: _async(function (value) {
-      var _this10 = this;
-
-      value = value || '';
-
-      if (value.length < _this10.minLength) {
-        if (_this10.listShown) {
-          _this10.hideList();
-          return [];
-        }
-
-        return _this10.suggestions;
-      }
-
-      _this10.selected = null;
-
-      // Start request if can
-      if (_this10.listIsRequest) {
-        _this10.$emit('request-start', value);
-
-        if (_this10.suggestions.length > 0 || !_this10.miscSlotsAreEmpty()) {
-          _this10.showList();
-        }
-      }
-
-      var result = [];
-      return _finally(function () {
-        return _catch(function () {
-          return _invoke(function () {
-            if (_this10.listIsRequest) {
-              return _await(_this10.list(value), function (_this10$list) {
-                result = _this10$list || [];
-              });
-            } else {
-              result = _this10.list;
-            }
-          }, function () {
-            // IFF the result is not an array (just in case!) - make it an array
-            if (!Array.isArray(result)) {
-              result = [result];
-            }
-
-            _this10.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
-
-            if (_this10.filterByQuery) {
-              result = result.filter(function (el) {
-                return _this10.filter(el, value);
-              });
-            }
-
-            if (_this10.listIsRequest) {
-              _this10.$emit('request-done', result);
-            }
-          });
-        }, function (e) {
-          if (_this10.listIsRequest) {
-            _this10.$emit('request-failed', e);
-          } else {
+        return _finally(function () {
+          return _catch(function () {
+            return _invokeIgnored(function () {
+              if (_this10.canSend) {
+                _this10.canSend = false;
+                // @TODO: fix when promises will be cancelable (never :D)
+                var textBeforeRequest = _this10.text;
+                return _await(_this10.getSuggestions(_this10.text), function (newList) {
+                  if (textBeforeRequest === _this10.text) {
+                    _this10.$set(_this10, 'suggestions', newList);
+                  }
+                });
+              }
+            });
+          }, function (e) {
+            _this10.clearSuggestions();
             throw e;
+          });
+        }, function () {
+          _this10.canSend = true;
+
+          if (_this10.suggestions.length === 0 && _this10.miscSlotsAreEmpty()) {
+            _this10.hideList();
+          } else {
+            _this10.showList();
           }
+
+          return _this10.suggestions;
         });
-      }, function () {
-        if (_this10.maxSuggestions) {
-          result.splice(_this10.maxSuggestions);
+      } catch (e) {
+        return Promise.reject(e);
+      }
+    },
+    getSuggestions: function getSuggestions(value) {
+      try {
+        var _this12 = this;
+
+        value = value || '';
+
+        if (value.length < _this12.minLength) {
+          if (_this12.listShown) {
+            _this12.hideList();
+            return [];
+          }
+
+          return _this12.suggestions;
         }
 
-        return result;
-      });
-    }),
+        _this12.selected = null;
+
+        // Start request if can
+        if (_this12.listIsRequest) {
+          _this12.$emit('request-start', value);
+
+          if (_this12.suggestions.length > 0 || !_this12.miscSlotsAreEmpty()) {
+            _this12.showList();
+          }
+        }
+
+        var result = [];
+        return _finally(function () {
+          return _catch(function () {
+            return _invoke(function () {
+              if (_this12.listIsRequest) {
+                return _await(_this12.list(value), function (_this11$list) {
+                  result = _this11$list || [];
+                });
+              } else {
+                result = _this12.list;
+              }
+            }, function () {
+
+              // IFF the result is not an array (just in case!) - make it an array
+              if (!Array.isArray(result)) {
+                result = [result];
+              }
+
+              _this12.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
+
+              if (_this12.filterByQuery) {
+                result = result.filter(function (el) {
+                  return _this12.filter(el, value);
+                });
+              }
+
+              if (_this12.listIsRequest) {
+                _this12.$emit('request-done', result);
+              }
+            });
+          }, function (e) {
+            if (_this12.listIsRequest) {
+              _this12.$emit('request-failed', e);
+            } else {
+              throw e;
+            }
+          });
+        }, function () {
+          if (_this12.maxSuggestions) {
+            result.splice(_this12.maxSuggestions);
+          }
+
+          return result;
+        });
+      } catch (e) {
+        return Promise.reject(e);
+      }
+    },
     clearSuggestions: function clearSuggestions() {
       this.suggestions.splice(0);
     },

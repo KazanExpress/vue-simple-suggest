@@ -16,9 +16,13 @@ function fromPath(obj, path) {
 }
 
 function hasKeyCode(arr, event) {
+  return hasKeyCodeByCode(arr, event.keyCode);
+}
+
+function hasKeyCodeByCode(arr, keyCode) {
   if (arr.length <= 0) return false;
 
-  const has = arr => arr.some(code => code === event.keyCode);
+  const has = arr => arr.some(code => code === keyCode);
   if (Array.isArray(arr[0])) {
     return arr.some(array => has(array));
   } else {
@@ -29,27 +33,27 @@ function hasKeyCode(arr, event) {
 var VueSimpleSuggest = {
   render: function () {
     var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: [_vm.styles.vueSimpleSuggest, { designed: !_vm.destyled, focus: _vm.isInFocus }], on: { "keydown": function ($event) {
-          if (!('button' in $event) && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
+          if (!$event.type.indexOf('key') && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
             return null;
           }_vm.isTabbed = true;
         } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId }, on: { "mouseenter": function ($event) {
-          _vm.hoverList(true);
+          return _vm.hoverList(true);
         }, "mouseleave": function ($event) {
-          _vm.hoverList(false);
-        } } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+          return _vm.hoverList(false);
+        } } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, {
           selected: _vm.isSelected(suggestion),
           hover: _vm.isHovered(suggestion)
         }], attrs: { "role": "option", "aria-selected": _vm.isHovered(suggestion) || _vm.isSelected(suggestion) ? 'true' : 'false', "id": _vm.getId(suggestion, index) }, on: { "mouseenter": function ($event) {
-            _vm.hover(suggestion, $event.target);
+            return _vm.hover(suggestion, $event.target);
           }, "mouseleave": function ($event) {
-            _vm.hover(undefined);
+            return _vm.hover(undefined);
           }, "click": function ($event) {
-            _vm.suggestionClick(suggestion, $event);
-          } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { autocomplete: function () {
+            return _vm.suggestionClick(suggestion, $event);
+          } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { "autocomplete": function () {
           return _vm.setText(_vm.displayProperty(suggestion));
-        }, suggestion: suggestion, query: _vm.text })], 2);
-    }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { suggestions: _vm.suggestions, query: _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
+        }, "suggestion": suggestion, "query": _vm.text })], 2);
+    }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
   },
   staticRenderFns: [],
   name: 'vue-simple-suggest',
@@ -223,12 +227,6 @@ var VueSimpleSuggest = {
     isHovered(suggestion) {
       return this.isEqual(suggestion, this.hovered);
     },
-    onSubmit(e) {
-      if (this.preventSubmit && e.key === 'Enter') {
-        e.stopPropagation();
-        e.preventDefault();
-      }
-    },
     setInputAriaAttributes() {
       this.inputElement.setAttribute('aria-activedescendant', '');
       this.inputElement.setAttribute('aria-autocomplete', 'list');
@@ -238,7 +236,7 @@ var VueSimpleSuggest = {
       const binder = this[enable ? 'on' : 'off'];
       const keyEventsList = {
         click: this.showSuggestions,
-        keydown: $event => (this.moveSelection($event), this.onAutocomplete($event)),
+        keydown: this.onKeyDown,
         keyup: this.onListKeyUp
       };
       const eventsList = Object.assign({
@@ -255,13 +253,6 @@ var VueSimpleSuggest = {
 
       for (const event in keyEventsList) {
         this.inputElement[listenerBinder](event, keyEventsList[event]);
-      }
-
-      if (this.preventSubmit === true) {
-        let form = this.$el.closest('form');
-        if (form) {
-          form[listenerBinder]('keydown', this.onSubmit);
-        }
       }
     },
     isScopedSlotEmpty(slot) {
@@ -401,6 +392,18 @@ var VueSimpleSuggest = {
           }
         this.hover(item);
       }
+    },
+    onKeyDown(e) {
+      const select = this.controlScheme.select,
+            hideList = this.controlScheme.hideList;
+
+      // prevent form submit on keydown if Enter key registered in the keyup list
+      if (this.preventSubmit && e.key === 'Enter' && hasKeyCodeByCode([select, hideList], 13)) {
+        e.preventDefault();
+      }
+
+      this.moveSelection(e);
+      this.onAutocomplete(e);
     },
     onListKeyUp(e) {
       const select = this.controlScheme.select,
