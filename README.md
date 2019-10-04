@@ -264,7 +264,7 @@ Default scheme:
 |`Escape` (27) | If the suggestions list is shown - hide it. Defined by `hideList` property. |
 |`ArrowDown` (40) | If the suggestions list is hidden - show it.  Defined by `selectionDown` property. |
 |`ArrowUp` (38) / `ArrowDown` (40) | Cycle (hover) through suggestions.  Defined by `selectionUp`/`selectionDown` properties respectfully. |
-|`Enter` (13) | If the list is shown - chooses the highlighted element, if the list is hidden - refills the suggestions based on current input text.  Defined by `select` property.|
+|`Enter` (13) | If the list is shown - chooses the highlighted element.  Defined by `select` property.|
 |`(Ctrl/Shift) + Space` (32) | Select the first element in the list.  Defined by `autocomplete` property. Works with `Ctrl` modifier key or `Shift` modifier key. |
 |`(Ctrl/Shift) + Enter` (13) | Same as previous, but also hides the suggestions list. |
 
@@ -299,7 +299,6 @@ JS object:
   :destyled="false"
   :remove-list="false"
   :filter-by-query="false"
-  :prevent-submit="true"
   :filter="customFilterFunction"
   :value="defaultValue"
   :nullable-select="true"
@@ -452,7 +451,6 @@ You can also define custom list transitions by defining css rules for the transi
 | `filter` | Function | - | A custom function for filtering the suggestion results that accepts a single item and a query to filter by as its 2 arguments. Used only if `filter-by-query` is set to `true`. |
 | `mode` <sup>[v1.4.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)</sup>                         | String | `'input'` | The `v-model` event. Determines the event, that triggers `v-model`. Can be one of `'input'` (`v-model` binds a displayed property) or `'select'` (`v-model` binds a selected item). |
 | `type`, `value`, `pattern`, etc...   |          |            | All of the HTML5 input attributes with their respected default values. |
-| `prevent-submit` <sup>v1.8.1</sup>                    | Boolean  | `true`    | Whether to prevent form submitting when `Enter` key is pressed. |
 | `nullable-select` <sup>[v1.9.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0)</sup>                    | Boolean  | `false`    | Whether the `select` should accept `null` or not. |
 
 ##### mode
