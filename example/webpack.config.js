@@ -5,7 +5,7 @@ var CopyWebpackPlugin = require('copy-webpack-plugin')
 var VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
-  entry: ['whatwg-fetch', 'core-js/es/promise', path.resolve(__dirname, './src/main.js')],
+  entry: ['whatwg-fetch/fetch.js', 'core-js/es/promise', path.resolve(__dirname, './src/main.js')],
   module: {
     rules: [
       {
