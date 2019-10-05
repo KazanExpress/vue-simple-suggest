@@ -389,11 +389,15 @@ export default {
 
       this.showList()
     },
+    onShowList(e) {
+      if (hasKeyCode(this.controlScheme.showList, e)) {
+        this.showSuggestions()
+      }
+    },
     moveSelection (e) {
       if (!this.listShown || !this.suggestions.length) return
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
         e.preventDefault()
-        this.showSuggestions()
 
         const isMovingDown = hasKeyCode(this.controlScheme.selectionDown, e)
         const direction = isMovingDown * 2 - 1
@@ -421,6 +425,7 @@ export default {
         e.preventDefault();
       }
 
+      this.onShowList(e)
       this.moveSelection(e);
       this.onAutocomplete(e);
     },

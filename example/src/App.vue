@@ -23,6 +23,7 @@
           selectionUp: [38, 33],
           selectionDown: [40, 34],
           select: [13, 36],
+          showList: [40],
           hideList: [27, 35]
         }"
         :mode="mode"
