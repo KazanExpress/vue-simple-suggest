@@ -3,7 +3,7 @@ const css = require('rollup-plugin-css-only');
 const babel = require('rollup-plugin-babel');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const commonjs = require('rollup-plugin-commonjs');
-const uglify = require('rollup-plugin-uglify');
+const { uglify } = require('rollup-plugin-uglify');
 
 module.exports = exports = function(
   compress = false,
@@ -38,7 +38,7 @@ module.exports = exports = function(
       presets: polyfills.arrows ? ['stage-3', 'es2015-rollup'] : [],
       plugins: babelPlugins
     }),
-    nodeResolve({ browser: true, jsnext: true, main: true }),
+    nodeResolve({ mainFields: ['browser', 'jsnext:main', 'main'] }),
     commonjs()
   ];
 
