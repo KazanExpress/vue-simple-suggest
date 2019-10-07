@@ -43,7 +43,7 @@
             hover: isHovered(suggestion)
             }]">
           <slot name="suggestion-item"
-            :autocomplete="() => setText(displayProperty(suggestion))"
+            :autocomplete="() => autocompleteText(suggestion)"
             :suggestion="suggestion"
             :query="text">
             <span>{{ displayProperty(suggestion) }}</span>
@@ -322,11 +322,8 @@ export default {
       return value
     },
 
-    /**
-     * @deprecated remove on the next release
-     */
-    autocompleteText (text) {
-      this.setText(text)
+    autocompleteText (suggestion) {
+      this.setText(this.displayProperty(suggestion));
     },
     setText (text) {
       this.$nextTick(() => {
