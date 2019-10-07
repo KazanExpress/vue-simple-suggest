@@ -811,11 +811,11 @@ Result via Google Books search API:
 ##### Custom miscellanious item slots
 > `misc-item-above` and `misc-item-below` slots (optional)
 
-Allow custom elements to be shown in suggestion list. These elements never dissapear from the list, niether can they be selected nor hovered on.
+Allow custom elements to be shown in suggestion list. These elements never dissapear from the list, neither can they be selected nor hovered on.
 
-These can be used for decoration, loaders, error messages and etc.
+They can be used for decoration, loaders, error messages and etc.
 
-Do not have defaults, so are not shown until defined.
+These slots don't have defaults, so they are not shown until defined.
 
 Accept the `suggestions` array and a `query` text as a `slot-scope` attribute values.
 
