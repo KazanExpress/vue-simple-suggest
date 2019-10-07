@@ -86,7 +86,7 @@
     "rollup-plugin-babel": "^3.0.4",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-css-only": "^1.0.0",
-    "rollup-plugin-node-resolve": "^4.2.4",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-regenerator": "^0.6.0",
     "rollup-plugin-uglify": "^6.0.3",
     "rollup-plugin-vue2": "^0.8.0",
