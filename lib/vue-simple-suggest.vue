@@ -43,7 +43,7 @@
             hover: isHovered(suggestion)
             }]">
           <slot name="suggestion-item"
-            :autocomplete="() => setText(displayProperty(suggestion))"
+            :autocomplete="() => autocompleteText(suggestion)"
             :suggestion="suggestion"
             :query="text">
             <span>{{ displayProperty(suggestion) }}</span>
@@ -322,11 +322,8 @@ export default {
       return value
     },
 
-    /**
-     * @deprecated remove on the next release
-     */
-    autocompleteText (text) {
-      this.setText(text)
+    autocompleteText (suggestion) {
+      this.setText(this.displayProperty(suggestion));
     },
     setText (text) {
       this.$nextTick(() => {
@@ -341,7 +338,7 @@ export default {
         this.$emit('select', item)
 
         if (item) {
-          this.setText(this.displayProperty(item))
+          this.autocompleteText(item)
         }
       }
 
@@ -446,7 +443,7 @@ export default {
       ) {
         e.preventDefault()
         this.hover(this.suggestions[0])
-        this.setText(this.displayProperty(this.suggestions[0]))
+        this.autocompleteText(this.suggestions[0])
       }
     },
     suggestionClick (suggestion, e) {
