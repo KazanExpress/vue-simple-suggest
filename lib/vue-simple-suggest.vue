@@ -114,10 +114,6 @@ export default {
       type: Boolean,
       default: false
     },
-    preventSubmit: {
-      type: Boolean,
-      default: true
-    },
     filterByQuery: {
       type: Boolean,
       default: false
@@ -421,8 +417,8 @@ export default {
           hideList = this.controlScheme.hideList
 
       // prevent form submit on keydown if Enter key registered in the keyup list
-      if (this.preventSubmit && e.key === 'Enter' && hasKeyCodeByCode([select, hideList], 13)) {
-        e.preventDefault();
+      if (e.key === 'Enter' && this.listShown && hasKeyCodeByCode([select, hideList], 13)) {
+        e.preventDefault()
       }
 
       this.onShowList(e)
@@ -433,17 +429,13 @@ export default {
       const select = this.controlScheme.select,
           hideList = this.controlScheme.hideList
 
-      if (hasKeyCode([select, hideList], e)) {
+      if (this.listShown && hasKeyCode([select, hideList], e)) {
         e.preventDefault()
-        if (this.listShown) {
-          if (hasKeyCode(select, e)) {
-            this.select(this.hovered)
-          }
-
-          this.hideList()
-        } else if (hasKeyCode(select, e)) {
-          this.research()
+        if (hasKeyCode(select, e)) {
+          this.select(this.hovered)
         }
+
+        this.hideList()
       }
     },
     onAutocomplete (e) {
