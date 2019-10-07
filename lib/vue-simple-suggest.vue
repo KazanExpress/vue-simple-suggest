@@ -338,7 +338,7 @@ export default {
         this.$emit('select', item)
 
         if (item) {
-          this.setText(this.displayProperty(item))
+          this.autocompleteText(item)
         }
       }
 
@@ -443,7 +443,7 @@ export default {
       ) {
         e.preventDefault()
         this.hover(this.suggestions[0])
-        this.setText(this.displayProperty(this.suggestions[0]))
+        this.autocompleteText(this.suggestions[0])
       }
     },
     suggestionClick (suggestion, e) {
