@@ -262,7 +262,7 @@ Default scheme:
 |Key (key code) | Description|
 |-|-|
 |`Escape` (27) | If the suggestions list is shown - hide it. Defined by `hideList` property. |
-|`ArrowDown` (40) | If the suggestions list is hidden - show it.  Defined by `selectionDown` property. |
+|`ArrowDown` (40) | If the suggestions list is hidden - show it.  Defined by `showList` property. |
 |`ArrowUp` (38) / `ArrowDown` (40) | Cycle (hover) through suggestions.  Defined by `selectionUp`/`selectionDown` properties respectfully. |
 |`Enter` (13) | If the list is shown - chooses the highlighted element, if the list is hidden - refills the suggestions based on current input text.  Defined by `select` property.|
 |`(Ctrl/Shift) + Space` (32) | Select the first element in the list.  Defined by `autocomplete` property. Works with `Ctrl` modifier key or `Shift` modifier key. |
@@ -274,6 +274,7 @@ JS object:
   selectionUp: [38],
   selectionDown: [40],
   select: [13],
+  showList: [40],
   hideList: [27],
   autocomplete: [32, 13]
 }
@@ -307,6 +308,7 @@ JS object:
     selectionUp: [38, 33],
     selectionDown: [40, 34],
     select: [13, 36],
+    showList: [40],
     hideList: [27, 35],
     autocomplete: [32, 13],
   }"
