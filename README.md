@@ -26,7 +26,8 @@ See [installation guide](#installation) for more options.
   - [What is it](#what-is-it)
     - [Features](#features)
     - [New features?](#new-features)
-  - [Simple example](#simple-example)
+  - [Examples:](#examples)
+    - [Simple example](#simple-example)
   - [Async example](#async-example)
   - [Installation](#installation)
     - [NPM](#npm)
@@ -90,13 +91,17 @@ If you feel that something important is missing (or found a bug) - feel free to 
 
 -----
 
-## Simple example
+## Examples:
 
 To use the component just install via NPM:
 
 `npm install --save vue-simple-suggest`
 
-Then, in your Vue.js component/page:
+Then, in your Vue.js component/page do the following...
+
+### Simple example
+
+If you need to suggest things from a static array:
 
 ```html
 <!-- Some component.vue -->
@@ -141,8 +146,7 @@ Then, in your Vue.js component/page:
 
 ## Async example
 
-Here's how one would use the component
-when dealing with async data from server (example using https://swapi.co/):
+If you're dealing with async data from server (example using https://swapi.co/):
 
 ```html
 <!-- Some component.vue -->
@@ -173,6 +177,10 @@ when dealing with async data from server (example using https://swapi.co/):
       }
     },
     methods: {
+      // Function returning a promise as a factory for suggestion lists.
+      //
+      // vue-simple-suggest calls it automatically when an update to the list is needed,
+      // no need for watchers here!
       getSuggestionList() {
         return fetch('https://swapi.co/api/people', { method: 'GET' })
           .then(response => response.json())
@@ -185,7 +193,8 @@ when dealing with async data from server (example using https://swapi.co/):
 </script>
 ```
 
-For a more advanced example (wikipedia search) see our [example source](https://github.com/KazanExpress/vue-simple-suggest/blob/master/example/src/App.vue).
+For a more advanced example (using wikipedia search)
+see our [example source](https://github.com/KazanExpress/vue-simple-suggest/blob/master/example/src/App.vue).
 
 -----
 
@@ -555,6 +564,7 @@ A proper use-case for it being when one wants to use the component only for sele
 |`displayProperty`| suggestion | Returns the displayed property of a suggestion. |
 |`valueProperty`| suggestion | Returns the value property of a suggestion. |
 |`setText` <sup>v1.9.0</sup> | text | Reliably sets custom text to the input field. |
+|`autocompleteText` <sup>v1.10.0</sup> | suggestion | Autocompletes the input text using the suggestion passed as the only argument. |
 
 -----
 
@@ -565,13 +575,16 @@ You can use these to imitate some of the component's behaviours.
 
 | Name | Arguments | Description |
 |------|-----------|-------------|
-|`showSuggestions`|| Alias for `onInputClick`. Will replace it in the future releases |
-|`onInput`| HTML input event | Fires whenever the input text is changed. Emits the [`input`](#emitted-events) event. |
-|`onFocus`| HTML focus event | Fires whenever the input comes into focus, emits the [`focus`](#emitted-events) event. |
+|`onShowList`|| Invoked when a suggestion list needs to be shown. |
+|`showSuggestions`|| Shows suggestion list, refreshes the data if needed. |
+|`onInput`| HTML input event | Invoked whenever the input text is changed. Emits the [`input`](#emitted-events) event. |
+|`onFocus`| HTML focus event | Invoked whenever the input comes into focus, emits the [`focus`](#emitted-events) event. |
 |`onBlur`| HTML focus event | Antonym to `onFocus`. |
-|`onAutocomplete`| - | Fires when the autocomplete [keyboard shortcut](#default-controls) is pressed. Selects the first suggestion. |
-|`onListKeyUp`| HTML keyup event | Fires on component keyup. Internally used for hiding the list. |
-|`moveSelection`|| Alias for `onArrowKeyDown`. Will replace it in the future releases. |
+|`onAutocomplete`| - | Invoked when the autocomplete [keyboard shortcut](#default-controls) is pressed. Selects the first suggestion. |
+|`onListKeyUp`| HTML keyup event | Invoked on component keyup. Internally used for hiding the list. |
+|`onKeyDown`| HTML keydown event | Invoked on component keydown. Internally used for showing the list, updating suggestions and preventing form submit. |
+|`moveSelection`|| Invoked when hovered element needs to be changed. |
+|`suggestionClick`| `suggestion`, HTML click event | Invoked on any suggestion click. Can be used to emulate such a click from ouside of the component. |
 
 -----
 
@@ -583,6 +596,7 @@ You can use these to imitate some of the component's behaviours.
 |`selected`| `null` | Currently selected element. |
 |`hovered`| `null` | Currently hovered element. |
 |`suggestions`| `[]` | Current suggestions list. |
+|`textLength`| `0` | Length of the text in the input. |
 |`listShown`| `false` | Is suggestion list shown. |
 |`inputElement`| `null` | Currently used HTMLInputElement. |
 |`canSend`| `true` | Whether the assigned getListFuncion can be executed. |
@@ -697,7 +711,7 @@ Defaults to `<span>{{ displayAttribute(suggestion) }}</span>`
 Accepts the `suggestion` object and a `query` text as a `slot-scope` attribute values.
 
 ```html
-<!-- Example: -->
+<!-- Example (book suggestions): -->
 <vue-simple-suggest>
   <div slot="suggestion-item" slot-scope="{ suggestion, query }">
     <div>{{ suggestion.title }} by {{ suggestion.author }}</div>
@@ -707,11 +721,11 @@ Accepts the `suggestion` object and a `query` text as a `slot-scope` attribute v
 
 **Custom buttons inside of suggestion items**
 
-If you want to add some action buttons to the suggetion items, just use the `.stop` directive modifier to prevent the default `suggestion-click`:
-
+If you want to add some action buttons to the suggetion items,
+just use the `.stop` directive modifier to prevent the default `suggestion-click`:
 
 ```html
-<!-- Example: -->
+<!-- Example (editable book suggestion): -->
 <vue-simple-suggest>
   <div slot="suggestion-item" slot-scope="{ suggestion, query }">
     <span>{{ suggestion.title }} by {{ suggestion.author }}</span>
@@ -725,7 +739,8 @@ In this case, the buttons will ONLY execute the bound method and will not select
 
 **Manual autocomplete**
 
-If there's a need to autocomplete the suggestion in the input instead of selecting it, you can use the `autocomplete()` function in the slot's scope:
+If there's a need to autocomplete the suggestion in the input instead of selecting it (like in mobile suggestions of google search),
+you can use the `autocomplete()` function in the slot's scope:
 
 ```html
 <!-- Example: -->
@@ -736,6 +751,32 @@ If there's a need to autocomplete the suggestion in the input instead of selecti
   </div>
 </vue-simple-suggest>
 ```
+
+or in the [ref methods](#ref-methods):
+
+```html
+<template>
+  <vue-simple-suggest ref="suggest">
+    <div slot="suggestion-item" slot-scope="{ suggestion }">
+      <span>{{ suggestion.title }} by {{ suggestion.author }}</span>
+      <button @click.stop="onAutocompleteButtonClick(suggestion)">Complete input</button>
+    </div>
+  </vue-simple-suggest>
+</template>
+
+<script>
+export default {
+  //...
+  methods: {
+    onAutocompleteButtonClick(suggestion) {
+      this.$refs.suggest.autocompleteText(suggestion);
+    }
+  }
+  //...
+}
+</script>
+```
+
 
 **Ref Data**
 
@@ -819,6 +860,8 @@ These slots can also be used to handle empty results, like this:
   </div>
 </template>
 ```
+
+----
 
 ## Contributors
 
