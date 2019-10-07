@@ -28,7 +28,7 @@ See [installation guide](#installation) for more options.
     - [New features?](#new-features)
   - [Examples:](#examples)
     - [Simple example](#simple-example)
-  - [Async example](#async-example)
+    - [Async example](#async-example)
   - [Installation](#installation)
     - [NPM](#npm)
     - [Unpkg](#unpkg)
@@ -144,7 +144,7 @@ If you need to suggest things from a static array:
 </script>
 ```
 
-## Async example
+### Async example
 
 If you're dealing with async data from server (example using https://swapi.co/):
 
