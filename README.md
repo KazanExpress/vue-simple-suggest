@@ -27,6 +27,7 @@ See [installation guide](#installation) for more options.
     - [Features](#features)
     - [New features?](#new-features)
   - [Simple example](#simple-example)
+  - [Async example](#async-example)
   - [Installation](#installation)
     - [NPM](#npm)
     - [Unpkg](#unpkg)
@@ -137,6 +138,55 @@ Then, in your Vue.js component/page:
   }
 </script>
 ```
+
+## Async example
+
+Here's how one would use the component
+when dealing with async data from server (example using https://swapi.co/):
+
+```html
+<!-- Some component.vue -->
+<template>
+  <vue-simple-suggest
+    v-model="chosen"
+    display-attribute="name"
+    value-attribute="url"
+    :list="getSuggestionList"
+  ></vue-simple-suggest>
+
+  <br>
+
+  <p>Chosen element: {{ chosen }}</p>
+</template>
+
+<script>
+  import VueSimpleSuggest from 'vue-simple-suggest'
+  import 'vue-simple-suggest/dist/styles.css' // Optional CSS
+
+  export default {
+    components: {
+      VueSimpleSuggest
+    },
+    data() {
+      return {
+        chosen: ''
+      }
+    },
+    methods: {
+      getSuggestionList() {
+        return fetch('https://swapi.co/api/people', { method: 'GET' })
+          .then(response => response.json())
+          .then(json => json.results); /*
+          returns a promise with a list of star-wars characters
+        */
+      }
+    }
+  }
+</script>
+```
+
+For a more advanced example (wikipedia search) see our [example source](https://github.com/KazanExpress/vue-simple-suggest/blob/master/example/src/App.vue).
+
 -----
 
 ## Installation
