@@ -418,6 +418,10 @@ export default {
         e.preventDefault()
       }
 
+      if (e.key === 'Tab' && this.hovered) {
+        this.select(this.hovered)
+      }
+
       this.onShowList(e)
       this.moveSelection(e);
       this.onAutocomplete(e);
