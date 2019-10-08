@@ -453,13 +453,10 @@ export default {
     suggestionClick (suggestion, e) {
       this.$emit('suggestion-click', suggestion, e)
       this.select(suggestion)
+      this.hideList()
 
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = this.isOverList = false
-
-      this.$nextTick(() => {
-        this.hideList()
-      })
     },
     onBlur (e) {
       if (this.isInFocus) {
@@ -475,9 +472,9 @@ export default {
           this.$emit('blur', e)
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true
-          this.$nextTick(() => {
+          setTimeout(() => {
             this.inputElement.focus()
-          })
+          }, 0)
         }
       } else {
         this.inputElement.blur()
@@ -500,12 +497,13 @@ export default {
       if (e && !this.isFalseFocus) {
         this.$emit('focus', e)
       }
-      this.isFalseFocus = false
 
-      // Show list only if the item has not been clicked
-      if (!this.isClicking) {
+      // Show list only if the item has not been clicked (isFalseFocus indicates that click was made earlier)
+      if (!this.isClicking && !this.isFalseFocus) {
         this.showSuggestions()
       }
+
+      this.isFalseFocus = false
     },
     onInput (inputEvent) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value
