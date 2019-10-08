@@ -302,7 +302,7 @@ export default {
         }
       }
 
-      return String(display)
+      return String(display || '')
     },
     valueProperty (obj) {
       if (this.isPlainSuggestion) {
@@ -507,8 +507,8 @@ export default {
     onInput (inputEvent) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value
 
-      this.$emit('input', value)
       this.updateTextOutside(value)
+      this.$emit('input', value)
     },
     updateTextOutside(value) {
       if (this.text === value) { return }
