@@ -160,11 +160,10 @@ export default {
     },
     value: {
       handler(current) {
-        if (typeof current === 'string') {
-          this.text = current
-        } else if (current) {
-          this.text = this.displayProperty(current)
+        if (typeof current !== 'string') {
+          current = this.displayProperty(current)
         }
+        this.updateTextOutside(current)
       },
       immediate: true
     }
@@ -303,7 +302,7 @@ export default {
         }
       }
 
-      return String(display)
+      return String(display || '')
     },
     valueProperty (obj) {
       if (this.isPlainSuggestion) {
@@ -327,9 +326,9 @@ export default {
     },
     setText (text) {
       this.$nextTick(() => {
-        this.$emit('input', text)
         this.inputElement.value = text
         this.text = text
+        this.$emit('input', text)
       })
     },
     select (item) {
@@ -377,6 +376,8 @@ export default {
     },
     async showSuggestions () {
       if (this.suggestions.length === 0 && this.minLength <= this.textLength) {
+        // try show misc slots while researching
+        this.showList()
         await this.research()
       }
 
@@ -508,12 +509,19 @@ export default {
     onInput (inputEvent) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value
 
+      this.updateTextOutside(value)
+      this.$emit('input', value)
+    },
+    updateTextOutside(value) {
       if (this.text === value) { return }
 
       this.text = value
-      this.$emit('input', this.text)
-
       if (this.hovered) this.hover(null)
+
+      if (this.text.length < this.minLength) {
+        this.hideList()
+        return;
+      }
 
       if (this.debounce) {
         clearTimeout(this.timeoutInstance)
@@ -546,7 +554,7 @@ export default {
 
         if ((this.suggestions.length === 0) && this.miscSlotsAreEmpty()) {
           this.hideList()
-        } else {
+        } else if (this.isInFocus) {
           this.showList()
         }
 
@@ -557,12 +565,7 @@ export default {
       value = value || '';
 
       if (value.length < this.minLength) {
-        if (this.listShown) {
-          this.hideList()
-          return []
-        }
-
-        return this.suggestions
+        return []
       }
 
       this.selected = null
@@ -570,10 +573,6 @@ export default {
       // Start request if can
       if (this.listIsRequest) {
         this.$emit('request-start', value)
-
-        if ((this.suggestions.length > 0) || (!this.miscSlotsAreEmpty())) {
-          this.showList()
-        }
       }
 
       let result = []
