@@ -3,6 +3,7 @@ const defaultControls = {
   selectionDown: [40],
   select: [13],
   hideList: [27],
+  showList: [40],
   autocomplete: [32, 13]
 };
 
@@ -95,7 +96,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
           }, "click": function ($event) {
             return _vm.suggestionClick(suggestion, $event);
           } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { "autocomplete": function () {
-          return _vm.setText(_vm.displayProperty(suggestion));
+          return _vm.autocompleteText(suggestion);
         }, "suggestion": suggestion, "query": _vm.text })], 2);
     }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
   },
@@ -143,10 +144,6 @@ function _empty() {}function _awaitIgnored(value, direct) {
       type: Boolean,
       default: false
     },
-    preventSubmit: {
-      type: Boolean,
-      default: true
-    },
     filterByQuery: {
       type: Boolean,
       default: false
@@ -193,11 +190,10 @@ function _empty() {}function _awaitIgnored(value, direct) {
     },
     value: {
       handler(current) {
-        if (typeof current === 'string') {
-          this.text = current;
-        } else if (current) {
-          this.text = this.displayProperty(current);
+        if (typeof current !== 'string') {
+          current = this.displayProperty(current);
         }
+        this.updateTextOutside(current);
       },
       immediate: true
     }
@@ -336,7 +332,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
         }
       }
 
-      return String(display);
+      return String(display || '');
     },
     valueProperty(obj) {
       if (this.isPlainSuggestion) {
@@ -353,17 +349,14 @@ function _empty() {}function _awaitIgnored(value, direct) {
       return value;
     },
 
-    /**
-     * @deprecated remove on the next release
-     */
-    autocompleteText(text) {
-      this.setText(text);
+    autocompleteText(suggestion) {
+      this.setText(this.displayProperty(suggestion));
     },
     setText(text) {
       this.$nextTick(() => {
-        this.$emit('input', text);
         this.inputElement.value = text;
         this.text = text;
+        this.$emit('input', text);
       });
     },
     select(item) {
@@ -372,7 +365,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
         this.$emit('select', item);
 
         if (item) {
-          this.setText(this.displayProperty(item));
+          this.autocompleteText(item);
         }
       }
 
@@ -411,7 +404,9 @@ function _empty() {}function _awaitIgnored(value, direct) {
       const _this = this;
 
       return _invoke(function () {
-        if (_this.suggestions.length === 0 && _this.minLength === _this.textLength) {
+        if (_this.suggestions.length === 0 && _this.minLength <= _this.textLength) {
+          // try show misc slots while researching
+          _this.showList();
           return _awaitIgnored(_this.research());
         }
       }, function () {
@@ -420,11 +415,15 @@ function _empty() {}function _awaitIgnored(value, direct) {
       });
     }),
 
+    onShowList(e) {
+      if (hasKeyCode(this.controlScheme.showList, e)) {
+        this.showSuggestions();
+      }
+    },
     moveSelection(e) {
       if (!this.listShown || !this.suggestions.length) return;
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
         e.preventDefault();
-        this.showSuggestions();
 
         const isMovingDown = hasKeyCode(this.controlScheme.selectionDown, e);
         const direction = isMovingDown * 2 - 1;
@@ -448,10 +447,15 @@ function _empty() {}function _awaitIgnored(value, direct) {
             hideList = this.controlScheme.hideList;
 
       // prevent form submit on keydown if Enter key registered in the keyup list
-      if (this.preventSubmit && e.key === 'Enter' && hasKeyCodeByCode([select, hideList], 13)) {
+      if (e.key === 'Enter' && this.listShown && hasKeyCodeByCode([select, hideList], 13)) {
         e.preventDefault();
       }
 
+      if (e.key === 'Tab' && this.hovered) {
+        this.select(this.hovered);
+      }
+
+      this.onShowList(e);
       this.moveSelection(e);
       this.onAutocomplete(e);
     },
@@ -459,36 +463,29 @@ function _empty() {}function _awaitIgnored(value, direct) {
       const select = this.controlScheme.select,
             hideList = this.controlScheme.hideList;
 
-      if (hasKeyCode([select, hideList], e)) {
+      if (this.listShown && hasKeyCode([select, hideList], e)) {
         e.preventDefault();
-        if (this.listShown) {
-          if (hasKeyCode(select, e)) {
-            this.select(this.hovered);
-          }
-
-          this.hideList();
-        } else if (hasKeyCode(select, e)) {
-          this.research();
+        if (hasKeyCode(select, e)) {
+          this.select(this.hovered);
         }
+
+        this.hideList();
       }
     },
     onAutocomplete(e) {
       if (hasKeyCode(this.controlScheme.autocomplete, e) && (e.ctrlKey || e.shiftKey) && this.suggestions.length > 0 && this.suggestions[0] && this.listShown) {
         e.preventDefault();
         this.hover(this.suggestions[0]);
-        this.setText(this.displayProperty(this.suggestions[0]));
+        this.autocompleteText(this.suggestions[0]);
       }
     },
     suggestionClick(suggestion, e) {
       this.$emit('suggestion-click', suggestion, e);
       this.select(suggestion);
+      this.hideList();
 
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = this.isOverList = false;
-
-      this.$nextTick(() => {
-        this.hideList();
-      });
     },
     onBlur(e) {
       if (this.isInFocus) {
@@ -504,9 +501,9 @@ function _empty() {}function _awaitIgnored(value, direct) {
           this.$emit('blur', e);
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true;
-          this.$nextTick(() => {
+          setTimeout(() => {
             this.inputElement.focus();
-          });
+          }, 0);
         }
       } else {
         this.inputElement.blur();
@@ -527,24 +524,32 @@ function _empty() {}function _awaitIgnored(value, direct) {
       if (e && !this.isFalseFocus) {
         this.$emit('focus', e);
       }
-      this.isFalseFocus = false;
 
-      // Show list only if the item has not been clicked
-      if (!this.isClicking) {
+      // Show list only if the item has not been clicked (isFalseFocus indicates that click was made earlier)
+      if (!this.isClicking && !this.isFalseFocus) {
         this.showSuggestions();
       }
+
+      this.isFalseFocus = false;
     },
     onInput(inputEvent) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value;
 
+      this.updateTextOutside(value);
+      this.$emit('input', value);
+    },
+    updateTextOutside(value) {
       if (this.text === value) {
         return;
       }
 
       this.text = value;
-      this.$emit('input', this.text);
-
       if (this.hovered) this.hover(null);
+
+      if (this.text.length < this.minLength) {
+        this.hideList();
+        return;
+      }
 
       if (this.debounce) {
         clearTimeout(this.timeoutInstance);
@@ -579,7 +584,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
 
         if (_this2.suggestions.length === 0 && _this2.miscSlotsAreEmpty()) {
           _this2.hideList();
-        } else {
+        } else if (_this2.isInFocus) {
           _this2.showList();
         }
 
@@ -592,12 +597,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
       value = value || '';
 
       if (value.length < _this3.minLength) {
-        if (_this3.listShown) {
-          _this3.hideList();
-          return [];
-        }
-
-        return _this3.suggestions;
+        return [];
       }
 
       _this3.selected = null;
@@ -605,10 +605,6 @@ function _empty() {}function _awaitIgnored(value, direct) {
       // Start request if can
       if (_this3.listIsRequest) {
         _this3.$emit('request-start', value);
-
-        if (_this3.suggestions.length > 0 || !_this3.miscSlotsAreEmpty()) {
-          _this3.showList();
-        }
       }
 
       let result = [];

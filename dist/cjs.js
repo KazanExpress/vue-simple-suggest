@@ -5,6 +5,7 @@ var defaultControls = {
   selectionDown: [40],
   select: [13],
   hideList: [27],
+  showList: [40],
   autocomplete: [32, 13]
 };
 
@@ -101,7 +102,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
           }, "click": function click($event) {
             return _vm.suggestionClick(suggestion, $event);
           } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { "autocomplete": function autocomplete() {
-          return _vm.setText(_vm.displayProperty(suggestion));
+          return _vm.autocompleteText(suggestion);
         }, "suggestion": suggestion, "query": _vm.text })], 2);
     }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
   },
@@ -155,10 +156,6 @@ function _empty() {}function _awaitIgnored(value, direct) {
       type: Boolean,
       default: false
     },
-    preventSubmit: {
-      type: Boolean,
-      default: true
-    },
     filterByQuery: {
       type: Boolean,
       default: false
@@ -210,11 +207,10 @@ function _empty() {}function _awaitIgnored(value, direct) {
     },
     value: {
       handler: function handler(current) {
-        if (typeof current === 'string') {
-          this.text = current;
-        } else if (current) {
-          this.text = this.displayProperty(current);
+        if (typeof current !== 'string') {
+          current = this.displayProperty(current);
         }
+        this.updateTextOutside(current);
       },
 
       immediate: true
@@ -368,7 +364,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
         }
       }
 
-      return String(display);
+      return String(display || '');
     },
     valueProperty: function valueProperty(obj) {
       if (this.isPlainSuggestion) {
@@ -383,21 +379,16 @@ function _empty() {}function _awaitIgnored(value, direct) {
 
       return value;
     },
-
-
-    /**
-     * @deprecated remove on the next release
-     */
-    autocompleteText: function autocompleteText(text) {
-      this.setText(text);
+    autocompleteText: function autocompleteText(suggestion) {
+      this.setText(this.displayProperty(suggestion));
     },
     setText: function setText(text) {
       var _this4 = this;
 
       this.$nextTick(function () {
-        _this4.$emit('input', text);
         _this4.inputElement.value = text;
         _this4.text = text;
+        _this4.$emit('input', text);
       });
     },
     select: function select(item) {
@@ -406,7 +397,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
         this.$emit('select', item);
 
         if (item) {
-          this.setText(this.displayProperty(item));
+          this.autocompleteText(item);
         }
       }
 
@@ -446,7 +437,9 @@ function _empty() {}function _awaitIgnored(value, direct) {
         var _this6 = this;
 
         return _invoke(function () {
-          if (_this6.suggestions.length === 0 && _this6.minLength === _this6.textLength) {
+          if (_this6.suggestions.length === 0 && _this6.minLength <= _this6.textLength) {
+            // try show misc slots while researching
+            _this6.showList();
             return _awaitIgnored(_this6.research());
           }
         }, function () {
@@ -457,11 +450,15 @@ function _empty() {}function _awaitIgnored(value, direct) {
         return Promise.reject(e);
       }
     },
+    onShowList: function onShowList(e) {
+      if (hasKeyCode(this.controlScheme.showList, e)) {
+        this.showSuggestions();
+      }
+    },
     moveSelection: function moveSelection(e) {
       if (!this.listShown || !this.suggestions.length) return;
       if (hasKeyCode([this.controlScheme.selectionUp, this.controlScheme.selectionDown], e)) {
         e.preventDefault();
-        this.showSuggestions();
 
         var isMovingDown = hasKeyCode(this.controlScheme.selectionDown, e);
         var direction = isMovingDown * 2 - 1;
@@ -485,10 +482,15 @@ function _empty() {}function _awaitIgnored(value, direct) {
           hideList = this.controlScheme.hideList;
 
       // prevent form submit on keydown if Enter key registered in the keyup list
-      if (this.preventSubmit && e.key === 'Enter' && hasKeyCodeByCode([select, hideList], 13)) {
+      if (e.key === 'Enter' && this.listShown && hasKeyCodeByCode([select, hideList], 13)) {
         e.preventDefault();
       }
 
+      if (e.key === 'Tab' && this.hovered) {
+        this.select(this.hovered);
+      }
+
+      this.onShowList(e);
       this.moveSelection(e);
       this.onAutocomplete(e);
     },
@@ -496,41 +498,32 @@ function _empty() {}function _awaitIgnored(value, direct) {
       var select = this.controlScheme.select,
           hideList = this.controlScheme.hideList;
 
-      if (hasKeyCode([select, hideList], e)) {
+      if (this.listShown && hasKeyCode([select, hideList], e)) {
         e.preventDefault();
-        if (this.listShown) {
-          if (hasKeyCode(select, e)) {
-            this.select(this.hovered);
-          }
-
-          this.hideList();
-        } else if (hasKeyCode(select, e)) {
-          this.research();
+        if (hasKeyCode(select, e)) {
+          this.select(this.hovered);
         }
+
+        this.hideList();
       }
     },
     onAutocomplete: function onAutocomplete(e) {
       if (hasKeyCode(this.controlScheme.autocomplete, e) && (e.ctrlKey || e.shiftKey) && this.suggestions.length > 0 && this.suggestions[0] && this.listShown) {
         e.preventDefault();
         this.hover(this.suggestions[0]);
-        this.setText(this.displayProperty(this.suggestions[0]));
+        this.autocompleteText(this.suggestions[0]);
       }
     },
     suggestionClick: function suggestionClick(suggestion, e) {
-      var _this7 = this;
-
       this.$emit('suggestion-click', suggestion, e);
       this.select(suggestion);
+      this.hideList();
 
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = this.isOverList = false;
-
-      this.$nextTick(function () {
-        _this7.hideList();
-      });
     },
     onBlur: function onBlur(e) {
-      var _this8 = this;
+      var _this7 = this;
 
       if (this.isInFocus) {
 
@@ -545,9 +538,9 @@ function _empty() {}function _awaitIgnored(value, direct) {
           this.$emit('blur', e);
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true;
-          this.$nextTick(function () {
-            _this8.inputElement.focus();
-          });
+          setTimeout(function () {
+            _this7.inputElement.focus();
+          }, 0);
         }
       } else {
         this.inputElement.blur();
@@ -563,24 +556,32 @@ function _empty() {}function _awaitIgnored(value, direct) {
       if (e && !this.isFalseFocus) {
         this.$emit('focus', e);
       }
-      this.isFalseFocus = false;
 
-      // Show list only if the item has not been clicked
-      if (!this.isClicking) {
+      // Show list only if the item has not been clicked (isFalseFocus indicates that click was made earlier)
+      if (!this.isClicking && !this.isFalseFocus) {
         this.showSuggestions();
       }
+
+      this.isFalseFocus = false;
     },
     onInput: function onInput(inputEvent) {
       var value = !inputEvent.target ? inputEvent : inputEvent.target.value;
 
+      this.updateTextOutside(value);
+      this.$emit('input', value);
+    },
+    updateTextOutside: function updateTextOutside(value) {
       if (this.text === value) {
         return;
       }
 
       this.text = value;
-      this.$emit('input', this.text);
-
       if (this.hovered) this.hover(null);
+
+      if (this.text.length < this.minLength) {
+        this.hideList();
+        return;
+      }
 
       if (this.debounce) {
         clearTimeout(this.timeoutInstance);
@@ -591,36 +592,36 @@ function _empty() {}function _awaitIgnored(value, direct) {
     },
     research: function research() {
       try {
-        var _this10 = this;
+        var _this9 = this;
 
         return _finally(function () {
           return _catch(function () {
             return _invokeIgnored(function () {
-              if (_this10.canSend) {
-                _this10.canSend = false;
+              if (_this9.canSend) {
+                _this9.canSend = false;
                 // @TODO: fix when promises will be cancelable (never :D)
-                var textBeforeRequest = _this10.text;
-                return _await(_this10.getSuggestions(_this10.text), function (newList) {
-                  if (textBeforeRequest === _this10.text) {
-                    _this10.$set(_this10, 'suggestions', newList);
+                var textBeforeRequest = _this9.text;
+                return _await(_this9.getSuggestions(_this9.text), function (newList) {
+                  if (textBeforeRequest === _this9.text) {
+                    _this9.$set(_this9, 'suggestions', newList);
                   }
                 });
               }
             });
           }, function (e) {
-            _this10.clearSuggestions();
+            _this9.clearSuggestions();
             throw e;
           });
         }, function () {
-          _this10.canSend = true;
+          _this9.canSend = true;
 
-          if (_this10.suggestions.length === 0 && _this10.miscSlotsAreEmpty()) {
-            _this10.hideList();
-          } else {
-            _this10.showList();
+          if (_this9.suggestions.length === 0 && _this9.miscSlotsAreEmpty()) {
+            _this9.hideList();
+          } else if (_this9.isInFocus) {
+            _this9.showList();
           }
 
-          return _this10.suggestions;
+          return _this9.suggestions;
         });
       } catch (e) {
         return Promise.reject(e);
@@ -628,40 +629,31 @@ function _empty() {}function _awaitIgnored(value, direct) {
     },
     getSuggestions: function getSuggestions(value) {
       try {
-        var _this12 = this;
+        var _this11 = this;
 
         value = value || '';
 
-        if (value.length < _this12.minLength) {
-          if (_this12.listShown) {
-            _this12.hideList();
-            return [];
-          }
-
-          return _this12.suggestions;
+        if (value.length < _this11.minLength) {
+          return [];
         }
 
-        _this12.selected = null;
+        _this11.selected = null;
 
         // Start request if can
-        if (_this12.listIsRequest) {
-          _this12.$emit('request-start', value);
-
-          if (_this12.suggestions.length > 0 || !_this12.miscSlotsAreEmpty()) {
-            _this12.showList();
-          }
+        if (_this11.listIsRequest) {
+          _this11.$emit('request-start', value);
         }
 
         var result = [];
         return _finally(function () {
           return _catch(function () {
             return _invoke(function () {
-              if (_this12.listIsRequest) {
-                return _await(_this12.list(value), function (_this11$list) {
-                  result = _this11$list || [];
+              if (_this11.listIsRequest) {
+                return _await(_this11.list(value), function (_this10$list) {
+                  result = _this10$list || [];
                 });
               } else {
-                result = _this12.list;
+                result = _this11.list;
               }
             }, function () {
 
@@ -670,28 +662,28 @@ function _empty() {}function _awaitIgnored(value, direct) {
                 result = [result];
               }
 
-              _this12.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
+              _this11.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
 
-              if (_this12.filterByQuery) {
+              if (_this11.filterByQuery) {
                 result = result.filter(function (el) {
-                  return _this12.filter(el, value);
+                  return _this11.filter(el, value);
                 });
               }
 
-              if (_this12.listIsRequest) {
-                _this12.$emit('request-done', result);
+              if (_this11.listIsRequest) {
+                _this11.$emit('request-done', result);
               }
             });
           }, function (e) {
-            if (_this12.listIsRequest) {
-              _this12.$emit('request-failed', e);
+            if (_this11.listIsRequest) {
+              _this11.$emit('request-failed', e);
             } else {
               throw e;
             }
           });
         }, function () {
-          if (_this12.maxSuggestions) {
-            result.splice(_this12.maxSuggestions);
+          if (_this11.maxSuggestions) {
+            result.splice(_this11.maxSuggestions);
           }
 
           return result;
