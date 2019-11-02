@@ -35,7 +35,8 @@ function _empty() {}function _awaitIgnored(value, direct) {
   if (!direct) {
     return value && value.then ? value.then(_empty) : Promise.resolve();
   }
-}function _invoke(body, then) {
+}
+function _invoke(body, then) {
   var result = body();if (result && result.then) {
     return result.then(then);
   }return then(result);
