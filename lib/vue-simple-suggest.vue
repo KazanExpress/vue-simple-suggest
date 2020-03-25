@@ -19,8 +19,6 @@
         role="listbox"
         :aria-labelledby="listId"
         :class="styles.suggestions"
-        @mouseenter="hoverList(true)"
-        @mouseleave="hoverList(false)"
       >
         <li v-if="!!this.$scopedSlots['misc-item-above']">
           <slot name="misc-item-above"
@@ -181,7 +179,6 @@ export default {
       text: this.value,
       isPlainSuggestion: false,
       isClicking: false,
-      isOverList: false,
       isInFocus: false,
       isFalseFocus: false,
       isTabbed: false,
@@ -354,9 +351,6 @@ export default {
 
       this.hovered = item
     },
-    hoverList (isOverList) {
-      this.isOverList = isOverList
-    },
     hideList () {
       if (this.listShown) {
         this.listShown = false
@@ -457,14 +451,14 @@ export default {
       this.hideList()
 
       /// Ensure, that all needed flags are off before finishing the click.
-      this.isClicking = this.isOverList = false
+      this.isClicking = false
     },
     onBlur (e) {
       if (this.isInFocus) {
 
         /// Clicking starts here, because input's blur occurs before the suggestionClick
         /// and exactly when the user clicks the mouse button or taps the screen.
-        this.isClicking = this.isOverList && !this.isTabbed
+        this.isClicking = this.hovered && !this.isTabbed
 
         if (!this.isClicking) {
           this.isInFocus = false
