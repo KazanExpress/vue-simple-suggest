@@ -35,8 +35,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
   if (!direct) {
     return value && value.then ? value.then(_empty) : Promise.resolve();
   }
-}
-function _invoke(body, then) {
+}function _invoke(body, then) {
   var result = body();if (result && result.then) {
     return result.then(then);
   }return then(result);
@@ -237,7 +236,13 @@ function _invoke(body, then) {
       return this.inputIsComponent ? '$off' : 'removeEventListener';
     },
     hoveredIndex() {
-      return this.suggestions.findIndex(el => this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el));
+      for (let i = 0; i < this.suggestions.length; i++) {
+        const el = this.suggestions[i];
+        if (this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el)) {
+          return i;
+        }
+      }
+      return -1;
     },
     textLength() {
       return this.text && this.text.length || this.inputElement.value.length || 0;

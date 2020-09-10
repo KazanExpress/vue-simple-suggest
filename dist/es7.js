@@ -192,7 +192,13 @@ var VueSimpleSuggest = {
       return this.inputIsComponent ? '$off' : 'removeEventListener';
     },
     hoveredIndex() {
-      return this.suggestions.findIndex(el => this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el));
+      for (let i = 0; i < this.suggestions.length; i++) {
+        const el = this.suggestions[i];
+        if (this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el)) {
+          return i;
+        }
+      }
+      return -1;
     },
     textLength() {
       return this.text && this.text.length || this.inputElement.value.length || 0;

@@ -51,8 +51,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
   if (!direct) {
     return value && value.then ? value.then(_empty) : Promise.resolve();
   }
-}
-function _invoke(body, then) {
+}function _invoke(body, then) {
   var result = body();if (result && result.then) {
     return result.then(then);
   }return then(result);
@@ -256,11 +255,13 @@ function _invoke(body, then) {
       return this.inputIsComponent ? '$off' : 'removeEventListener';
     },
     hoveredIndex: function hoveredIndex() {
-      var _this2 = this;
-
-      return this.suggestions.findIndex(function (el) {
-        return _this2.hovered && _this2.valueProperty(_this2.hovered) == _this2.valueProperty(el);
-      });
+      for (var i = 0; i < this.suggestions.length; i++) {
+        var el = this.suggestions[i];
+        if (this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el)) {
+          return i;
+        }
+      }
+      return -1;
     },
     textLength: function textLength() {
       return this.text && this.text.length || this.inputElement.value.length || 0;
@@ -329,10 +330,10 @@ function _invoke(body, then) {
       return true;
     },
     miscSlotsAreEmpty: function miscSlotsAreEmpty() {
-      var _this3 = this;
+      var _this2 = this;
 
       var slots = ['misc-item-above', 'misc-item-below'].map(function (s) {
-        return _this3.$scopedSlots[s];
+        return _this2.$scopedSlots[s];
       });
 
       if (slots.every(function (s) {
@@ -384,12 +385,12 @@ function _invoke(body, then) {
       this.setText(this.displayProperty(suggestion));
     },
     setText: function setText(text) {
-      var _this4 = this;
+      var _this3 = this;
 
       this.$nextTick(function () {
-        _this4.inputElement.value = text;
-        _this4.text = text;
-        _this4.$emit('input', text);
+        _this3.inputElement.value = text;
+        _this3.text = text;
+        _this3.$emit('input', text);
       });
     },
     select: function select(item) {
@@ -435,17 +436,17 @@ function _invoke(body, then) {
     },
     showSuggestions: function showSuggestions() {
       try {
-        var _this6 = this;
+        var _this5 = this;
 
         return _invoke(function () {
-          if (_this6.suggestions.length === 0 && _this6.minLength <= _this6.textLength) {
+          if (_this5.suggestions.length === 0 && _this5.minLength <= _this5.textLength) {
             // try show misc slots while researching
-            _this6.showList();
-            return _awaitIgnored(_this6.research());
+            _this5.showList();
+            return _awaitIgnored(_this5.research());
           }
         }, function () {
 
-          _this6.showList();
+          _this5.showList();
         });
       } catch (e) {
         return Promise.reject(e);
@@ -524,7 +525,7 @@ function _invoke(body, then) {
       this.isClicking = this.isOverList = false;
     },
     onBlur: function onBlur(e) {
-      var _this7 = this;
+      var _this6 = this;
 
       if (this.isInFocus) {
 
@@ -540,7 +541,7 @@ function _invoke(body, then) {
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true;
           setTimeout(function () {
-            _this7.inputElement.focus();
+            _this6.inputElement.focus();
           }, 0);
         }
       } else {
@@ -593,36 +594,36 @@ function _invoke(body, then) {
     },
     research: function research() {
       try {
-        var _this9 = this;
+        var _this8 = this;
 
         return _finally(function () {
           return _catch(function () {
             return _invokeIgnored(function () {
-              if (_this9.canSend) {
-                _this9.canSend = false;
+              if (_this8.canSend) {
+                _this8.canSend = false;
                 // @TODO: fix when promises will be cancelable (never :D)
-                var textBeforeRequest = _this9.text;
-                return _await(_this9.getSuggestions(_this9.text), function (newList) {
-                  if (textBeforeRequest === _this9.text) {
-                    _this9.$set(_this9, 'suggestions', newList);
+                var textBeforeRequest = _this8.text;
+                return _await(_this8.getSuggestions(_this8.text), function (newList) {
+                  if (textBeforeRequest === _this8.text) {
+                    _this8.$set(_this8, 'suggestions', newList);
                   }
                 });
               }
             });
           }, function (e) {
-            _this9.clearSuggestions();
+            _this8.clearSuggestions();
             throw e;
           });
         }, function () {
-          _this9.canSend = true;
+          _this8.canSend = true;
 
-          if (_this9.suggestions.length === 0 && _this9.miscSlotsAreEmpty()) {
-            _this9.hideList();
-          } else if (_this9.isInFocus) {
-            _this9.showList();
+          if (_this8.suggestions.length === 0 && _this8.miscSlotsAreEmpty()) {
+            _this8.hideList();
+          } else if (_this8.isInFocus) {
+            _this8.showList();
           }
 
-          return _this9.suggestions;
+          return _this8.suggestions;
         });
       } catch (e) {
         return Promise.reject(e);
@@ -630,31 +631,31 @@ function _invoke(body, then) {
     },
     getSuggestions: function getSuggestions(value) {
       try {
-        var _this11 = this;
+        var _this10 = this;
 
         value = value || '';
 
-        if (value.length < _this11.minLength) {
+        if (value.length < _this10.minLength) {
           return [];
         }
 
-        _this11.selected = null;
+        _this10.selected = null;
 
         // Start request if can
-        if (_this11.listIsRequest) {
-          _this11.$emit('request-start', value);
+        if (_this10.listIsRequest) {
+          _this10.$emit('request-start', value);
         }
 
         var result = [];
         return _finally(function () {
           return _catch(function () {
             return _invoke(function () {
-              if (_this11.listIsRequest) {
-                return _await(_this11.list(value), function (_this10$list) {
-                  result = _this10$list || [];
+              if (_this10.listIsRequest) {
+                return _await(_this10.list(value), function (_this9$list) {
+                  result = _this9$list || [];
                 });
               } else {
-                result = _this11.list;
+                result = _this10.list;
               }
             }, function () {
 
@@ -663,28 +664,28 @@ function _invoke(body, then) {
                 result = [result];
               }
 
-              _this11.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
+              _this10.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
 
-              if (_this11.filterByQuery) {
+              if (_this10.filterByQuery) {
                 result = result.filter(function (el) {
-                  return _this11.filter(el, value);
+                  return _this10.filter(el, value);
                 });
               }
 
-              if (_this11.listIsRequest) {
-                _this11.$emit('request-done', result);
+              if (_this10.listIsRequest) {
+                _this10.$emit('request-done', result);
               }
             });
           }, function (e) {
-            if (_this11.listIsRequest) {
-              _this11.$emit('request-failed', e);
+            if (_this10.listIsRequest) {
+              _this10.$emit('request-failed', e);
             } else {
               throw e;
             }
           });
         }, function () {
-          if (_this11.maxSuggestions) {
-            result.splice(_this11.maxSuggestions);
+          if (_this10.maxSuggestions) {
+            result.splice(_this10.maxSuggestions);
           }
 
           return result;
