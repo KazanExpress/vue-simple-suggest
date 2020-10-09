@@ -37,6 +37,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
   }
 }function _invoke(body, then) {
   var result = body();if (result && result.then) {
+
     return result.then(then);
   }return then(result);
 }function _async(f) {
@@ -81,11 +82,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
           if (!$event.type.indexOf('key') && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
             return null;
           }_vm.isTabbed = true;
-        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId }, on: { "mouseenter": function ($event) {
-          return _vm.hoverList(true);
-        }, "mouseleave": function ($event) {
-          return _vm.hoverList(false);
-        } } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, {
           selected: _vm.isSelected(suggestion),
           hover: _vm.isHovered(suggestion)
@@ -211,7 +208,6 @@ function _empty() {}function _awaitIgnored(value, direct) {
       text: this.value,
       isPlainSuggestion: false,
       isClicking: false,
-      isOverList: false,
       isInFocus: false,
       isFalseFocus: false,
       isTabbed: false,
@@ -388,9 +384,6 @@ function _empty() {}function _awaitIgnored(value, direct) {
 
       this.hovered = item;
     },
-    hoverList(isOverList) {
-      this.isOverList = isOverList;
-    },
     hideList() {
       if (this.listShown) {
         this.listShown = false;
@@ -491,14 +484,14 @@ function _empty() {}function _awaitIgnored(value, direct) {
       this.hideList();
 
       /// Ensure, that all needed flags are off before finishing the click.
-      this.isClicking = this.isOverList = false;
+      this.isClicking = false;
     },
     onBlur(e) {
       if (this.isInFocus) {
 
         /// Clicking starts here, because input's blur occurs before the suggestionClick
         /// and exactly when the user clicks the mouse button or taps the screen.
-        this.isClicking = this.isOverList && !this.isTabbed;
+        this.isClicking = this.hovered && !this.isTabbed;
 
         if (!this.isClicking) {
           this.isInFocus = false;
@@ -524,9 +517,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
       this.isTabbed = false;
     },
     onFocus(e) {
-      this.isInFocus = true;
-
-      // Only emit, if it was a native input focus
+      this.isInFocus = true; // Only emit, if it was a native input focus
       if (e && !this.isFalseFocus) {
         this.$emit('focus', e);
       }
