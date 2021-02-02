@@ -52,7 +52,7 @@ See [installation guide](#installation) for more options.
         - [Custom input](#custom-input)
         - [Accessibility on custom input](#accessibility-on-custom-input)
         - [Custom suggestion item](#custom-suggestion-item)
-        - [Custom miscellanious item slots](#custom-miscellanious-item-slots)
+        - [Custom miscellaneous item slots](#custom-miscellaneous-item-slots)
   - [Contributors](#contributors)
 
 
@@ -808,7 +808,7 @@ Result via Google Books search API:
 
 ![](assets/screenshot.jpg)
 
-##### Custom miscellanious item slots
+##### Custom miscellaneous item slots
 > `misc-item-above` and `misc-item-below` slots (optional)
 
 Allow custom elements to be shown in suggestion list. These elements never dissapear from the list, neither can they be selected nor hovered on.
