@@ -31,13 +31,13 @@ function hasKeyCodeByCode(arr, keyCode) {
   }
 }
 
-function _empty() {}function _awaitIgnored(value, direct) {
+function _empty() {}
+function _awaitIgnored(value, direct) {
   if (!direct) {
     return value && value.then ? value.then(_empty) : Promise.resolve();
   }
 }function _invoke(body, then) {
   var result = body();if (result && result.then) {
-
     return result.then(then);
   }return then(result);
 }function _async(f) {
@@ -251,10 +251,12 @@ function _empty() {}function _awaitIgnored(value, direct) {
     this.controlScheme = Object.assign({}, defaultControls, this.controls);
   },
   mounted() {
-    this.inputElement = this.$refs['inputSlot'].querySelector('input');
+    setTimeout(() => {
+      this.inputElement = this.$refs['inputSlot'].querySelector('input');
 
-    this.setInputAriaAttributes();
-    this.prepareEventHandlers(true);
+      this.setInputAriaAttributes();
+      this.prepareEventHandlers(true);
+    }, 0);
   },
   beforeDestroy() {
     this.prepareEventHandlers(false);
@@ -517,7 +519,9 @@ function _empty() {}function _awaitIgnored(value, direct) {
       this.isTabbed = false;
     },
     onFocus(e) {
-      this.isInFocus = true; // Only emit, if it was a native input focus
+      this.isInFocus = true;
+
+      // Only emit, if it was a native input focus
       if (e && !this.isFalseFocus) {
         this.$emit('focus', e);
       }
@@ -534,8 +538,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
 
       this.updateTextOutside(value);
       this.$emit('input', value);
-    },
-    updateTextOutside(value) {
+    }, updateTextOutside(value) {
       if (this.text === value) {
         return;
       }

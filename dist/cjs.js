@@ -47,13 +47,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
-function _empty() {}function _awaitIgnored(value, direct) {
+function _empty() {}
+function _awaitIgnored(value, direct) {
   if (!direct) {
     return value && value.then ? value.then(_empty) : Promise.resolve();
   }
 }function _invoke(body, then) {
   var result = body();if (result && result.then) {
-
     return result.then(then);
   }return then(result);
 }function _await(value, then, direct) {
@@ -270,10 +270,14 @@ function _empty() {}function _awaitIgnored(value, direct) {
     this.controlScheme = Object.assign({}, defaultControls, this.controls);
   },
   mounted: function mounted() {
-    this.inputElement = this.$refs['inputSlot'].querySelector('input');
+    var _this2 = this;
 
-    this.setInputAriaAttributes();
-    this.prepareEventHandlers(true);
+    setTimeout(function () {
+      _this2.inputElement = _this2.$refs['inputSlot'].querySelector('input');
+
+      _this2.setInputAriaAttributes();
+      _this2.prepareEventHandlers(true);
+    }, 0);
   },
   beforeDestroy: function beforeDestroy() {
     this.prepareEventHandlers(false);
@@ -326,10 +330,10 @@ function _empty() {}function _awaitIgnored(value, direct) {
       return true;
     },
     miscSlotsAreEmpty: function miscSlotsAreEmpty() {
-      var _this2 = this;
+      var _this3 = this;
 
       var slots = ['misc-item-above', 'misc-item-below'].map(function (s) {
-        return _this2.$scopedSlots[s];
+        return _this3.$scopedSlots[s];
       });
 
       if (slots.every(function (s) {
@@ -381,12 +385,12 @@ function _empty() {}function _awaitIgnored(value, direct) {
       this.setText(this.displayProperty(suggestion));
     },
     setText: function setText(text) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.$nextTick(function () {
-        _this3.inputElement.value = text;
-        _this3.text = text;
-        _this3.$emit('input', text);
+        _this4.inputElement.value = text;
+        _this4.text = text;
+        _this4.$emit('input', text);
       });
     },
     select: function select(item) {
@@ -429,17 +433,17 @@ function _empty() {}function _awaitIgnored(value, direct) {
     },
     showSuggestions: function showSuggestions() {
       try {
-        var _this5 = this;
+        var _this6 = this;
 
         return _invoke(function () {
-          if (_this5.suggestions.length === 0 && _this5.minLength <= _this5.textLength) {
+          if (_this6.suggestions.length === 0 && _this6.minLength <= _this6.textLength) {
             // try show misc slots while researching
-            _this5.showList();
-            return _awaitIgnored(_this5.research());
+            _this6.showList();
+            return _awaitIgnored(_this6.research());
           }
         }, function () {
 
-          _this5.showList();
+          _this6.showList();
         });
       } catch (e) {
         return Promise.reject(e);
@@ -518,7 +522,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
       this.isClicking = false;
     },
     onBlur: function onBlur(e) {
-      var _this6 = this;
+      var _this7 = this;
 
       if (this.isInFocus) {
 
@@ -534,7 +538,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true;
           setTimeout(function () {
-            _this6.inputElement.focus();
+            _this7.inputElement.focus();
           }, 0);
         }
       } else {
@@ -545,7 +549,9 @@ function _empty() {}function _awaitIgnored(value, direct) {
       this.isTabbed = false;
     },
     onFocus: function onFocus(e) {
-      this.isInFocus = true; // Only emit, if it was a native input focus
+      this.isInFocus = true;
+
+      // Only emit, if it was a native input focus
       if (e && !this.isFalseFocus) {
         this.$emit('focus', e);
       }
@@ -585,36 +591,36 @@ function _empty() {}function _awaitIgnored(value, direct) {
     },
     research: function research() {
       try {
-        var _this8 = this;
+        var _this9 = this;
 
         return _finally(function () {
           return _catch(function () {
             return _invokeIgnored(function () {
-              if (_this8.canSend) {
-                _this8.canSend = false;
+              if (_this9.canSend) {
+                _this9.canSend = false;
                 // @TODO: fix when promises will be cancelable (never :D)
-                var textBeforeRequest = _this8.text;
-                return _await(_this8.getSuggestions(_this8.text), function (newList) {
-                  if (textBeforeRequest === _this8.text) {
-                    _this8.$set(_this8, 'suggestions', newList);
+                var textBeforeRequest = _this9.text;
+                return _await(_this9.getSuggestions(_this9.text), function (newList) {
+                  if (textBeforeRequest === _this9.text) {
+                    _this9.$set(_this9, 'suggestions', newList);
                   }
                 });
               }
             });
           }, function (e) {
-            _this8.clearSuggestions();
+            _this9.clearSuggestions();
             throw e;
           });
         }, function () {
-          _this8.canSend = true;
+          _this9.canSend = true;
 
-          if (_this8.suggestions.length === 0 && _this8.miscSlotsAreEmpty()) {
-            _this8.hideList();
-          } else if (_this8.isInFocus) {
-            _this8.showList();
+          if (_this9.suggestions.length === 0 && _this9.miscSlotsAreEmpty()) {
+            _this9.hideList();
+          } else if (_this9.isInFocus) {
+            _this9.showList();
           }
 
-          return _this8.suggestions;
+          return _this9.suggestions;
         });
       } catch (e) {
         return Promise.reject(e);
@@ -622,31 +628,31 @@ function _empty() {}function _awaitIgnored(value, direct) {
     },
     getSuggestions: function getSuggestions(value) {
       try {
-        var _this10 = this;
+        var _this11 = this;
 
         value = value || '';
 
-        if (value.length < _this10.minLength) {
+        if (value.length < _this11.minLength) {
           return [];
         }
 
-        _this10.selected = null;
+        _this11.selected = null;
 
         // Start request if can
-        if (_this10.listIsRequest) {
-          _this10.$emit('request-start', value);
+        if (_this11.listIsRequest) {
+          _this11.$emit('request-start', value);
         }
 
         var result = [];
         return _finally(function () {
           return _catch(function () {
             return _invoke(function () {
-              if (_this10.listIsRequest) {
-                return _await(_this10.list(value), function (_this9$list) {
-                  result = _this9$list || [];
+              if (_this11.listIsRequest) {
+                return _await(_this11.list(value), function (_this10$list) {
+                  result = _this10$list || [];
                 });
               } else {
-                result = _this10.list;
+                result = _this11.list;
               }
             }, function () {
 
@@ -655,28 +661,28 @@ function _empty() {}function _awaitIgnored(value, direct) {
                 result = [result];
               }
 
-              _this10.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
+              _this11.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
 
-              if (_this10.filterByQuery) {
+              if (_this11.filterByQuery) {
                 result = result.filter(function (el) {
-                  return _this10.filter(el, value);
+                  return _this11.filter(el, value);
                 });
               }
 
-              if (_this10.listIsRequest) {
-                _this10.$emit('request-done', result);
+              if (_this11.listIsRequest) {
+                _this11.$emit('request-done', result);
               }
             });
           }, function (e) {
-            if (_this10.listIsRequest) {
-              _this10.$emit('request-failed', e);
+            if (_this11.listIsRequest) {
+              _this11.$emit('request-failed', e);
             } else {
               throw e;
             }
           });
         }, function () {
-          if (_this10.maxSuggestions) {
-            result.splice(_this10.maxSuggestions);
+          if (_this11.maxSuggestions) {
+            result.splice(_this11.maxSuggestions);
           }
 
           return result;

@@ -222,10 +222,12 @@ export default {
     this.controlScheme = Object.assign({}, defaultControls, this.controls)
   },
   mounted () {
-    this.inputElement = this.$refs['inputSlot'].querySelector('input')
+    setTimeout(() => {
+      this.inputElement = this.$refs['inputSlot'].querySelector('input')
 
-    this.setInputAriaAttributes()
-    this.prepareEventHandlers(true)
+      this.setInputAriaAttributes()
+      this.prepareEventHandlers(true)
+    }, 0)
   },
   beforeDestroy () {
     this.prepareEventHandlers(false)
