@@ -47,21 +47,20 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
-function _empty() {}function _awaitIgnored(value, direct) {
-  if (!direct) {
-    return value && value.then ? value.then(_empty) : Promise.resolve();
-  }
-}function _invoke(body, then) {
-  var result = body();if (result && result.then) {
-
-    return result.then(then);
-  }return then(result);
-}function _await(value, then, direct) {
+function _await(value, then, direct) {
   if (direct) {
     return then ? then(value) : value;
   }if (!value || !value.then) {
     value = Promise.resolve(value);
   }return then ? value.then(then) : value;
+}function _empty() {}function _awaitIgnored(value, direct) {
+  if (!direct) {
+    return value && value.then ? value.then(_empty) : Promise.resolve();
+  }
+}function _invoke(body, then) {
+  var result = body();if (result && result.then) {
+    return result.then(then);
+  }return then(result);
 }function _invokeIgnored(body) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
@@ -71,9 +70,11 @@ function _empty() {}function _awaitIgnored(value, direct) {
     var result = body();
   } catch (e) {
     return recover(e);
-  }if (result && result.then) {
+  }
+  if (result && result.then) {
     return result.then(void 0, recover);
-  }return result;
+  }
+  return result;
 }function _finally(body, finalizer) {
   try {
     var result = body();
@@ -270,10 +271,23 @@ function _empty() {}function _awaitIgnored(value, direct) {
     this.controlScheme = Object.assign({}, defaultControls, this.controls);
   },
   mounted: function mounted() {
-    this.inputElement = this.$refs['inputSlot'].querySelector('input');
+    try {
+      var _this3 = this;
 
-    this.setInputAriaAttributes();
-    this.prepareEventHandlers(true);
+      return _await(_this3.$slots.default, function () {
+
+        _this3.inputElement = _this3.$refs['inputSlot'].querySelector('input');
+
+        if (_this3.inputElement) {
+          _this3.setInputAriaAttributes();
+          _this3.prepareEventHandlers(true);
+        } else {
+          console.error('No input element found');
+        }
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
   },
   beforeDestroy: function beforeDestroy() {
     this.prepareEventHandlers(false);
@@ -326,10 +340,10 @@ function _empty() {}function _awaitIgnored(value, direct) {
       return true;
     },
     miscSlotsAreEmpty: function miscSlotsAreEmpty() {
-      var _this2 = this;
+      var _this4 = this;
 
       var slots = ['misc-item-above', 'misc-item-below'].map(function (s) {
-        return _this2.$scopedSlots[s];
+        return _this4.$scopedSlots[s];
       });
 
       if (slots.every(function (s) {
@@ -381,12 +395,12 @@ function _empty() {}function _awaitIgnored(value, direct) {
       this.setText(this.displayProperty(suggestion));
     },
     setText: function setText(text) {
-      var _this3 = this;
+      var _this5 = this;
 
       this.$nextTick(function () {
-        _this3.inputElement.value = text;
-        _this3.text = text;
-        _this3.$emit('input', text);
+        _this5.inputElement.value = text;
+        _this5.text = text;
+        _this5.$emit('input', text);
       });
     },
     select: function select(item) {
@@ -429,17 +443,17 @@ function _empty() {}function _awaitIgnored(value, direct) {
     },
     showSuggestions: function showSuggestions() {
       try {
-        var _this5 = this;
+        var _this7 = this;
 
         return _invoke(function () {
-          if (_this5.suggestions.length === 0 && _this5.minLength <= _this5.textLength) {
+          if (_this7.suggestions.length === 0 && _this7.minLength <= _this7.textLength) {
             // try show misc slots while researching
-            _this5.showList();
-            return _awaitIgnored(_this5.research());
+            _this7.showList();
+            return _awaitIgnored(_this7.research());
           }
         }, function () {
 
-          _this5.showList();
+          _this7.showList();
         });
       } catch (e) {
         return Promise.reject(e);
@@ -518,7 +532,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
       this.isClicking = false;
     },
     onBlur: function onBlur(e) {
-      var _this6 = this;
+      var _this8 = this;
 
       if (this.isInFocus) {
 
@@ -534,7 +548,7 @@ function _empty() {}function _awaitIgnored(value, direct) {
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true;
           setTimeout(function () {
-            _this6.inputElement.focus();
+            _this8.inputElement.focus();
           }, 0);
         }
       } else {
@@ -545,7 +559,9 @@ function _empty() {}function _awaitIgnored(value, direct) {
       this.isTabbed = false;
     },
     onFocus: function onFocus(e) {
-      this.isInFocus = true; // Only emit, if it was a native input focus
+      this.isInFocus = true;
+
+      // Only emit, if it was a native input focus
       if (e && !this.isFalseFocus) {
         this.$emit('focus', e);
       }
@@ -585,36 +601,36 @@ function _empty() {}function _awaitIgnored(value, direct) {
     },
     research: function research() {
       try {
-        var _this8 = this;
+        var _this10 = this;
 
         return _finally(function () {
           return _catch(function () {
             return _invokeIgnored(function () {
-              if (_this8.canSend) {
-                _this8.canSend = false;
+              if (_this10.canSend) {
+                _this10.canSend = false;
                 // @TODO: fix when promises will be cancelable (never :D)
-                var textBeforeRequest = _this8.text;
-                return _await(_this8.getSuggestions(_this8.text), function (newList) {
-                  if (textBeforeRequest === _this8.text) {
-                    _this8.$set(_this8, 'suggestions', newList);
+                var textBeforeRequest = _this10.text;
+                return _await(_this10.getSuggestions(_this10.text), function (newList) {
+                  if (textBeforeRequest === _this10.text) {
+                    _this10.$set(_this10, 'suggestions', newList);
                   }
                 });
               }
             });
           }, function (e) {
-            _this8.clearSuggestions();
+            _this10.clearSuggestions();
             throw e;
           });
         }, function () {
-          _this8.canSend = true;
+          _this10.canSend = true;
 
-          if (_this8.suggestions.length === 0 && _this8.miscSlotsAreEmpty()) {
-            _this8.hideList();
-          } else if (_this8.isInFocus) {
-            _this8.showList();
+          if (_this10.suggestions.length === 0 && _this10.miscSlotsAreEmpty()) {
+            _this10.hideList();
+          } else if (_this10.isInFocus) {
+            _this10.showList();
           }
 
-          return _this8.suggestions;
+          return _this10.suggestions;
         });
       } catch (e) {
         return Promise.reject(e);
@@ -622,31 +638,31 @@ function _empty() {}function _awaitIgnored(value, direct) {
     },
     getSuggestions: function getSuggestions(value) {
       try {
-        var _this10 = this;
+        var _this12 = this;
 
         value = value || '';
 
-        if (value.length < _this10.minLength) {
+        if (value.length < _this12.minLength) {
           return [];
         }
 
-        _this10.selected = null;
+        _this12.selected = null;
 
         // Start request if can
-        if (_this10.listIsRequest) {
-          _this10.$emit('request-start', value);
+        if (_this12.listIsRequest) {
+          _this12.$emit('request-start', value);
         }
 
         var result = [];
         return _finally(function () {
           return _catch(function () {
             return _invoke(function () {
-              if (_this10.listIsRequest) {
-                return _await(_this10.list(value), function (_this9$list) {
-                  result = _this9$list || [];
+              if (_this12.listIsRequest) {
+                return _await(_this12.list(value), function (_this11$list) {
+                  result = _this11$list || [];
                 });
               } else {
-                result = _this10.list;
+                result = _this12.list;
               }
             }, function () {
 
@@ -655,28 +671,28 @@ function _empty() {}function _awaitIgnored(value, direct) {
                 result = [result];
               }
 
-              _this10.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
+              _this12.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
 
-              if (_this10.filterByQuery) {
+              if (_this12.filterByQuery) {
                 result = result.filter(function (el) {
-                  return _this10.filter(el, value);
+                  return _this12.filter(el, value);
                 });
               }
 
-              if (_this10.listIsRequest) {
-                _this10.$emit('request-done', result);
+              if (_this12.listIsRequest) {
+                _this12.$emit('request-done', result);
               }
             });
           }, function (e) {
-            if (_this10.listIsRequest) {
-              _this10.$emit('request-failed', e);
+            if (_this12.listIsRequest) {
+              _this12.$emit('request-failed', e);
             } else {
               throw e;
             }
           });
         }, function () {
-          if (_this10.maxSuggestions) {
-            result.splice(_this10.maxSuggestions);
+          if (_this12.maxSuggestions) {
+            result.splice(_this12.maxSuggestions);
           }
 
           return result;

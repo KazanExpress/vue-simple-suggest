@@ -205,11 +205,17 @@ var VueSimpleSuggest = {
   created() {
     this.controlScheme = Object.assign({}, defaultControls, this.controls);
   },
-  mounted() {
+  async mounted() {
+    await this.$slots.default;
+
     this.inputElement = this.$refs['inputSlot'].querySelector('input');
 
-    this.setInputAriaAttributes();
-    this.prepareEventHandlers(true);
+    if (this.inputElement) {
+      this.setInputAriaAttributes();
+      this.prepareEventHandlers(true);
+    } else {
+      console.error('No input element found');
+    }
   },
   beforeDestroy() {
     this.prepareEventHandlers(false);

@@ -31,15 +31,12 @@ function hasKeyCodeByCode(arr, keyCode) {
   }
 }
 
-function _empty() {}function _awaitIgnored(value, direct) {
-  if (!direct) {
-    return value && value.then ? value.then(_empty) : Promise.resolve();
-  }
-}function _invoke(body, then) {
-  var result = body();if (result && result.then) {
-
-    return result.then(then);
-  }return then(result);
+function _await(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }return then ? value.then(then) : value;
 }function _async(f) {
   return function () {
     for (var args = [], i = 0; i < arguments.length; i++) {
@@ -50,12 +47,14 @@ function _empty() {}function _awaitIgnored(value, direct) {
       return Promise.reject(e);
     }
   };
-}function _await(value, then, direct) {
-  if (direct) {
-    return then ? then(value) : value;
-  }if (!value || !value.then) {
-    value = Promise.resolve(value);
-  }return then ? value.then(then) : value;
+}function _empty() {}function _awaitIgnored(value, direct) {
+  if (!direct) {
+    return value && value.then ? value.then(_empty) : Promise.resolve();
+  }
+}function _invoke(body, then) {
+  var result = body();if (result && result.then) {
+    return result.then(then);
+  }return then(result);
 }function _invokeIgnored(body) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
@@ -65,9 +64,11 @@ function _empty() {}function _awaitIgnored(value, direct) {
     var result = body();
   } catch (e) {
     return recover(e);
-  }if (result && result.then) {
+  }
+  if (result && result.then) {
     return result.then(void 0, recover);
-  }return result;
+  }
+  return result;
 }function _finally(body, finalizer) {
   try {
     var result = body();
@@ -250,12 +251,22 @@ function _empty() {}function _awaitIgnored(value, direct) {
   created() {
     this.controlScheme = Object.assign({}, defaultControls, this.controls);
   },
-  mounted() {
-    this.inputElement = this.$refs['inputSlot'].querySelector('input');
+  mounted: _async(function () {
+    const _this = this;
 
-    this.setInputAriaAttributes();
-    this.prepareEventHandlers(true);
-  },
+    return _await(_this.$slots.default, function () {
+
+      _this.inputElement = _this.$refs['inputSlot'].querySelector('input');
+
+      if (_this.inputElement) {
+        _this.setInputAriaAttributes();
+        _this.prepareEventHandlers(true);
+      } else {
+        console.error('No input element found');
+      }
+    });
+  }),
+
   beforeDestroy() {
     this.prepareEventHandlers(false);
   },
@@ -400,17 +411,17 @@ function _empty() {}function _awaitIgnored(value, direct) {
       }
     },
     showSuggestions: _async(function () {
-      const _this = this;
+      const _this2 = this;
 
       return _invoke(function () {
-        if (_this.suggestions.length === 0 && _this.minLength <= _this.textLength) {
+        if (_this2.suggestions.length === 0 && _this2.minLength <= _this2.textLength) {
           // try show misc slots while researching
-          _this.showList();
-          return _awaitIgnored(_this.research());
+          _this2.showList();
+          return _awaitIgnored(_this2.research());
         }
       }, function () {
 
-        _this.showList();
+        _this2.showList();
       });
     }),
 
@@ -517,7 +528,9 @@ function _empty() {}function _awaitIgnored(value, direct) {
       this.isTabbed = false;
     },
     onFocus(e) {
-      this.isInFocus = true; // Only emit, if it was a native input focus
+      this.isInFocus = true;
+
+      // Only emit, if it was a native input focus
       if (e && !this.isFalseFocus) {
         this.$emit('focus', e);
       }
@@ -556,64 +569,64 @@ function _empty() {}function _awaitIgnored(value, direct) {
       }
     },
     research: _async(function () {
-      const _this2 = this;
+      const _this3 = this;
 
       return _finally(function () {
         return _catch(function () {
           return _invokeIgnored(function () {
-            if (_this2.canSend) {
-              _this2.canSend = false;
+            if (_this3.canSend) {
+              _this3.canSend = false;
               // @TODO: fix when promises will be cancelable (never :D)
-              let textBeforeRequest = _this2.text;
-              return _await(_this2.getSuggestions(_this2.text), function (newList) {
-                if (textBeforeRequest === _this2.text) {
-                  _this2.$set(_this2, 'suggestions', newList);
+              let textBeforeRequest = _this3.text;
+              return _await(_this3.getSuggestions(_this3.text), function (newList) {
+                if (textBeforeRequest === _this3.text) {
+                  _this3.$set(_this3, 'suggestions', newList);
                 }
               });
             }
           });
         }, function (e) {
-          _this2.clearSuggestions();
+          _this3.clearSuggestions();
           throw e;
         });
       }, function () {
-        _this2.canSend = true;
+        _this3.canSend = true;
 
-        if (_this2.suggestions.length === 0 && _this2.miscSlotsAreEmpty()) {
-          _this2.hideList();
-        } else if (_this2.isInFocus) {
-          _this2.showList();
+        if (_this3.suggestions.length === 0 && _this3.miscSlotsAreEmpty()) {
+          _this3.hideList();
+        } else if (_this3.isInFocus) {
+          _this3.showList();
         }
 
-        return _this2.suggestions;
+        return _this3.suggestions;
       });
     }),
     getSuggestions: _async(function (value) {
-      const _this3 = this;
+      const _this4 = this;
 
       value = value || '';
 
-      if (value.length < _this3.minLength) {
+      if (value.length < _this4.minLength) {
         return [];
       }
 
-      _this3.selected = null;
+      _this4.selected = null;
 
       // Start request if can
-      if (_this3.listIsRequest) {
-        _this3.$emit('request-start', value);
+      if (_this4.listIsRequest) {
+        _this4.$emit('request-start', value);
       }
 
       let result = [];
       return _finally(function () {
         return _catch(function () {
           return _invoke(function () {
-            if (_this3.listIsRequest) {
-              return _await(_this3.list(value), function (_this3$list) {
-                result = _this3$list || [];
+            if (_this4.listIsRequest) {
+              return _await(_this4.list(value), function (_this4$list) {
+                result = _this4$list || [];
               });
             } else {
-              result = _this3.list;
+              result = _this4.list;
             }
           }, function () {
 
@@ -622,26 +635,26 @@ function _empty() {}function _awaitIgnored(value, direct) {
               result = [result];
             }
 
-            _this3.isPlainSuggestion = typeof result[0] !== 'object' || Array.isArray(result[0]);
+            _this4.isPlainSuggestion = typeof result[0] !== 'object' || Array.isArray(result[0]);
 
-            if (_this3.filterByQuery) {
-              result = result.filter(el => _this3.filter(el, value));
+            if (_this4.filterByQuery) {
+              result = result.filter(el => _this4.filter(el, value));
             }
 
-            if (_this3.listIsRequest) {
-              _this3.$emit('request-done', result);
+            if (_this4.listIsRequest) {
+              _this4.$emit('request-done', result);
             }
           });
         }, function (e) {
-          if (_this3.listIsRequest) {
-            _this3.$emit('request-failed', e);
+          if (_this4.listIsRequest) {
+            _this4.$emit('request-failed', e);
           } else {
             throw e;
           }
         });
       }, function () {
-        if (_this3.maxSuggestions) {
-          result.splice(_this3.maxSuggestions);
+        if (_this4.maxSuggestions) {
+          result.splice(_this4.maxSuggestions);
         }
 
         return result;
