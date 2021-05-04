@@ -227,7 +227,6 @@ export default {
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
 
     if (this.inputElement) {
-
       this.setInputAriaAttributes()
       this.prepareEventHandlers(true)
     } else {
