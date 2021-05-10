@@ -135,6 +135,10 @@ export default {
       type: String,
       default: 'input',
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
+    },
+    preventHide: {
+      type: Boolean,
+      default: false
     }
   },
   // Handle run-time mode changes (now working):
@@ -460,7 +464,8 @@ export default {
     suggestionClick (suggestion, e) {
       this.$emit('suggestion-click', suggestion, e)
       this.select(suggestion)
-      this.hideList()
+
+      if (!this.preventHide) this.hideList()
 
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = false
