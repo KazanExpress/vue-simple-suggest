@@ -553,6 +553,7 @@ var VueSimpleSuggest = {
         this.$emit('request-start', value);
       }
 
+      this.isPlainSuggestion = false;
       let result = [];
       try {
         if (this.listIsRequest) {
@@ -566,7 +567,7 @@ var VueSimpleSuggest = {
           result = [result];
         }
 
-        this.isPlainSuggestion = typeof result[0] !== 'object' || Array.isArray(result[0]);
+        this.isPlainSuggestion = typeof result[0] !== 'object' && typeof result[0] !== 'undefined' || Array.isArray(result[0]);
 
         if (this.filterByQuery) {
           result = result.filter(el => this.filter(el, value));
