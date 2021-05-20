@@ -652,7 +652,7 @@ var VueSimpleSuggest = {
           _this12.$emit('request-start', value);
         }
 
-        _this12.isPlainSuggestion = false;
+        var nextIsPlainSuggestion = false;
         var result = [];
         return _finally(function () {
           return _catch(function () {
@@ -671,7 +671,7 @@ var VueSimpleSuggest = {
                 result = [result];
               }
 
-              _this12.isPlainSuggestion = _typeof(result[0]) !== 'object' && typeof result[0] !== 'undefined' || Array.isArray(result[0]);
+              nextIsPlainSuggestion = _typeof(result[0]) !== 'object' && typeof result[0] !== 'undefined' || Array.isArray(result[0]);
 
               if (_this12.filterByQuery) {
                 result = result.filter(function (el) {
@@ -695,6 +695,7 @@ var VueSimpleSuggest = {
             result.splice(_this12.maxSuggestions);
           }
 
+          _this12.isPlainSuggestion = nextIsPlainSuggestion;
           return result;
         });
       } catch (e) {

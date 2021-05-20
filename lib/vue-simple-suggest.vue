@@ -581,7 +581,7 @@ export default {
         this.$emit('request-start', value)
       }
 
-      this.isPlainSuggestion = false
+      let nextIsPlainSuggestion = false
       let result = []
       try {
         if (this.listIsRequest) {
@@ -593,7 +593,7 @@ export default {
         // IFF the result is not an array (just in case!) - make it an array
         if (!Array.isArray(result)) { result = [result] }
 
-        this.isPlainSuggestion = (typeof result[0] !== 'object' && typeof result[0] !== 'undefined') || Array.isArray(result[0])
+        nextIsPlainSuggestion = (typeof result[0] !== 'object' && typeof result[0] !== 'undefined') || Array.isArray(result[0])
 
         if (this.filterByQuery) {
           result = result.filter((el) => this.filter(el, value))
@@ -617,6 +617,7 @@ export default {
           result.splice(this.maxSuggestions)
         }
 
+        this.isPlainSuggestion = nextIsPlainSuggestion
         return result
       }
     },

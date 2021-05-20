@@ -616,7 +616,7 @@ var VueSimpleSuggest = {
         _this4.$emit('request-start', value);
       }
 
-      _this4.isPlainSuggestion = false;
+      let nextIsPlainSuggestion = false;
       let result = [];
       return _finally(function () {
         return _catch(function () {
@@ -635,7 +635,7 @@ var VueSimpleSuggest = {
               result = [result];
             }
 
-            _this4.isPlainSuggestion = typeof result[0] !== 'object' && typeof result[0] !== 'undefined' || Array.isArray(result[0]);
+            nextIsPlainSuggestion = typeof result[0] !== 'object' && typeof result[0] !== 'undefined' || Array.isArray(result[0]);
 
             if (_this4.filterByQuery) {
               result = result.filter(el => _this4.filter(el, value));
@@ -657,6 +657,7 @@ var VueSimpleSuggest = {
           result.splice(_this4.maxSuggestions);
         }
 
+        _this4.isPlainSuggestion = nextIsPlainSuggestion;
         return result;
       });
     }),
