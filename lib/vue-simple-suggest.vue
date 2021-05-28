@@ -135,6 +135,10 @@ export default {
       type: String,
       default: 'input',
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
+    },
+    preventHide: {
+      type: Boolean,
+      default: false
     }
   },
   // Handle run-time mode changes (now working):
@@ -221,11 +225,17 @@ export default {
   created () {
     this.controlScheme = Object.assign({}, defaultControls, this.controls)
   },
-  mounted () {
+  async mounted () {
+    await this.$slots.default;
+
     this.inputElement = this.$refs['inputSlot'].querySelector('input')
 
-    this.setInputAriaAttributes()
-    this.prepareEventHandlers(true)
+    if (this.inputElement) {
+      this.setInputAriaAttributes()
+      this.prepareEventHandlers(true)
+    } else {
+      console.error('No input element found')
+    }
   },
   beforeDestroy () {
     this.prepareEventHandlers(false)
@@ -454,7 +464,8 @@ export default {
     suggestionClick (suggestion, e) {
       this.$emit('suggestion-click', suggestion, e)
       this.select(suggestion)
-      this.hideList()
+
+      if (!this.preventHide) this.hideList()
 
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = false
