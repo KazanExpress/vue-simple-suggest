@@ -553,6 +553,7 @@ var VueSimpleSuggest = {
         this.$emit('request-start', value);
       }
 
+      let nextIsPlainSuggestion = false;
       let result = [];
       try {
         if (this.listIsRequest) {
@@ -566,7 +567,7 @@ var VueSimpleSuggest = {
           result = [result];
         }
 
-        this.isPlainSuggestion = typeof result[0] !== 'object' || Array.isArray(result[0]);
+        nextIsPlainSuggestion = typeof result[0] !== 'object' && typeof result[0] !== 'undefined' || Array.isArray(result[0]);
 
         if (this.filterByQuery) {
           result = result.filter(el => this.filter(el, value));
@@ -586,6 +587,7 @@ var VueSimpleSuggest = {
           result.splice(this.maxSuggestions);
         }
 
+        this.isPlainSuggestion = nextIsPlainSuggestion;
         return result;
       }
     },

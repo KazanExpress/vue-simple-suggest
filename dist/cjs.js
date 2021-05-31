@@ -70,11 +70,9 @@ function _await(value, then, direct) {
     var result = body();
   } catch (e) {
     return recover(e);
-  }
-  if (result && result.then) {
+  }if (result && result.then) {
     return result.then(void 0, recover);
-  }
-  return result;
+  }return result;
 }function _finally(body, finalizer) {
   try {
     var result = body();
@@ -83,7 +81,8 @@ function _await(value, then, direct) {
   }if (result && result.then) {
     return result.then(finalizer, finalizer);
   }return finalizer();
-}var VueSimpleSuggest = {
+}
+var VueSimpleSuggest = {
   render: function render() {
     var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: [_vm.styles.vueSimpleSuggest, { designed: !_vm.destyled, focus: _vm.isInFocus }], on: { "keydown": function keydown($event) {
           if (!$event.type.indexOf('key') && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
@@ -653,6 +652,7 @@ function _await(value, then, direct) {
           _this12.$emit('request-start', value);
         }
 
+        var nextIsPlainSuggestion = false;
         var result = [];
         return _finally(function () {
           return _catch(function () {
@@ -671,7 +671,7 @@ function _await(value, then, direct) {
                 result = [result];
               }
 
-              _this12.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
+              nextIsPlainSuggestion = _typeof(result[0]) !== 'object' && typeof result[0] !== 'undefined' || Array.isArray(result[0]);
 
               if (_this12.filterByQuery) {
                 result = result.filter(function (el) {
@@ -695,6 +695,7 @@ function _await(value, then, direct) {
             result.splice(_this12.maxSuggestions);
           }
 
+          _this12.isPlainSuggestion = nextIsPlainSuggestion;
           return result;
         });
       } catch (e) {
