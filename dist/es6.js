@@ -56,7 +56,8 @@ function _await(value, then, direct) {
     return result.then(then);
   }return then(result);
 }function _invokeIgnored(body) {
-  var result = body();if (result && result.then) {
+  var result = body();
+  if (result && result.then) {
     return result.then(_empty);
   }
 }function _catch(body, recover) {
@@ -68,6 +69,7 @@ function _await(value, then, direct) {
     return result.then(void 0, recover);
   }return result;
 }function _finally(body, finalizer) {
+
   try {
     var result = body();
   } catch (e) {
@@ -75,8 +77,7 @@ function _await(value, then, direct) {
   }if (result && result.then) {
     return result.then(finalizer, finalizer);
   }return finalizer();
-}
-var VueSimpleSuggest = {
+}var VueSimpleSuggest = {
   render: function () {
     var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: [_vm.styles.vueSimpleSuggest, { designed: !_vm.destyled, focus: _vm.isInFocus }], on: { "keydown": function ($event) {
           if (!$event.type.indexOf('key') && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
@@ -164,6 +165,10 @@ var VueSimpleSuggest = {
       type: String,
       default: 'input',
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
+    },
+    preventHide: {
+      type: Boolean,
+      default: false
     }
   },
   // Handle run-time mode changes (now working):
@@ -491,7 +496,8 @@ var VueSimpleSuggest = {
     suggestionClick(suggestion, e) {
       this.$emit('suggestion-click', suggestion, e);
       this.select(suggestion);
-      this.hideList();
+
+      if (!this.preventHide) this.hideList();
 
       /// Ensure, that all needed flags are off before finishing the click.
       this.isClicking = false;
@@ -558,9 +564,7 @@ var VueSimpleSuggest = {
       if (this.text.length < this.minLength) {
         this.hideList();
         return;
-      }
-
-      if (this.debounce) {
+      }if (this.debounce) {
         clearTimeout(this.timeoutInstance);
         this.timeoutInstance = setTimeout(this.research, this.debounce);
       } else {
