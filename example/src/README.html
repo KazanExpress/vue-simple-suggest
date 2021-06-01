@@ -69,7 +69,7 @@
 <li><a href="#custom-input">Custom input</a></li>
 <li><a href="#accessibility-on-custom-input">Accessibility on custom input</a></li>
 <li><a href="#custom-suggestion-item">Custom suggestion item</a></li>
-<li><a href="#custom-miscellanious-item-slots">Custom miscellanious item slots</a></li>
+<li><a href="#custom-miscellaneous-item-slots">Custom miscellaneous item slots</a></li>
 </ul>
 </li>
 </ul>
@@ -548,10 +548,16 @@ npm run docs</code></pre><hr>
 <td>All of the HTML5 input attributes with their respected default values.</td>
 </tr>
 <tr>
-<td><code>nullable-select</code> <sup><a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.4.0">v1.9.0</a></sup></td>
+<td><code>nullable-select</code> <sup><a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.9.0">v1.9.0</a></sup></td>
 <td>Boolean</td>
 <td><code>false</code></td>
 <td>Whether the <code>select</code> should accept <code>null</code> or not.</td>
+</tr>
+<tr>
+<td><code>preventHide</code> <sup><a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.11.0">v1.11.0</a></sup></td>
+<td>Boolean</td>
+<td><code>false</code></td>
+<td>Whether to keep the input open or not, allowing the user to select multiple inputs</td>
 </tr>
 </tbody>
 </table>
@@ -1035,7 +1041,7 @@ you can use the <code>autocomplete()</code> function in the slot&#39;s scope:</p
   <span class="hljs-keyword">return</span> result.replace(<span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">'(.*?)('</span> + texts.join(<span class="hljs-string">'|'</span>) + <span class="hljs-string">')(.*?)'</span>,<span class="hljs-string">'gi'</span>), <span class="hljs-string">'$1&lt;b&gt;$2&lt;/b&gt;$3'</span>);
 }</code></pre><p>Result via Google Books search API:</p>
 <p class="img-container"><img src="assets/screenshot.jpg" alt=""></p>
-<h5 id="custom-miscellanious-item-slots"><a class="header-link" href="#custom-miscellanious-item-slots"></a>Custom miscellanious item slots</h5>
+<h5 id="custom-miscellaneous-item-slots"><a class="header-link" href="#custom-miscellaneous-item-slots"></a>Custom miscellaneous item slots</h5>
 <blockquote>
 <p><code>misc-item-above</code> and <code>misc-item-below</code> slots (optional)</p>
 </blockquote>
