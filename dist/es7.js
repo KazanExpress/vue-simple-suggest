@@ -462,7 +462,7 @@ var VueSimpleSuggest = {
           this.isFalseFocus = true;
           setTimeout(() => {
             this.inputElement.focus();
-          }, 0);
+          }, 200);
         }
       } else {
         this.inputElement.blur();

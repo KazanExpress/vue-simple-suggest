@@ -56,8 +56,7 @@ function _await(value, then, direct) {
     return result.then(then);
   }return then(result);
 }function _invokeIgnored(body) {
-  var result = body();
-  if (result && result.then) {
+  var result = body();if (result && result.then) {
     return result.then(_empty);
   }
 }function _catch(body, recover) {
@@ -69,8 +68,8 @@ function _await(value, then, direct) {
     return result.then(void 0, recover);
   }return result;
 }function _finally(body, finalizer) {
-
   try {
+
     var result = body();
   } catch (e) {
     return finalizer();
@@ -518,7 +517,7 @@ function _await(value, then, direct) {
           this.isFalseFocus = true;
           setTimeout(() => {
             this.inputElement.focus();
-          }, 0);
+          }, 200);
         }
       } else {
         this.inputElement.blur();
@@ -543,9 +542,7 @@ function _await(value, then, direct) {
       // Show list only if the item has not been clicked (isFalseFocus indicates that click was made earlier)
       if (!this.isClicking && !this.isFalseFocus) {
         this.showSuggestions();
-      }
-
-      this.isFalseFocus = false;
+      }this.isFalseFocus = false;
     },
     onInput(inputEvent) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value;
@@ -564,7 +561,9 @@ function _await(value, then, direct) {
       if (this.text.length < this.minLength) {
         this.hideList();
         return;
-      }if (this.debounce) {
+      }
+
+      if (this.debounce) {
         clearTimeout(this.timeoutInstance);
         this.timeoutInstance = setTimeout(this.research, this.debounce);
       } else {
