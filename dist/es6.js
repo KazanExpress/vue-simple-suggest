@@ -69,7 +69,6 @@ function _await(value, then, direct) {
   }return result;
 }function _finally(body, finalizer) {
   try {
-
     var result = body();
   } catch (e) {
     return finalizer();
@@ -498,8 +497,14 @@ function _await(value, then, direct) {
 
       if (!this.preventHide) this.hideList();
 
-      /// Ensure, that all needed flags are off before finishing the click.
-      this.isClicking = false;
+      if (this.isClicking) {
+        setTimeout(() => {
+          this.inputElement.focus();
+
+          /// Ensure, that all needed flags are off before finishing the click.
+          this.isClicking = false;
+        }, 0);
+      }
     },
     onBlur(e) {
       if (this.isInFocus) {
@@ -515,9 +520,6 @@ function _await(value, then, direct) {
           this.$emit('blur', e);
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true;
-          setTimeout(() => {
-            this.inputElement.focus();
-          }, 200);
         }
       } else {
         this.inputElement.blur();
@@ -542,7 +544,9 @@ function _await(value, then, direct) {
       // Show list only if the item has not been clicked (isFalseFocus indicates that click was made earlier)
       if (!this.isClicking && !this.isFalseFocus) {
         this.showSuggestions();
-      }this.isFalseFocus = false;
+      }
+
+      this.isFalseFocus = false;
     },
     onInput(inputEvent) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value;
