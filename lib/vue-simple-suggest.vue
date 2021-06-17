@@ -237,7 +237,7 @@ export default {
       console.error('No input element found')
     }
   },
-  beforeDestroy () {
+  beforeUnmount () {
     this.prepareEventHandlers(false)
   },
   methods: {

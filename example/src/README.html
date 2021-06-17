@@ -243,9 +243,10 @@ You can import them like this:</p>
 <pre class="hljs"><code><span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;vue-simple-suggest/lib/polyfills&#x27;</span>;
 <span class="hljs-comment">// or</span>
 <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;vue-simple-suggest/lib/polyfills&#x27;</span>);</code></pre><h3 id="usage"><a class="header-link" href="#usage"></a>Usage</h3>
-<p><strong>Globaly:</strong></p>
-<pre class="hljs"><code><span class="hljs-comment">// You don&#x27;t need to do it, if including via &lt;script&gt; (umd, iife)</span>
-Vue.component(<span class="hljs-string">&#x27;vue-simple-suggest&#x27;</span>, VueSimpleSuggest)</code></pre><p><strong>In single-file .vue components:</strong></p>
+<p><strong>Globally:</strong></p>
+<pre class="hljs"><code><span class="hljs-keyword">const</span> app = createApp(MyApp)
+
+app.component(<span class="hljs-string">&#x27;vue-simple-suggest&#x27;</span>, VueSimpleSuggest)</code></pre><p><strong>In single-file .vue components:</strong></p>
 <pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
   <span class="hljs-keyword">import</span> VueSimpleSuggest <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue-simple-suggest&#x27;</span>
   <span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;vue-simple-suggest/dist/styles.css&#x27;</span> <span class="hljs-comment">// Using a css-loader</span>

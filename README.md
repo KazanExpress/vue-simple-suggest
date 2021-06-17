@@ -266,7 +266,7 @@ require('vue-simple-suggest/lib/polyfills');
 
 ### Usage
 
-**Globaly:**
+**Globally:**
 
 ```js
 const app = createApp(MyApp)

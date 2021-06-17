@@ -292,7 +292,7 @@ function _await(value, then, direct) {
       return Promise.reject(e);
     }
   },
-  beforeDestroy: function beforeDestroy() {
+  beforeUnmount: function beforeUnmount() {
     this.prepareEventHandlers(false);
   },
 

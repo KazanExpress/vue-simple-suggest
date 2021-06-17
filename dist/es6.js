@@ -270,7 +270,7 @@ function _await(value, then, direct) {
     });
   }),
 
-  beforeDestroy() {
+  beforeUnmount() {
     this.prepareEventHandlers(false);
   },
   methods: {
