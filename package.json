@@ -55,7 +55,7 @@
     "JS"
   ],
   "peerDependencies": {
-    "vue": "^2.5.0"
+    "vue": "^3.0.0"
   },
   "browserslist": [
     "> 1%",

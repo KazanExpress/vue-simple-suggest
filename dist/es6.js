@@ -56,8 +56,7 @@ function _await(value, then, direct) {
     return result.then(then);
   }return then(result);
 }function _invokeIgnored(body) {
-  var result = body();
-  if (result && result.then) {
+  var result = body();if (result && result.then) {
     return result.then(_empty);
   }
 }function _catch(body, recover) {
@@ -69,21 +68,21 @@ function _await(value, then, direct) {
     return result.then(void 0, recover);
   }return result;
 }function _finally(body, finalizer) {
-
   try {
     var result = body();
   } catch (e) {
     return finalizer();
   }if (result && result.then) {
     return result.then(finalizer, finalizer);
-  }return finalizer();
+  }
+  return finalizer();
 }var VueSimpleSuggest = {
   render: function () {
     var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: [_vm.styles.vueSimpleSuggest, { designed: !_vm.destyled, focus: _vm.isInFocus }], on: { "keydown": function ($event) {
           if (!$event.type.indexOf('key') && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
             return null;
           }_vm.isTabbed = true;
-        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId } }, [!!this.$slots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, {
           selected: _vm.isSelected(suggestion),
           hover: _vm.isHovered(suggestion)
@@ -96,7 +95,7 @@ function _await(value, then, direct) {
           } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { "autocomplete": function () {
           return _vm.autocompleteText(suggestion);
         }, "suggestion": suggestion, "query": _vm.text })], 2);
-    }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
+    }), _vm._v(" "), !!this.$slots['misc-item-below'] ? _c('li', [_vm._t("misc-item-below", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
   },
   staticRenderFns: [],
   name: 'vue-simple-suggest',
@@ -175,7 +174,7 @@ function _await(value, then, direct) {
   watch: {
     mode: {
       handler(current, old) {
-        this.constructor.options.model.event = current;
+        this.$options.model.event = current;
 
         // Can be null if the component is root
         this.$parent && this.$parent.$forceUpdate();
@@ -321,7 +320,7 @@ function _await(value, then, direct) {
       return true;
     },
     miscSlotsAreEmpty() {
-      const slots = ['misc-item-above', 'misc-item-below'].map(s => this.$scopedSlots[s]);
+      const slots = ['misc-item-above', 'misc-item-below'].map(s => this.$slots[s]);
 
       if (slots.every(s => !!s)) {
         return slots.every(this.isScopedSlotEmpty.bind(this));
@@ -543,9 +542,7 @@ function _await(value, then, direct) {
       // Show list only if the item has not been clicked (isFalseFocus indicates that click was made earlier)
       if (!this.isClicking && !this.isFalseFocus) {
         this.showSuggestions();
-      }
-
-      this.isFalseFocus = false;
+      }this.isFalseFocus = false;
     },
     onInput(inputEvent) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value;
@@ -564,14 +561,15 @@ function _await(value, then, direct) {
       if (this.text.length < this.minLength) {
         this.hideList();
         return;
-      }if (this.debounce) {
+      }
+
+      if (this.debounce) {
         clearTimeout(this.timeoutInstance);
         this.timeoutInstance = setTimeout(this.research, this.debounce);
       } else {
         this.research();
       }
-    },
-    research: _async(function () {
+    }, research: _async(function () {
       const _this3 = this;
 
       return _finally(function () {
@@ -583,7 +581,7 @@ function _await(value, then, direct) {
               let textBeforeRequest = _this3.text;
               return _await(_this3.getSuggestions(_this3.text), function (newList) {
                 if (textBeforeRequest === _this3.text) {
-                  _this3.$set(_this3, 'suggestions', newList);
+                  _this3.suggestions = newList;
                 }
               });
             }
