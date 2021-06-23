@@ -212,14 +212,16 @@ var VueSimpleSuggest = {
   async mounted() {
     await this.$slots.default;
 
-    this.inputElement = this.$refs['inputSlot'].querySelector('input');
+    this.$nextTick(() => {
+      this.inputElement = this.$refs['inputSlot'].querySelector('input');
 
-    if (this.inputElement) {
-      this.setInputAriaAttributes();
-      this.prepareEventHandlers(true);
-    } else {
-      console.error('No input element found');
-    }
+      if (this.inputElement) {
+        this.setInputAriaAttributes();
+        this.prepareEventHandlers(true);
+      } else {
+        console.error('No input element found');
+      }
+    });
   },
   beforeDestroy() {
     this.prepareEventHandlers(false);
