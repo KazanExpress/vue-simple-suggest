@@ -59,7 +59,8 @@ function _await(value, then, direct) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
-}function _catch(body, recover) {
+}
+function _catch(body, recover) {
   try {
     var result = body();
   } catch (e) {
@@ -499,8 +500,14 @@ function _await(value, then, direct) {
 
       if (!this.preventHide) this.hideList();
 
-      /// Ensure, that all needed flags are off before finishing the click.
-      this.isClicking = false;
+      if (this.isClicking) {
+        setTimeout(() => {
+          this.inputElement.focus();
+
+          /// Ensure, that all needed flags are off before finishing the click.
+          this.isClicking = false;
+        }, 0);
+      }
     },
     onBlur(e) {
       if (this.isInFocus) {
@@ -516,9 +523,6 @@ function _await(value, then, direct) {
           this.$emit('blur', e);
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true;
-          setTimeout(() => {
-            this.inputElement.focus();
-          }, 0);
         }
       } else {
         this.inputElement.blur();
@@ -546,8 +550,7 @@ function _await(value, then, direct) {
       }
 
       this.isFalseFocus = false;
-    },
-    onInput(inputEvent) {
+    }, onInput(inputEvent) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value;
 
       this.updateTextOutside(value);

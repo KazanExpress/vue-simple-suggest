@@ -65,7 +65,8 @@ function _await(value, then, direct) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
-}function _catch(body, recover) {
+}
+function _catch(body, recover) {
   try {
     var result = body();
   } catch (e) {
@@ -528,17 +529,23 @@ function _await(value, then, direct) {
       }
     },
     suggestionClick: function suggestionClick(suggestion, e) {
+      var _this8 = this;
+
       this.$emit('suggestion-click', suggestion, e);
       this.select(suggestion);
 
       if (!this.preventHide) this.hideList();
 
-      /// Ensure, that all needed flags are off before finishing the click.
-      this.isClicking = false;
+      if (this.isClicking) {
+        setTimeout(function () {
+          _this8.inputElement.focus();
+
+          /// Ensure, that all needed flags are off before finishing the click.
+          _this8.isClicking = false;
+        }, 0);
+      }
     },
     onBlur: function onBlur(e) {
-      var _this8 = this;
-
       if (this.isInFocus) {
 
         /// Clicking starts here, because input's blur occurs before the suggestionClick
@@ -552,9 +559,6 @@ function _await(value, then, direct) {
           this.$emit('blur', e);
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true;
-          setTimeout(function () {
-            _this8.inputElement.focus();
-          }, 0);
         }
       } else {
         this.inputElement.blur();

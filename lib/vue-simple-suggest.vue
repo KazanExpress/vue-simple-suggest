@@ -469,8 +469,14 @@ export default {
 
       if (!this.preventHide) this.hideList()
 
-      /// Ensure, that all needed flags are off before finishing the click.
-      this.isClicking = false
+      if (this.isClicking) {
+          setTimeout(() => {
+            this.inputElement.focus()
+
+            /// Ensure, that all needed flags are off before finishing the click.
+            this.isClicking = false
+          }, 0)
+      }
     },
     onBlur (e) {
       if (this.isInFocus) {
@@ -486,9 +492,6 @@ export default {
           this.$emit('blur', e)
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true
-          setTimeout(() => {
-            this.inputElement.focus()
-          }, 0)
         }
       } else {
         this.inputElement.blur()
