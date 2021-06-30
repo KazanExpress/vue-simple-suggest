@@ -59,7 +59,8 @@ function _await(value, then, direct) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
-}function _catch(body, recover) {
+}
+function _catch(body, recover) {
   try {
     var result = body();
   } catch (e) {
@@ -258,14 +259,16 @@ function _await(value, then, direct) {
 
     return _await(_this.$slots.default, function () {
 
-      _this.inputElement = _this.$refs['inputSlot'].querySelector('input');
+      _this.$nextTick(() => {
+        _this.inputElement = _this.$refs['inputSlot'].querySelector('input');
 
-      if (_this.inputElement) {
-        _this.setInputAriaAttributes();
-        _this.prepareEventHandlers(true);
-      } else {
-        console.error('No input element found');
-      }
+        if (_this.inputElement) {
+          _this.setInputAriaAttributes();
+          _this.prepareEventHandlers(true);
+        } else {
+          console.error('No input element found');
+        }
+      });
     });
   }),
 
@@ -547,8 +550,7 @@ function _await(value, then, direct) {
       }
 
       this.isFalseFocus = false;
-    },
-    onInput(inputEvent) {
+    }, onInput(inputEvent) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value;
 
       this.updateTextOutside(value);

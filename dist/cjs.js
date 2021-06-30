@@ -65,7 +65,8 @@ function _await(value, then, direct) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
-}function _catch(body, recover) {
+}
+function _catch(body, recover) {
   try {
     var result = body();
   } catch (e) {
@@ -278,14 +279,16 @@ function _await(value, then, direct) {
 
       return _await(_this3.$slots.default, function () {
 
-        _this3.inputElement = _this3.$refs['inputSlot'].querySelector('input');
+        _this3.$nextTick(function () {
+          _this3.inputElement = _this3.$refs['inputSlot'].querySelector('input');
 
-        if (_this3.inputElement) {
-          _this3.setInputAriaAttributes();
-          _this3.prepareEventHandlers(true);
-        } else {
-          console.error('No input element found');
-        }
+          if (_this3.inputElement) {
+            _this3.setInputAriaAttributes();
+            _this3.prepareEventHandlers(true);
+          } else {
+            console.error('No input element found');
+          }
+        });
       });
     } catch (e) {
       return Promise.reject(e);
