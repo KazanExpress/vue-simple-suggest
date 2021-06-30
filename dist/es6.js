@@ -59,8 +59,7 @@ function _await(value, then, direct) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
-}
-function _catch(body, recover) {
+}function _catch(body, recover) {
   try {
     var result = body();
   } catch (e) {
@@ -550,7 +549,8 @@ function _catch(body, recover) {
       }
 
       this.isFalseFocus = false;
-    }, onInput(inputEvent) {
+    },
+    onInput(inputEvent) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value;
 
       this.updateTextOutside(value);
