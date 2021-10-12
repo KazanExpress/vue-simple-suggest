@@ -19,8 +19,6 @@
         role="listbox"
         :aria-labelledby="listId"
         :class="styles.suggestions"
-        @mouseenter="hoverList(true)"
-        @mouseleave="hoverList(false)"
       >
         <li v-if="!!this.$scopedSlots['misc-item-above']">
           <slot name="misc-item-above"
@@ -137,6 +135,10 @@ export default {
       type: String,
       default: 'input',
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
+    },
+    preventHide: {
+      type: Boolean,
+      default: false
     }
   },
   // Handle run-time mode changes (now working):
@@ -181,7 +183,6 @@ export default {
       text: this.value,
       isPlainSuggestion: false,
       isClicking: false,
-      isOverList: false,
       isInFocus: false,
       isFalseFocus: false,
       isTabbed: false,
@@ -206,7 +207,13 @@ export default {
       return this.inputIsComponent ? '$off' : 'removeEventListener'
     },
     hoveredIndex () {
-      return this.suggestions.findIndex(el => this.hovered && (this.valueProperty(this.hovered) == this.valueProperty(el)))
+      for (let i = 0; i < this.suggestions.length; i++) {
+        const el = this.suggestions[i];
+        if (this.hovered && (this.valueProperty(this.hovered) == this.valueProperty(el))) {
+          return i;
+        }
+      }
+      return -1;
     },
     textLength () {
       return (this.text && this.text.length) || (this.inputElement.value.length) || 0
@@ -218,11 +225,19 @@ export default {
   created () {
     this.controlScheme = Object.assign({}, defaultControls, this.controls)
   },
-  mounted () {
-    this.inputElement = this.$refs['inputSlot'].querySelector('input')
+  async mounted () {
+    await this.$slots.default;
 
-    this.setInputAriaAttributes()
-    this.prepareEventHandlers(true)
+    this.$nextTick(() => {
+      this.inputElement = this.$refs['inputSlot'].querySelector('input')
+
+      if (this.inputElement) {
+        this.setInputAriaAttributes()
+        this.prepareEventHandlers(true)
+      } else {
+        console.error('No input element found')
+      }
+    })
   },
   beforeDestroy () {
     this.prepareEventHandlers(false)
@@ -354,9 +369,6 @@ export default {
 
       this.hovered = item
     },
-    hoverList (isOverList) {
-      this.isOverList = isOverList
-    },
     hideList () {
       if (this.listShown) {
         this.listShown = false
@@ -454,17 +466,24 @@ export default {
     suggestionClick (suggestion, e) {
       this.$emit('suggestion-click', suggestion, e)
       this.select(suggestion)
-      this.hideList()
 
-      /// Ensure, that all needed flags are off before finishing the click.
-      this.isClicking = this.isOverList = false
+      if (!this.preventHide) this.hideList()
+
+      if (this.isClicking) {
+          setTimeout(() => {
+            this.inputElement.focus()
+
+            /// Ensure, that all needed flags are off before finishing the click.
+            this.isClicking = false
+          }, 0)
+      }
     },
     onBlur (e) {
       if (this.isInFocus) {
 
         /// Clicking starts here, because input's blur occurs before the suggestionClick
         /// and exactly when the user clicks the mouse button or taps the screen.
-        this.isClicking = this.isOverList && !this.isTabbed
+        this.isClicking = this.hovered && !this.isTabbed
 
         if (!this.isClicking) {
           this.isInFocus = false
@@ -473,9 +492,6 @@ export default {
           this.$emit('blur', e)
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true
-          setTimeout(() => {
-            this.inputElement.focus()
-          }, 0)
         }
       } else {
         this.inputElement.blur()
@@ -575,6 +591,7 @@ export default {
         this.$emit('request-start', value)
       }
 
+      let nextIsPlainSuggestion = false
       let result = []
       try {
         if (this.listIsRequest) {
@@ -586,7 +603,7 @@ export default {
         // IFF the result is not an array (just in case!) - make it an array
         if (!Array.isArray(result)) { result = [result] }
 
-        this.isPlainSuggestion = (typeof result[0] !== 'object') || Array.isArray(result[0])
+        nextIsPlainSuggestion = (typeof result[0] !== 'object' && typeof result[0] !== 'undefined') || Array.isArray(result[0])
 
         if (this.filterByQuery) {
           result = result.filter((el) => this.filter(el, value))
@@ -610,6 +627,7 @@ export default {
           result.splice(this.maxSuggestions)
         }
 
+        this.isPlainSuggestion = nextIsPlainSuggestion
         return result
       }
     },

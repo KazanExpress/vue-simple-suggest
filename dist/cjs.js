@@ -47,21 +47,20 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
-function _empty() {}function _awaitIgnored(value, direct) {
-  if (!direct) {
-    return value && value.then ? value.then(_empty) : Promise.resolve();
-  }
-}
-function _invoke(body, then) {
-  var result = body();if (result && result.then) {
-    return result.then(then);
-  }return then(result);
-}function _await(value, then, direct) {
+function _await(value, then, direct) {
   if (direct) {
     return then ? then(value) : value;
   }if (!value || !value.then) {
     value = Promise.resolve(value);
   }return then ? value.then(then) : value;
+}function _empty() {}function _awaitIgnored(value, direct) {
+  if (!direct) {
+    return value && value.then ? value.then(_empty) : Promise.resolve();
+  }
+}function _invoke(body, then) {
+  var result = body();if (result && result.then) {
+    return result.then(then);
+  }return then(result);
 }function _invokeIgnored(body) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
@@ -88,11 +87,7 @@ function _invoke(body, then) {
           if (!$event.type.indexOf('key') && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
             return null;
           }_vm.isTabbed = true;
-        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId }, on: { "mouseenter": function mouseenter($event) {
-          return _vm.hoverList(true);
-        }, "mouseleave": function mouseleave($event) {
-          return _vm.hoverList(false);
-        } } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, {
           selected: _vm.isSelected(suggestion),
           hover: _vm.isHovered(suggestion)
@@ -182,6 +177,10 @@ function _invoke(body, then) {
       validator: function validator(value) {
         return !!~Object.keys(modes).indexOf(value.toLowerCase());
       }
+    },
+    preventHide: {
+      type: Boolean,
+      default: false
     }
   },
   // Handle run-time mode changes (now working):
@@ -230,7 +229,6 @@ function _invoke(body, then) {
       text: this.value,
       isPlainSuggestion: false,
       isClicking: false,
-      isOverList: false,
       isInFocus: false,
       isFalseFocus: false,
       isTabbed: false,
@@ -256,11 +254,13 @@ function _invoke(body, then) {
       return this.inputIsComponent ? '$off' : 'removeEventListener';
     },
     hoveredIndex: function hoveredIndex() {
-      var _this2 = this;
-
-      return this.suggestions.findIndex(function (el) {
-        return _this2.hovered && _this2.valueProperty(_this2.hovered) == _this2.valueProperty(el);
-      });
+      for (var i = 0; i < this.suggestions.length; i++) {
+        var el = this.suggestions[i];
+        if (this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el)) {
+          return i;
+        }
+      }
+      return -1;
     },
     textLength: function textLength() {
       return this.text && this.text.length || this.inputElement.value.length || 0;
@@ -273,10 +273,25 @@ function _invoke(body, then) {
     this.controlScheme = Object.assign({}, defaultControls, this.controls);
   },
   mounted: function mounted() {
-    this.inputElement = this.$refs['inputSlot'].querySelector('input');
+    try {
+      var _this3 = this;
 
-    this.setInputAriaAttributes();
-    this.prepareEventHandlers(true);
+      return _await(_this3.$slots.default, function () {
+
+        _this3.$nextTick(function () {
+          _this3.inputElement = _this3.$refs['inputSlot'].querySelector('input');
+
+          if (_this3.inputElement) {
+            _this3.setInputAriaAttributes();
+            _this3.prepareEventHandlers(true);
+          } else {
+            console.error('No input element found');
+          }
+        });
+      });
+    } catch (e) {
+      return Promise.reject(e);
+    }
   },
   beforeDestroy: function beforeDestroy() {
     this.prepareEventHandlers(false);
@@ -329,10 +344,10 @@ function _invoke(body, then) {
       return true;
     },
     miscSlotsAreEmpty: function miscSlotsAreEmpty() {
-      var _this3 = this;
+      var _this4 = this;
 
       var slots = ['misc-item-above', 'misc-item-below'].map(function (s) {
-        return _this3.$scopedSlots[s];
+        return _this4.$scopedSlots[s];
       });
 
       if (slots.every(function (s) {
@@ -384,12 +399,12 @@ function _invoke(body, then) {
       this.setText(this.displayProperty(suggestion));
     },
     setText: function setText(text) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.$nextTick(function () {
-        _this4.inputElement.value = text;
-        _this4.text = text;
-        _this4.$emit('input', text);
+        _this5.inputElement.value = text;
+        _this5.text = text;
+        _this5.$emit('input', text);
       });
     },
     select: function select(item) {
@@ -415,9 +430,6 @@ function _invoke(body, then) {
 
       this.hovered = item;
     },
-    hoverList: function hoverList(isOverList) {
-      this.isOverList = isOverList;
-    },
     hideList: function hideList() {
       if (this.listShown) {
         this.listShown = false;
@@ -435,17 +447,17 @@ function _invoke(body, then) {
     },
     showSuggestions: function showSuggestions() {
       try {
-        var _this6 = this;
+        var _this7 = this;
 
         return _invoke(function () {
-          if (_this6.suggestions.length === 0 && _this6.minLength <= _this6.textLength) {
+          if (_this7.suggestions.length === 0 && _this7.minLength <= _this7.textLength) {
             // try show misc slots while researching
-            _this6.showList();
-            return _awaitIgnored(_this6.research());
+            _this7.showList();
+            return _awaitIgnored(_this7.research());
           }
         }, function () {
 
-          _this6.showList();
+          _this7.showList();
         });
       } catch (e) {
         return Promise.reject(e);
@@ -516,21 +528,28 @@ function _invoke(body, then) {
       }
     },
     suggestionClick: function suggestionClick(suggestion, e) {
+      var _this8 = this;
+
       this.$emit('suggestion-click', suggestion, e);
       this.select(suggestion);
-      this.hideList();
 
-      /// Ensure, that all needed flags are off before finishing the click.
-      this.isClicking = this.isOverList = false;
+      if (!this.preventHide) this.hideList();
+
+      if (this.isClicking) {
+        setTimeout(function () {
+          _this8.inputElement.focus();
+
+          /// Ensure, that all needed flags are off before finishing the click.
+          _this8.isClicking = false;
+        }, 0);
+      }
     },
     onBlur: function onBlur(e) {
-      var _this7 = this;
-
       if (this.isInFocus) {
 
         /// Clicking starts here, because input's blur occurs before the suggestionClick
         /// and exactly when the user clicks the mouse button or taps the screen.
-        this.isClicking = this.isOverList && !this.isTabbed;
+        this.isClicking = this.hovered && !this.isTabbed;
 
         if (!this.isClicking) {
           this.isInFocus = false;
@@ -539,9 +558,6 @@ function _invoke(body, then) {
           this.$emit('blur', e);
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true;
-          setTimeout(function () {
-            _this7.inputElement.focus();
-          }, 0);
         }
       } else {
         this.inputElement.blur();
@@ -593,36 +609,36 @@ function _invoke(body, then) {
     },
     research: function research() {
       try {
-        var _this9 = this;
+        var _this10 = this;
 
         return _finally(function () {
           return _catch(function () {
             return _invokeIgnored(function () {
-              if (_this9.canSend) {
-                _this9.canSend = false;
+              if (_this10.canSend) {
+                _this10.canSend = false;
                 // @TODO: fix when promises will be cancelable (never :D)
-                var textBeforeRequest = _this9.text;
-                return _await(_this9.getSuggestions(_this9.text), function (newList) {
-                  if (textBeforeRequest === _this9.text) {
-                    _this9.$set(_this9, 'suggestions', newList);
+                var textBeforeRequest = _this10.text;
+                return _await(_this10.getSuggestions(_this10.text), function (newList) {
+                  if (textBeforeRequest === _this10.text) {
+                    _this10.$set(_this10, 'suggestions', newList);
                   }
                 });
               }
             });
           }, function (e) {
-            _this9.clearSuggestions();
+            _this10.clearSuggestions();
             throw e;
           });
         }, function () {
-          _this9.canSend = true;
+          _this10.canSend = true;
 
-          if (_this9.suggestions.length === 0 && _this9.miscSlotsAreEmpty()) {
-            _this9.hideList();
-          } else if (_this9.isInFocus) {
-            _this9.showList();
+          if (_this10.suggestions.length === 0 && _this10.miscSlotsAreEmpty()) {
+            _this10.hideList();
+          } else if (_this10.isInFocus) {
+            _this10.showList();
           }
 
-          return _this9.suggestions;
+          return _this10.suggestions;
         });
       } catch (e) {
         return Promise.reject(e);
@@ -630,31 +646,32 @@ function _invoke(body, then) {
     },
     getSuggestions: function getSuggestions(value) {
       try {
-        var _this11 = this;
+        var _this12 = this;
 
         value = value || '';
 
-        if (value.length < _this11.minLength) {
+        if (value.length < _this12.minLength) {
           return [];
         }
 
-        _this11.selected = null;
+        _this12.selected = null;
 
         // Start request if can
-        if (_this11.listIsRequest) {
-          _this11.$emit('request-start', value);
+        if (_this12.listIsRequest) {
+          _this12.$emit('request-start', value);
         }
 
+        var nextIsPlainSuggestion = false;
         var result = [];
         return _finally(function () {
           return _catch(function () {
             return _invoke(function () {
-              if (_this11.listIsRequest) {
-                return _await(_this11.list(value), function (_this10$list) {
-                  result = _this10$list || [];
+              if (_this12.listIsRequest) {
+                return _await(_this12.list(value), function (_this11$list) {
+                  result = _this11$list || [];
                 });
               } else {
-                result = _this11.list;
+                result = _this12.list;
               }
             }, function () {
 
@@ -663,30 +680,31 @@ function _invoke(body, then) {
                 result = [result];
               }
 
-              _this11.isPlainSuggestion = _typeof(result[0]) !== 'object' || Array.isArray(result[0]);
+              nextIsPlainSuggestion = _typeof(result[0]) !== 'object' && typeof result[0] !== 'undefined' || Array.isArray(result[0]);
 
-              if (_this11.filterByQuery) {
+              if (_this12.filterByQuery) {
                 result = result.filter(function (el) {
-                  return _this11.filter(el, value);
+                  return _this12.filter(el, value);
                 });
               }
 
-              if (_this11.listIsRequest) {
-                _this11.$emit('request-done', result);
+              if (_this12.listIsRequest) {
+                _this12.$emit('request-done', result);
               }
             });
           }, function (e) {
-            if (_this11.listIsRequest) {
-              _this11.$emit('request-failed', e);
+            if (_this12.listIsRequest) {
+              _this12.$emit('request-failed', e);
             } else {
               throw e;
             }
           });
         }, function () {
-          if (_this11.maxSuggestions) {
-            result.splice(_this11.maxSuggestions);
+          if (_this12.maxSuggestions) {
+            result.splice(_this12.maxSuggestions);
           }
 
+          _this12.isPlainSuggestion = nextIsPlainSuggestion;
           return result;
         });
       } catch (e) {

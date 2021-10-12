@@ -31,15 +31,12 @@ function hasKeyCodeByCode(arr, keyCode) {
   }
 }
 
-function _empty() {}function _awaitIgnored(value, direct) {
-  if (!direct) {
-    return value && value.then ? value.then(_empty) : Promise.resolve();
-  }
-}
-function _invoke(body, then) {
-  var result = body();if (result && result.then) {
-    return result.then(then);
-  }return then(result);
+function _await(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }return then ? value.then(then) : value;
 }function _async(f) {
   return function () {
     for (var args = [], i = 0; i < arguments.length; i++) {
@@ -50,12 +47,14 @@ function _invoke(body, then) {
       return Promise.reject(e);
     }
   };
-}function _await(value, then, direct) {
-  if (direct) {
-    return then ? then(value) : value;
-  }if (!value || !value.then) {
-    value = Promise.resolve(value);
-  }return then ? value.then(then) : value;
+}function _empty() {}function _awaitIgnored(value, direct) {
+  if (!direct) {
+    return value && value.then ? value.then(_empty) : Promise.resolve();
+  }
+}function _invoke(body, then) {
+  var result = body();if (result && result.then) {
+    return result.then(then);
+  }return then(result);
 }function _invokeIgnored(body) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
@@ -82,11 +81,7 @@ function _invoke(body, then) {
           if (!$event.type.indexOf('key') && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
             return null;
           }_vm.isTabbed = true;
-        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId }, on: { "mouseenter": function ($event) {
-          return _vm.hoverList(true);
-        }, "mouseleave": function ($event) {
-          return _vm.hoverList(false);
-        } } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
+        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', [_vm._t("misc-item-above", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
       return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, {
           selected: _vm.isSelected(suggestion),
           hover: _vm.isHovered(suggestion)
@@ -168,6 +163,10 @@ function _invoke(body, then) {
       type: String,
       default: 'input',
       validator: value => !!~Object.keys(modes).indexOf(value.toLowerCase())
+    },
+    preventHide: {
+      type: Boolean,
+      default: false
     }
   },
   // Handle run-time mode changes (now working):
@@ -212,7 +211,6 @@ function _invoke(body, then) {
       text: this.value,
       isPlainSuggestion: false,
       isClicking: false,
-      isOverList: false,
       isInFocus: false,
       isFalseFocus: false,
       isTabbed: false,
@@ -237,7 +235,13 @@ function _invoke(body, then) {
       return this.inputIsComponent ? '$off' : 'removeEventListener';
     },
     hoveredIndex() {
-      return this.suggestions.findIndex(el => this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el));
+      for (let i = 0; i < this.suggestions.length; i++) {
+        const el = this.suggestions[i];
+        if (this.hovered && this.valueProperty(this.hovered) == this.valueProperty(el)) {
+          return i;
+        }
+      }
+      return -1;
     },
     textLength() {
       return this.text && this.text.length || this.inputElement.value.length || 0;
@@ -249,12 +253,24 @@ function _invoke(body, then) {
   created() {
     this.controlScheme = Object.assign({}, defaultControls, this.controls);
   },
-  mounted() {
-    this.inputElement = this.$refs['inputSlot'].querySelector('input');
+  mounted: _async(function () {
+    const _this = this;
 
-    this.setInputAriaAttributes();
-    this.prepareEventHandlers(true);
-  },
+    return _await(_this.$slots.default, function () {
+
+      _this.$nextTick(() => {
+        _this.inputElement = _this.$refs['inputSlot'].querySelector('input');
+
+        if (_this.inputElement) {
+          _this.setInputAriaAttributes();
+          _this.prepareEventHandlers(true);
+        } else {
+          console.error('No input element found');
+        }
+      });
+    });
+  }),
+
   beforeDestroy() {
     this.prepareEventHandlers(false);
   },
@@ -383,9 +399,6 @@ function _invoke(body, then) {
 
       this.hovered = item;
     },
-    hoverList(isOverList) {
-      this.isOverList = isOverList;
-    },
     hideList() {
       if (this.listShown) {
         this.listShown = false;
@@ -402,17 +415,17 @@ function _invoke(body, then) {
       }
     },
     showSuggestions: _async(function () {
-      const _this = this;
+      const _this2 = this;
 
       return _invoke(function () {
-        if (_this.suggestions.length === 0 && _this.minLength <= _this.textLength) {
+        if (_this2.suggestions.length === 0 && _this2.minLength <= _this2.textLength) {
           // try show misc slots while researching
-          _this.showList();
-          return _awaitIgnored(_this.research());
+          _this2.showList();
+          return _awaitIgnored(_this2.research());
         }
       }, function () {
 
-        _this.showList();
+        _this2.showList();
       });
     }),
 
@@ -483,17 +496,24 @@ function _invoke(body, then) {
     suggestionClick(suggestion, e) {
       this.$emit('suggestion-click', suggestion, e);
       this.select(suggestion);
-      this.hideList();
 
-      /// Ensure, that all needed flags are off before finishing the click.
-      this.isClicking = this.isOverList = false;
+      if (!this.preventHide) this.hideList();
+
+      if (this.isClicking) {
+        setTimeout(() => {
+          this.inputElement.focus();
+
+          /// Ensure, that all needed flags are off before finishing the click.
+          this.isClicking = false;
+        }, 0);
+      }
     },
     onBlur(e) {
       if (this.isInFocus) {
 
         /// Clicking starts here, because input's blur occurs before the suggestionClick
         /// and exactly when the user clicks the mouse button or taps the screen.
-        this.isClicking = this.isOverList && !this.isTabbed;
+        this.isClicking = this.hovered && !this.isTabbed;
 
         if (!this.isClicking) {
           this.isInFocus = false;
@@ -502,9 +522,6 @@ function _invoke(body, then) {
           this.$emit('blur', e);
         } else if (e && e.isTrusted && !this.isTabbed) {
           this.isFalseFocus = true;
-          setTimeout(() => {
-            this.inputElement.focus();
-          }, 0);
         }
       } else {
         this.inputElement.blur();
@@ -560,64 +577,65 @@ function _invoke(body, then) {
       }
     },
     research: _async(function () {
-      const _this2 = this;
+      const _this3 = this;
 
       return _finally(function () {
         return _catch(function () {
           return _invokeIgnored(function () {
-            if (_this2.canSend) {
-              _this2.canSend = false;
+            if (_this3.canSend) {
+              _this3.canSend = false;
               // @TODO: fix when promises will be cancelable (never :D)
-              let textBeforeRequest = _this2.text;
-              return _await(_this2.getSuggestions(_this2.text), function (newList) {
-                if (textBeforeRequest === _this2.text) {
-                  _this2.$set(_this2, 'suggestions', newList);
+              let textBeforeRequest = _this3.text;
+              return _await(_this3.getSuggestions(_this3.text), function (newList) {
+                if (textBeforeRequest === _this3.text) {
+                  _this3.$set(_this3, 'suggestions', newList);
                 }
               });
             }
           });
         }, function (e) {
-          _this2.clearSuggestions();
+          _this3.clearSuggestions();
           throw e;
         });
       }, function () {
-        _this2.canSend = true;
+        _this3.canSend = true;
 
-        if (_this2.suggestions.length === 0 && _this2.miscSlotsAreEmpty()) {
-          _this2.hideList();
-        } else if (_this2.isInFocus) {
-          _this2.showList();
+        if (_this3.suggestions.length === 0 && _this3.miscSlotsAreEmpty()) {
+          _this3.hideList();
+        } else if (_this3.isInFocus) {
+          _this3.showList();
         }
 
-        return _this2.suggestions;
+        return _this3.suggestions;
       });
     }),
     getSuggestions: _async(function (value) {
-      const _this3 = this;
+      const _this4 = this;
 
       value = value || '';
 
-      if (value.length < _this3.minLength) {
+      if (value.length < _this4.minLength) {
         return [];
       }
 
-      _this3.selected = null;
+      _this4.selected = null;
 
       // Start request if can
-      if (_this3.listIsRequest) {
-        _this3.$emit('request-start', value);
+      if (_this4.listIsRequest) {
+        _this4.$emit('request-start', value);
       }
 
+      let nextIsPlainSuggestion = false;
       let result = [];
       return _finally(function () {
         return _catch(function () {
           return _invoke(function () {
-            if (_this3.listIsRequest) {
-              return _await(_this3.list(value), function (_this3$list) {
-                result = _this3$list || [];
+            if (_this4.listIsRequest) {
+              return _await(_this4.list(value), function (_this4$list) {
+                result = _this4$list || [];
               });
             } else {
-              result = _this3.list;
+              result = _this4.list;
             }
           }, function () {
 
@@ -626,28 +644,29 @@ function _invoke(body, then) {
               result = [result];
             }
 
-            _this3.isPlainSuggestion = typeof result[0] !== 'object' || Array.isArray(result[0]);
+            nextIsPlainSuggestion = typeof result[0] !== 'object' && typeof result[0] !== 'undefined' || Array.isArray(result[0]);
 
-            if (_this3.filterByQuery) {
-              result = result.filter(el => _this3.filter(el, value));
+            if (_this4.filterByQuery) {
+              result = result.filter(el => _this4.filter(el, value));
             }
 
-            if (_this3.listIsRequest) {
-              _this3.$emit('request-done', result);
+            if (_this4.listIsRequest) {
+              _this4.$emit('request-done', result);
             }
           });
         }, function (e) {
-          if (_this3.listIsRequest) {
-            _this3.$emit('request-failed', e);
+          if (_this4.listIsRequest) {
+            _this4.$emit('request-failed', e);
           } else {
             throw e;
           }
         });
       }, function () {
-        if (_this3.maxSuggestions) {
-          result.splice(_this3.maxSuggestions);
+        if (_this4.maxSuggestions) {
+          result.splice(_this4.maxSuggestions);
         }
 
+        _this4.isPlainSuggestion = nextIsPlainSuggestion;
         return result;
       });
     }),
