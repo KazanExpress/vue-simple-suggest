@@ -465,6 +465,19 @@ If you wish to use your existing classes, or frameworks like Bootstrap you can i
 </style>
 ```
 
+Scheme:
+
+|Property | Description|
+|-|-|
+|`vueSimpleSuggest` | Additional classname for component's root element. |
+|`inputWrapper` | Additional classname for `.input-wrapper` element. |
+|`defaultInput` | Additional classname for `input` element if no custom input component is given. |
+|`suggestions` | Additional classname for suggestions list `ul` element. |
+|`miscItemAbove` | Classname for `misc-item-above` slot wrapper (`li` element itself). |
+|`suggestItem` | Additional classname for suggestion item `li` element. |
+|`miscItemBelow` | Classname for `misc-item-below` slot wrapper (`li` element itself). |
+
+-----
 #### Transitions
 > New in [v1.8.0](https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.8.0)
 

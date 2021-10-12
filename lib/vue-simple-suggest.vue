@@ -20,7 +20,7 @@
         :aria-labelledby="listId"
         :class="styles.suggestions"
       >
-        <li v-if="!!this.$scopedSlots['misc-item-above']">
+        <li v-if="!!this.$scopedSlots['misc-item-above']" :class="styles.miscItemAbove">
           <slot name="misc-item-above"
             :suggestions="suggestions"
             :query="text"
@@ -48,7 +48,7 @@
           </slot>
         </li>
 
-        <li v-if="!!this.$scopedSlots['misc-item-below']">
+        <li v-if="!!this.$scopedSlots['misc-item-below']" :class="styles.miscItemBelow">
           <slot name="misc-item-below"
             :suggestions="suggestions"
             :query="text"
