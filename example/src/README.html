@@ -943,7 +943,7 @@ Defaults to a simple input with props passed to vue-simple-suggest.</p>
   <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><pre class="hljs"><code><span class="hljs-comment">&lt;!--  Vue component example (also supports nesting):  --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;vModelGoesHere&quot;</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">my-custom-input-somponent</span> <span class="hljs-attr">:value</span>=<span class="hljs-string">&quot;initialInputValueGoesHere&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-custom-input-somponent</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">my-custom-input-component</span> <span class="hljs-attr">:value</span>=<span class="hljs-string">&quot;initialInputValueGoesHere&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-custom-input-component</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><p><strong>Custom input component caveats:</strong></p>
 <p>To work with the <code>vue-simple-suggest</code> your custom input component has to follow certain standard behaviours.</p>
 <p>Custom input component <strong>must</strong> (in order to work properly):</p>
@@ -959,7 +959,7 @@ Defaults to a simple input with props passed to vue-simple-suggest.</p>
 </ul>
 <p>If <code>vue-simple-suggest</code> with your custom component doesn&#39;t seem to react to outside variable changes - bind both components&#39; v-model to the same variable, like so:</p>
 <pre class="hljs"><code><span class="hljs-tag">&lt;<span class="hljs-name">vue-simple-suggest</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;model&quot;</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">my-custom-input-somponent</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;model&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-custom-input-somponent</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">my-custom-input-component</span> <span class="hljs-attr">v-model</span>=<span class="hljs-string">&quot;model&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">my-custom-input-component</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">vue-simple-suggest</span>&gt;</span></code></pre><h5 id="accessibility-on-custom-input"><a class="header-link" href="#accessibility-on-custom-input"></a>Accessibility on custom input</h5>
 <blockquote>
 <p>New in <a href="https://github.com/KazanExpress/vue-simple-suggest/releases/tag/v1.9.0">v1.9.0</a></p>
