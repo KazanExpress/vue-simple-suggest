@@ -674,7 +674,7 @@ Defaults to a simple input with props passed to vue-simple-suggest.
 ```html
 <!--  Vue component example (also supports nesting):  -->
 <vue-simple-suggest v-model="vModelGoesHere">
-  <my-custom-input-somponent :value="initialInputValueGoesHere"></my-custom-input-somponent>
+  <my-custom-input-component :value="initialInputValueGoesHere"></my-custom-input-component>
 </vue-simple-suggest>
 ```
 
@@ -694,7 +694,7 @@ Custom input component **should** (in order to avoid usage limitations):
 If `vue-simple-suggest` with your custom component doesn't seem to react to outside variable changes - bind both components' v-model to the same variable, like so:
 ```html
 <vue-simple-suggest v-model="model">
-  <my-custom-input-somponent v-model="model"></my-custom-input-somponent>
+  <my-custom-input-component v-model="model"></my-custom-input-component>
 </vue-simple-suggest>
 ```
 
