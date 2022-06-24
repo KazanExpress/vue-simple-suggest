@@ -65,8 +65,7 @@ function _await(value, then, direct) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
-}
-function _catch(body, recover) {
+}function _catch(body, recover) {
   try {
     var result = body();
   } catch (e) {
