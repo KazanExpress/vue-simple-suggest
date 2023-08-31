@@ -20,7 +20,7 @@
         :aria-labelledby="listId"
         :class="styles.suggestions"
       >
-        <li v-if="!!this.$scopedSlots['misc-item-above']" :class="styles.miscItemAbove">
+        <li v-if="!!$scopedSlots['misc-item-above']" :class="styles.miscItemAbove">
           <slot name="misc-item-above"
             :suggestions="suggestions"
             :query="text"
@@ -48,7 +48,7 @@
           </slot>
         </li>
 
-        <li v-if="!!this.$scopedSlots['misc-item-below']" :class="styles.miscItemBelow">
+        <li v-if="!!$scopedSlots['misc-item-below']" :class="styles.miscItemBelow">
           <slot name="misc-item-below"
             :suggestions="suggestions"
             :query="text"
@@ -65,7 +65,8 @@ import {
   modes,
   fromPath,
   hasKeyCodeByCode,
-  hasKeyCode
+  hasKeyCode,
+  requestAF
 } from './misc'
 
 export default {
@@ -144,7 +145,7 @@ export default {
   // Handle run-time mode changes (now working):
   watch: {
     mode: {
-      handler(current, old) {
+      handler(current) {
         this.constructor.options.model.event = current
 
         // Can be null if the component is root
@@ -229,14 +230,16 @@ export default {
     await this.$slots.default;
 
     this.$nextTick(() => {
-      this.inputElement = this.$refs['inputSlot'].querySelector('input')
+      requestAF(() => {
+        this.inputElement = this.$refs['inputSlot'].querySelector('input')
 
-      if (this.inputElement) {
-        this.setInputAriaAttributes()
-        this.prepareEventHandlers(true)
-      } else {
-        console.error('No input element found')
-      }
+        if (this.inputElement) {
+          this.setInputAriaAttributes()
+          this.prepareEventHandlers(true)
+        } else {
+          console.error('No input element found')
+        }
+      })
     })
   },
   beforeDestroy () {
@@ -574,6 +577,7 @@ export default {
           this.showList()
         }
 
+        // eslint-disable-next-line no-unsafe-finally
         return this.suggestions
       }
     },
@@ -628,6 +632,7 @@ export default {
         }
 
         this.isPlainSuggestion = nextIsPlainSuggestion
+        // eslint-disable-next-line no-unsafe-finally
         return result
       }
     },
