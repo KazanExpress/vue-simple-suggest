@@ -303,7 +303,7 @@ export default {
       return this.isScopedSlotEmpty.call(this, slot)
     },
     getPropertyByAttribute (obj, attr) {
-      return this.isPlainSuggestion ? obj : typeof obj !== undefined ? fromPath(obj, attr) : obj
+      return this.isPlainSuggestion ? obj : typeof obj !== 'undefined' ? fromPath(obj, attr) : obj
     },
     displayProperty (obj) {
       if (this.isPlainSuggestion) {
