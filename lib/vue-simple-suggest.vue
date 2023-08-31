@@ -362,7 +362,7 @@ export default {
       this.hover(null)
     },
     hover (item, elem) {
-      const elemId = !!item ? this.getId(item, this.hoveredIndex) : ''
+      const elemId = item ? this.getId(item, this.hoveredIndex) : ''
 
       this.inputElement.setAttribute('aria-activedescendant',  elemId)
 
