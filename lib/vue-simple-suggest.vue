@@ -243,7 +243,9 @@ export default {
     })
   },
   beforeDestroy () {
-    this.prepareEventHandlers(false)
+    if (this.inputElement) {
+      this.prepareEventHandlers(false)
+    }
   },
   methods: {
     isEqual(suggestion, item) {
