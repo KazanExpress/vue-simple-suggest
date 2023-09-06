@@ -240,13 +240,17 @@ export default {
         }
         const slot = this.$refs['inputSlot']
         if (slot) {
-          this.inputElement = slot.querySelector('input')
-          this.setInputAriaAttributes()
-          this.prepareEventHandlers(true)
           clearInterval(interval)
+          this.inputElement = slot.querySelector('input')
+          if (this.inputElement) {
+            this.setInputAriaAttributes()
+            this.prepareEventHandlers(true)
+          } else {
+            console.error('No input element found')
+          }
         } else if (++nbRetries == 4) {
           clearInterval(interval)
-          console.error('No input element found')
+          console.error('No input slot found')
         }
       }, 50)
     })
