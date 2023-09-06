@@ -66,7 +66,7 @@ import {
   fromPath,
   hasKeyCodeByCode,
   hasKeyCode,
-  requestAF
+  setIntervalImmediately
 } from './misc'
 
 export default {
@@ -230,16 +230,25 @@ export default {
     await this.$slots.default;
 
     this.$nextTick(() => {
-      requestAF(() => {
-        this.inputElement = this.$refs['inputSlot'].querySelector('input')
-
+      // https://jefrydco.id/en/blog/safe-access-vue-refs-undefined
+      var nbRetries = 0
+      const interval = setIntervalImmediately(() => {
+        // The immediate call succeeded.
         if (this.inputElement) {
+          clearInterval(interval)
+          return
+        }
+        const slot = this.$refs['inputSlot']
+        if (slot) {
+          this.inputElement = slot.querySelector('input')
           this.setInputAriaAttributes()
           this.prepareEventHandlers(true)
-        } else {
+          clearInterval(interval)
+        } else if (++nbRetries == 4) {
+          clearInterval(interval)
           console.error('No input element found')
         }
-      })
+      }, 50)
     })
   },
   beforeDestroy () {
