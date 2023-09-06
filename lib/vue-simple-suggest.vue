@@ -347,7 +347,7 @@ export default {
       })
     },
     select (item) {
-      if (this.selected !== item || (this.nullableSelect && !item)) {
+      if ((item && this.selected !== item) || (this.nullableSelect && !item)) {
         this.selected = item
         this.$emit('select', item)
 
