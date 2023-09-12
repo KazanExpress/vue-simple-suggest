@@ -30,7 +30,7 @@
         <li class="suggest-item" v-for="(suggestion, index) in suggestions"
           role="option"
           @mouseenter="hover(suggestion, $event.target)"
-          @mouseleave="hover(undefined)"
+          @mouseleave="hover(null)"
           @click="suggestionClick(suggestion, $event)"
           :aria-selected="(isHovered(suggestion) || isSelected(suggestion)) ? 'true' : 'false'"
           :id="getId(suggestion, index)"
@@ -347,7 +347,7 @@ export default {
       })
     },
     select (item) {
-      if (this.selected !== item || (this.nullableSelect && !item)) {
+      if ((item && this.selected !== item) || (this.nullableSelect && !item)) {
         this.selected = item
         this.$emit('select', item)
 
