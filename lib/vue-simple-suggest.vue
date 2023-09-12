@@ -47,7 +47,7 @@
           v-for="(suggestion, index) in suggestions"
           role="option"
           @mouseenter="hover(suggestion, $event.target)"
-          @mouseleave="hover(undefined)"
+          @mouseleave="hover(null)"
           @click="suggestionClick(suggestion, $event)"
           :aria-selected="
             isHovered(suggestion) || isSelected(suggestion) ? 'true' : 'false'
