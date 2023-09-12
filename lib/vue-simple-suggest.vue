@@ -226,34 +226,32 @@ export default {
   created () {
     this.controlScheme = Object.assign({}, defaultControls, this.controls)
   },
-  async mounted () {
-    await this.$slots.default;
-
-    this.$nextTick(() => {
-      // https://jefrydco.id/en/blog/safe-access-vue-refs-undefined
-      var nbRetries = 0
-      const interval = setIntervalImmediately(() => {
-        // The immediate call succeeded.
+  async mounted() {
+    await this.$slots.default
+    await this.$nextTick()
+    // https://jefrydco.id/en/blog/safe-access-vue-refs-undefined
+    var nbRetries = 0
+    const interval = setIntervalImmediately(() => {
+      // The immediate call succeeded.
+      if (this.inputElement) {
+        clearInterval(interval)
+        return
+      }
+      const slot = this.$refs['inputSlot']
+      if (slot) {
+        clearInterval(interval)
+        this.inputElement = slot.querySelector('input')
         if (this.inputElement) {
-          clearInterval(interval)
-          return
+          this.setInputAriaAttributes()
+          this.prepareEventHandlers(true)
+        } else {
+          console.error('No input element found')
         }
-        const slot = this.$refs['inputSlot']
-        if (slot) {
-          clearInterval(interval)
-          this.inputElement = slot.querySelector('input')
-          if (this.inputElement) {
-            this.setInputAriaAttributes()
-            this.prepareEventHandlers(true)
-          } else {
-            console.error('No input element found')
-          }
-        } else if (++nbRetries == 4) {
-          clearInterval(interval)
-          console.error('No input slot found')
-        }
-      }, 50)
-    })
+      } else if (++nbRetries == 4) {
+        clearInterval(interval)
+        console.error('No input slot found')
+      }
+    }, 50)
   },
   beforeDestroy () {
     if (this.inputElement) {
