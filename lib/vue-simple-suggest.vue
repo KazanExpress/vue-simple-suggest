@@ -624,7 +624,7 @@ export default {
 
       finally {
         if (this.maxSuggestions) {
-          result.splice(this.maxSuggestions)
+          result = result.slice(0, this.maxSuggestions)
         }
 
         this.isPlainSuggestion = nextIsPlainSuggestion
