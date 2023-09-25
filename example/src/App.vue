@@ -315,6 +315,7 @@ export default {
 
 #app .v-model-event {
   background-color: white;
+  color: inherit;
   border: 1px solid #cde;
   border-radius: 4px;
 }
