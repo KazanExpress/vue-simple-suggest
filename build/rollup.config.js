@@ -48,6 +48,7 @@ module.exports = exports = function (
 
   return {
     input: defineInWindow ? 'lib/window.js' : 'lib/index.js',
-    plugins
+    plugins,
+    external: ['vue']
   }
 }
