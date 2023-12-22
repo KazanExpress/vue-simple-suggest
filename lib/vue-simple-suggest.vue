@@ -20,7 +20,7 @@
         :aria-labelledby="listId"
         :class="styles.suggestions"
       >
-        <li v-if="!!this.$scopedSlots['misc-item-above']" :class="styles.miscItemAbove">
+        <li v-if="!!$scopedSlots['misc-item-above']" :class="styles.miscItemAbove">
           <slot name="misc-item-above"
             :suggestions="suggestions"
             :query="text"
@@ -48,7 +48,7 @@
           </slot>
         </li>
 
-        <li v-if="!!this.$scopedSlots['misc-item-below']" :class="styles.miscItemBelow">
+        <li v-if="!!$scopedSlots['misc-item-below']" :class="styles.miscItemBelow">
           <slot name="misc-item-below"
             :suggestions="suggestions"
             :query="text"
@@ -65,7 +65,8 @@ import {
   modes,
   fromPath,
   hasKeyCodeByCode,
-  hasKeyCode
+  hasKeyCode,
+  setIntervalImmediately
 } from './misc'
 
 export default {
@@ -144,7 +145,7 @@ export default {
   // Handle run-time mode changes (now working):
   watch: {
     mode: {
-      handler(current, old) {
+      handler(current) {
         this.constructor.options.model.event = current
 
         // Can be null if the component is root
@@ -225,22 +226,46 @@ export default {
   created () {
     this.controlScheme = Object.assign({}, defaultControls, this.controls)
   },
-  async mounted () {
-    await this.$slots.default;
-
-    this.$nextTick(() => {
-      this.inputElement = this.$refs['inputSlot'].querySelector('input')
-
+  async mounted() {
+    await this.$slots.default
+    await this.$nextTick()
+    // https://jefrydco.id/en/blog/safe-access-vue-refs-undefined
+    var nbRetries = 0
+    // Do not use "const interval = setIntervalImmediately(...)" to avoid
+    // ReferenceError: can't access lexical declaration 'interval' before initialization.
+    var interval = undefined
+    interval = setIntervalImmediately(() => {
+      // The immediate call succeeded.
       if (this.inputElement) {
-        this.setInputAriaAttributes()
-        this.prepareEventHandlers(true)
-      } else {
-        console.error('No input element found')
+        if (interval !== undefined) {
+          clearInterval(interval)
+        }
+        return
       }
-    })
+      const slot = this.$refs['inputSlot']
+      if (slot) {
+        if (interval !== undefined) {
+          clearInterval(interval)
+        }
+        this.inputElement = slot.querySelector('input')
+        if (this.inputElement) {
+          this.setInputAriaAttributes()
+          this.prepareEventHandlers(true)
+        } else {
+          console.error('No input element found')
+        }
+      } else if (++nbRetries == 4) {
+        if (interval !== undefined) {
+          clearInterval(interval)
+        }
+        console.error('No input slot found')
+      }
+    }, 50)
   },
   beforeDestroy () {
-    this.prepareEventHandlers(false)
+    if (this.inputElement) {
+      this.prepareEventHandlers(false)
+    }
   },
   methods: {
     isEqual(suggestion, item) {
@@ -300,7 +325,7 @@ export default {
       return this.isScopedSlotEmpty.call(this, slot)
     },
     getPropertyByAttribute (obj, attr) {
-      return this.isPlainSuggestion ? obj : typeof obj !== undefined ? fromPath(obj, attr) : obj
+      return this.isPlainSuggestion ? obj : typeof obj !== 'undefined' ? fromPath(obj, attr) : obj
     },
     displayProperty (obj) {
       if (this.isPlainSuggestion) {
@@ -359,7 +384,7 @@ export default {
       this.hover(null)
     },
     hover (item, elem) {
-      const elemId = !!item ? this.getId(item, this.hoveredIndex) : ''
+      const elemId = item ? this.getId(item, this.hoveredIndex) : ''
 
       this.inputElement.setAttribute('aria-activedescendant',  elemId)
 
@@ -574,6 +599,7 @@ export default {
           this.showList()
         }
 
+        // eslint-disable-next-line no-unsafe-finally
         return this.suggestions
       }
     },
@@ -628,6 +654,7 @@ export default {
         }
 
         this.isPlainSuggestion = nextIsPlainSuggestion
+        // eslint-disable-next-line no-unsafe-finally
         return result
       }
     },
