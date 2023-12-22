@@ -231,15 +231,22 @@ export default {
     await this.$nextTick()
     // https://jefrydco.id/en/blog/safe-access-vue-refs-undefined
     var nbRetries = 0
-    const interval = setIntervalImmediately(() => {
+    // Do not use "const interval = setIntervalImmediately(...)" to avoid
+    // ReferenceError: can't access lexical declaration 'interval' before initialization.
+    var interval = undefined
+    interval = setIntervalImmediately(() => {
       // The immediate call succeeded.
       if (this.inputElement) {
-        clearInterval(interval)
+        if (interval !== undefined) {
+          clearInterval(interval)
+        }
         return
       }
       const slot = this.$refs['inputSlot']
       if (slot) {
-        clearInterval(interval)
+        if (interval !== undefined) {
+          clearInterval(interval)
+        }
         this.inputElement = slot.querySelector('input')
         if (this.inputElement) {
           this.setInputAriaAttributes()
@@ -248,7 +255,9 @@ export default {
           console.error('No input element found')
         }
       } else if (++nbRetries == 4) {
-        clearInterval(interval)
+        if (interval !== undefined) {
+          clearInterval(interval)
+        }
         console.error('No input slot found')
       }
     }, 50)
