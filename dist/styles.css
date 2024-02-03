@@ -1,19 +1,16 @@
 
-
 .vue-simple-suggest > ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-
 .vue-simple-suggest.designed {
   position: relative;
 }
-
-.vue-simple-suggest.designed, .vue-simple-suggest.designed * {
+.vue-simple-suggest.designed,
+.vue-simple-suggest.designed * {
   box-sizing: border-box;
 }
-
 .vue-simple-suggest.designed .input-wrapper input {
   display: block;
   width: 100%;
@@ -22,15 +19,13 @@
   border-radius: 3px;
   color: black;
   background: white;
-  outline:none;
-  transition: all .1s;
-  transition-delay: .05s
+  outline: none;
+  transition: all 0.1s;
+  transition-delay: 0.05s;
 }
-
 .vue-simple-suggest.designed.focus .input-wrapper input {
   border: 1px solid #aaa;
 }
-
 .vue-simple-suggest.designed .suggestions {
   position: absolute;
   left: 0;
@@ -43,23 +38,20 @@
   opacity: 1;
   z-index: 1000;
 }
-
 .vue-simple-suggest.designed .suggestions .suggest-item {
   cursor: pointer;
   user-select: none;
 }
-
 .vue-simple-suggest.designed .suggestions .suggest-item,
 .vue-simple-suggest.designed .suggestions .misc-item {
   padding: 5px 10px;
 }
-
 .vue-simple-suggest.designed .suggestions .suggest-item.hover {
-  background-color: #2874D5 !important;
+  background-color: #2874d5 !important;
   color: #fff !important;
 }
-
 .vue-simple-suggest.designed .suggestions .suggest-item.selected {
-  background-color: #2832D5;
+  background-color: #2832d5;
   color: #fff;
 }
+

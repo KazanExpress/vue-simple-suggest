@@ -1,11 +1,11 @@
-const vue = require('rollup-plugin-vue2');
-const css = require('rollup-plugin-css-only');
-const babel = require('rollup-plugin-babel');
-const nodeResolve = require('rollup-plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
-const { uglify } = require('rollup-plugin-uglify');
+const vue = require('rollup-plugin-vue')
+const css = require('rollup-plugin-css-only')
+const babel = require('rollup-plugin-babel')
+const nodeResolve = require('rollup-plugin-node-resolve')
+const commonjs = require('rollup-plugin-commonjs')
+const { uglify } = require('rollup-plugin-uglify')
 
-module.exports = exports = function(
+module.exports = exports = function (
   compress = false,
   polyfills = {
     arrows: true,
@@ -15,7 +15,7 @@ module.exports = exports = function(
   },
   defineInWindow = false
 ) {
-  const babelPlugins = [];
+  const babelPlugins = []
 
   if (polyfills.assign) {
     babelPlugins.push('transform-object-assign')
@@ -31,23 +31,24 @@ module.exports = exports = function(
 
   const plugins = [
     vue(),
-    css({ output: 'dist/styles.css' }),
+    css({ output: 'styles.css' }),
     babel({
       exclude: 'node_modules/**',
       runtimeHelpers: false,
       presets: polyfills.arrows ? ['stage-3', 'es2015-rollup'] : [],
       plugins: babelPlugins
     }),
-    nodeResolve({ mainFields: ['browser', 'jsnext:main', 'main'] }),
+    nodeResolve(),
     commonjs()
-  ];
+  ]
 
   if (compress) {
-    plugins.push(uglify());
+    plugins.push(uglify())
   }
 
   return {
     input: defineInWindow ? 'lib/window.js' : 'lib/index.js',
-    plugins
-  };
+    plugins,
+    external: ['vue']
+  }
 }

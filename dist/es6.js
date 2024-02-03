@@ -1,3 +1,5 @@
+import { openBlock, createElementBlock, normalizeClass, withKeys, createElementVNode, renderSlot, mergeProps, createVNode, Transition, withCtx, createCommentVNode, Fragment, renderList, toDisplayString } from 'vue';
+
 const defaultControls = {
   selectionUp: [38],
   selectionDown: [40],
@@ -31,12 +33,49 @@ function hasKeyCodeByCode(arr, keyCode) {
   }
 }
 
-function _await(value, then, direct) {
-  if (direct) {
-    return then ? then(value) : value;
-  }if (!value || !value.then) {
-    value = Promise.resolve(value);
-  }return then ? value.then(then) : value;
+const onRE = /^on[^a-z]/;
+
+function isOn(key) {
+  return onRE.test(key);
+}
+
+function getPropertyByAttribute(obj, attr) {
+  return typeof obj !== 'undefined' ? fromPath(obj, attr) : obj;
+}
+
+function display(obj, attribute, isPlainSuggestion) {
+  if (isPlainSuggestion) {
+    return obj;
+  }
+
+  let display = getPropertyByAttribute(obj, attribute);
+
+  if (typeof display === 'undefined') {
+    display = JSON.stringify(obj);
+
+    if (process && ~process.env.NODE_ENV.indexOf('dev')) {
+      console.warn('[vue-simple-suggest]: Please, provide `display-attribute` as a key or a dotted path for a property from your object.');
+    }
+  }
+
+  return String(display || '');
+}
+
+const HAS_WINDOW_SUPPORT = typeof window !== 'undefined';
+
+const requestAF = HAS_WINDOW_SUPPORT ? window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame || (
+// Fallback, but not a true polyfill
+// Only needed for Opera Mini
+cb => setTimeout(cb, 16)) : cb => setTimeout(cb, 0);
+
+function _empty() {}function _awaitIgnored(value, direct) {
+  if (!direct) {
+    return value && value.then ? value.then(_empty) : Promise.resolve();
+  }
+}function _invoke(body, then) {
+  var result = body();if (result && result.then) {
+    return result.then(then);
+  }return then(result);
 }function _async(f) {
   return function () {
     for (var args = [], i = 0; i < arguments.length; i++) {
@@ -47,20 +86,17 @@ function _await(value, then, direct) {
       return Promise.reject(e);
     }
   };
-}function _empty() {}function _awaitIgnored(value, direct) {
-  if (!direct) {
-    return value && value.then ? value.then(_empty) : Promise.resolve();
-  }
-}function _invoke(body, then) {
-  var result = body();if (result && result.then) {
-    return result.then(then);
-  }return then(result);
+}function _await(value, then, direct) {
+  if (direct) {
+    return then ? then(value) : value;
+  }if (!value || !value.then) {
+    value = Promise.resolve(value);
+  }return then ? value.then(then) : value;
 }function _invokeIgnored(body) {
   var result = body();if (result && result.then) {
     return result.then(_empty);
   }
-}
-function _catch(body, recover) {
+}function _catch(body, recover) {
   try {
     var result = body();
   } catch (e) {
@@ -76,34 +112,9 @@ function _catch(body, recover) {
   }if (result && result.then) {
     return result.then(finalizer, finalizer);
   }return finalizer();
-}var VueSimpleSuggest = {
-  render: function () {
-    var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "vue-simple-suggest", class: [_vm.styles.vueSimpleSuggest, { designed: !_vm.destyled, focus: _vm.isInFocus }], on: { "keydown": function ($event) {
-          if (!$event.type.indexOf('key') && _vm._k($event.keyCode, "tab", 9, $event.key, "Tab")) {
-            return null;
-          }_vm.isTabbed = true;
-        } } }, [_c('div', { ref: "inputSlot", staticClass: "input-wrapper", class: _vm.styles.inputWrapper, attrs: { "role": "combobox", "aria-haspopup": "listbox", "aria-owns": _vm.listId, "aria-expanded": !!_vm.listShown && !_vm.removeList ? 'true' : 'false' } }, [_vm._t("default", [_c('input', _vm._b({ staticClass: "default-input", class: _vm.styles.defaultInput, domProps: { "value": _vm.text || '' } }, 'input', _vm.$attrs, false))])], 2), _vm._v(" "), _c('transition', { attrs: { "name": "vue-simple-suggest" } }, [!!_vm.listShown && !_vm.removeList ? _c('ul', { staticClass: "suggestions", class: _vm.styles.suggestions, attrs: { "id": _vm.listId, "role": "listbox", "aria-labelledby": _vm.listId } }, [!!this.$scopedSlots['misc-item-above'] ? _c('li', { class: _vm.styles.miscItemAbove }, [_vm._t("misc-item-above", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e(), _vm._v(" "), _vm._l(_vm.suggestions, function (suggestion, index) {
-      return _c('li', { key: _vm.getId(suggestion, index), staticClass: "suggest-item", class: [_vm.styles.suggestItem, {
-          selected: _vm.isSelected(suggestion),
-          hover: _vm.isHovered(suggestion)
-        }], attrs: { "role": "option", "aria-selected": _vm.isHovered(suggestion) || _vm.isSelected(suggestion) ? 'true' : 'false', "id": _vm.getId(suggestion, index) }, on: { "mouseenter": function ($event) {
-            return _vm.hover(suggestion, $event.target);
-          }, "mouseleave": function ($event) {
-            return _vm.hover(undefined);
-          }, "click": function ($event) {
-            return _vm.suggestionClick(suggestion, $event);
-          } } }, [_vm._t("suggestion-item", [_c('span', [_vm._v(_vm._s(_vm.displayProperty(suggestion)))])], { "autocomplete": function () {
-          return _vm.autocompleteText(suggestion);
-        }, "suggestion": suggestion, "query": _vm.text })], 2);
-    }), _vm._v(" "), !!this.$scopedSlots['misc-item-below'] ? _c('li', { class: _vm.styles.miscItemBelow }, [_vm._t("misc-item-below", null, { "suggestions": _vm.suggestions, "query": _vm.text })], 2) : _vm._e()], 2) : _vm._e()])], 1);
-  },
-  staticRenderFns: [],
+}var script = {
   name: 'vue-simple-suggest',
   inheritAttrs: false,
-  model: {
-    prop: 'value',
-    event: 'input'
-  },
   props: {
     styles: {
       type: Object,
@@ -146,10 +157,7 @@ function _catch(body, recover) {
       default: false
     },
     filter: {
-      type: Function,
-      default(el, value) {
-        return value ? ~this.displayProperty(el).toLowerCase().indexOf(value.toLowerCase()) : true;
-      }
+      type: Function
     },
     debounce: {
       type: Number,
@@ -159,7 +167,8 @@ function _catch(body, recover) {
       type: Boolean,
       default: false
     },
-    value: {},
+    modelValue: {},
+    modelSelect: {},
     mode: {
       type: String,
       default: 'input',
@@ -170,38 +179,54 @@ function _catch(body, recover) {
       default: false
     }
   },
-  // Handle run-time mode changes (now working):
   watch: {
     mode: {
-      handler(current, old) {
-        this.constructor.options.model.event = current;
-
+      handler() {
         // Can be null if the component is root
         this.$parent && this.$parent.$forceUpdate();
 
         this.$nextTick(() => {
-          if (current === 'input') {
-            this.$emit('input', this.text);
-          } else {
-            this.$emit('select', this.selected);
-          }
+          this.$emit('update:modelValue', this.text);
+          this.$emit('update:modelSelect', this.selected); // For backward compatibility:
+          this.$emit('select', this.selected);
         });
+      }, immediate: true
+    },
+    filter: {
+      handler(current) {
+        this.filterResult = current != null ? current : (el, value) => {
+          return value ? ~display(el, this.displayAttribute).toLowerCase().indexOf(value.toLowerCase()) : true;
+        };
       },
       immediate: true
     },
-    value: {
+    modelValue: {
       handler(current) {
-        if (typeof current !== 'string') {
-          current = this.displayProperty(current);
+        if (this.mode === 'input') {
+          if (typeof current !== 'string') {
+            current = this.displayProperty(current);
+          }
+          this.updateTextOutside(current);
         }
-        this.updateTextOutside(current);
+      },
+      immediate: true
+    },
+    modelSelect: {
+      handler(current) {
+        if (this.mode === 'select') {
+          if (typeof current !== 'string') {
+            current = this.displayProperty(current);
+          }
+          this.updateTextOutside(current);
+        }
       },
       immediate: true
     }
   },
   //
-  data() {
+  data(vm) {
     return {
+      filterResult: null,
       selected: null,
       hovered: null,
       suggestions: [],
@@ -209,31 +234,19 @@ function _catch(body, recover) {
       inputElement: null,
       canSend: true,
       timeoutInstance: null,
-      text: this.value,
+      text: vm.modelValue,
       isPlainSuggestion: false,
       isClicking: false,
       isInFocus: false,
       isFalseFocus: false,
       isTabbed: false,
       controlScheme: {},
-      listId: `${this._uid}-suggestions`
+      listId: `${this.$.uid}-suggestions`
     };
   },
   computed: {
     listIsRequest() {
       return typeof this.list === 'function';
-    },
-    inputIsComponent() {
-      return this.$slots.default && this.$slots.default.length > 0 && !!this.$slots.default[0].componentInstance;
-    },
-    input() {
-      return this.inputIsComponent ? this.$slots.default[0].componentInstance : this.inputElement;
-    },
-    on() {
-      return this.inputIsComponent ? '$on' : 'addEventListener';
-    },
-    off() {
-      return this.inputIsComponent ? '$off' : 'removeEventListener';
     },
     hoveredIndex() {
       for (let i = 0; i < this.suggestions.length; i++) {
@@ -245,35 +258,50 @@ function _catch(body, recover) {
       return -1;
     },
     textLength() {
-      return this.text && this.text.length || this.inputElement.value.length || 0;
+      return this.text && this.text.length || this.inputElement && this.inputElement.value.length || 0;
     },
     isSelectedUpToDate() {
       return !!this.selected && this.displayProperty(this.selected) === this.text;
+    },
+    attrsWithoutListeners() {
+      const o = {};
+      Object.keys(this.$attrs).forEach(key => !isOn(key) && (o[key] = this.$attrs[key]));
+      return o;
+    },
+    field() {
+      return Object.assign({}, this.attrsWithoutListeners, {
+        onBlur: this.onBlur,
+        onFocus: this.onFocus,
+        onInput: this.onInput,
+        onClick: this.showSuggestions,
+        onKeydown: this.onKeyDown,
+        onKeyup: this.onListKeyUp
+      });
+    },
+    componentField() {
+      return Object.assign({}, this.attrsWithoutListeners, {
+        onBlur: this.onBlur,
+        onFocus: this.onFocus,
+        'onUpdate:modelValue': this.onInput,
+        onClick: this.showSuggestions,
+        onKeydown: this.onKeyDown,
+        onKeyup: this.onListKeyUp
+      });
     }
   },
   created() {
     this.controlScheme = Object.assign({}, defaultControls, this.controls);
   },
-  mounted: _async(function () {
-    const _this = this;
+  mounted() {
+    this.$nextTick(() => requestAF(() => {
+      this.inputElement = this.$refs['inputSlot'].querySelector('input');
 
-    return _await(_this.$slots.default, function () {
-
-      _this.$nextTick(() => {
-        _this.inputElement = _this.$refs['inputSlot'].querySelector('input');
-
-        if (_this.inputElement) {
-          _this.setInputAriaAttributes();
-          _this.prepareEventHandlers(true);
-        } else {
-          console.error('No input element found');
-        }
-      });
-    });
-  }),
-
-  beforeDestroy() {
-    this.prepareEventHandlers(false);
+      if (this.inputElement) {
+        this.setInputAriaAttributes();
+      } else {
+        console.error('No input element found');
+      }
+    }));
   },
   methods: {
     isEqual(suggestion, item) {
@@ -286,43 +314,28 @@ function _catch(body, recover) {
       return this.isEqual(suggestion, this.hovered);
     },
     setInputAriaAttributes() {
-      this.inputElement.setAttribute('aria-activedescendant', '');
-      this.inputElement.setAttribute('aria-autocomplete', 'list');
-      this.inputElement.setAttribute('aria-controls', this.listId);
-    },
-    prepareEventHandlers(enable) {
-      const binder = this[enable ? 'on' : 'off'];
-      const keyEventsList = {
-        click: this.showSuggestions,
-        keydown: this.onKeyDown,
-        keyup: this.onListKeyUp
-      };
-      const eventsList = Object.assign({
-        blur: this.onBlur,
-        focus: this.onFocus,
-        input: this.onInput
-      }, keyEventsList);
-
-      for (const event in eventsList) {
-        this.input[binder](event, eventsList[event]);
-      }
-
-      const listenerBinder = enable ? 'addEventListener' : 'removeEventListener';
-
-      for (const event in keyEventsList) {
-        this.inputElement[listenerBinder](event, keyEventsList[event]);
+      if (this.inputElement) {
+        this.inputElement.setAttribute('aria-activedescendant', '');
+        this.inputElement.setAttribute('aria-autocomplete', 'list');
+        this.inputElement.setAttribute('aria-controls', this.listId);
       }
     },
     isScopedSlotEmpty(slot) {
       if (slot) {
-        const vNode = slot(this);
-        return !(Array.isArray(vNode) || vNode && (vNode.tag || vNode.context || vNode.text || vNode.children));
+        const slotContent = slot(this);
+        // https://github.com/vuejs/core/issues/4733#issuecomment-1024816095
+        // https://github.com/vuejs/core/issues/3056#issuecomment-786560172
+        return slotContent.some(vnode => {
+          if (vnode.type === Comment) return false;
+          if (Array.isArray(vnode.children) && !vnode.children.length) return false;
+          return vnode.type !== Text || typeof vnode.children === 'string' && vnode.children.trim() !== '';
+        });
       }
 
       return true;
     },
     miscSlotsAreEmpty() {
-      const slots = ['misc-item-above', 'misc-item-below'].map(s => this.$scopedSlots[s]);
+      const slots = ['misc-item-above', 'misc-item-below'].map(s => this.$slots[s]);
 
       if (slots.every(s => !!s)) {
         return slots.every(this.isScopedSlotEmpty.bind(this));
@@ -332,32 +345,15 @@ function _catch(body, recover) {
 
       return this.isScopedSlotEmpty.call(this, slot);
     },
-    getPropertyByAttribute(obj, attr) {
-      return this.isPlainSuggestion ? obj : typeof obj !== undefined ? fromPath(obj, attr) : obj;
-    },
-    displayProperty(obj) {
-      if (this.isPlainSuggestion) {
-        return obj;
-      }
-
-      let display = this.getPropertyByAttribute(obj, this.displayAttribute);
-
-      if (typeof display === 'undefined') {
-        display = JSON.stringify(obj);
-
-        if (process && ~process.env.NODE_ENV.indexOf('dev')) {
-          console.warn('[vue-simple-suggest]: Please, provide `display-attribute` as a key or a dotted path for a property from your object.');
-        }
-      }
-
-      return String(display || '');
+    displayProperty(suggestion) {
+      return display(suggestion, this.displayAttribute);
     },
     valueProperty(obj) {
       if (this.isPlainSuggestion) {
         return obj;
       }
 
-      const value = this.getPropertyByAttribute(obj, this.valueAttribute);
+      const value = getPropertyByAttribute(obj, this.valueAttribute);
 
       if (typeof value === 'undefined') {
         console.error(`[vue-simple-suggest]: Please, check if you passed 'value-attribute' (default is 'id') and 'display-attribute' (default is 'title') props correctly.
@@ -372,14 +368,18 @@ function _catch(body, recover) {
     },
     setText(text) {
       this.$nextTick(() => {
-        this.inputElement.value = text;
+        if (this.inputElement) {
+          this.inputElement.value = text;
+        }
         this.text = text;
-        this.$emit('input', text);
+        this.$emit('update:modelValue', text);
       });
     },
     select(item) {
-      if (this.selected !== item || this.nullableSelect && !item) {
+      if (item && this.selected !== item || this.nullableSelect && !item) {
         this.selected = item;
+        this.$emit('update:modelSelect', item);
+        // For backward compatibility:
         this.$emit('select', item);
 
         if (item) {
@@ -390,9 +390,11 @@ function _catch(body, recover) {
       this.hover(null);
     },
     hover(item, elem) {
-      const elemId = !!item ? this.getId(item, this.hoveredIndex) : '';
+      const elemId = item ? this.getId(item, this.hoveredIndex) : '';
 
-      this.inputElement.setAttribute('aria-activedescendant', elemId);
+      if (this.inputElement) {
+        this.inputElement.setAttribute('aria-activedescendant', elemId);
+      }
 
       if (item && item !== this.hovered) {
         this.$emit('hover', item, elem);
@@ -416,17 +418,17 @@ function _catch(body, recover) {
       }
     },
     showSuggestions: _async(function () {
-      const _this2 = this;
+      const _this = this;
 
       return _invoke(function () {
-        if (_this2.suggestions.length === 0 && _this2.minLength <= _this2.textLength) {
+        if (_this.suggestions.length === 0 && _this.minLength <= _this.textLength) {
           // try show misc slots while researching
-          _this2.showList();
-          return _awaitIgnored(_this2.research());
+          _this.showList();
+          return _awaitIgnored(_this.research());
         }
       }, function () {
 
-        _this2.showList();
+        _this.showList();
       });
     }),
 
@@ -451,7 +453,7 @@ function _catch(body, recover) {
           item = this.selected || this.suggestions[listEdge];
         } else if (hoversBetweenEdges) {
           item = this.suggestions[this.hoveredIndex + direction];
-        } else /* if hovers on edge */{
+        } /* if hovers on edge */else {
             item = this.suggestions[listEdge];
           }
         this.hover(item);
@@ -502,7 +504,9 @@ function _catch(body, recover) {
 
       if (this.isClicking) {
         setTimeout(() => {
-          this.inputElement.focus();
+          if (this.inputElement) {
+            this.inputElement.focus();
+          }
 
           /// Ensure, that all needed flags are off before finishing the click.
           this.isClicking = false;
@@ -511,7 +515,6 @@ function _catch(body, recover) {
     },
     onBlur(e) {
       if (this.isInFocus) {
-
         /// Clicking starts here, because input's blur occurs before the suggestionClick
         /// and exactly when the user clicks the mouse button or taps the screen.
         this.isClicking = this.hovered && !this.isTabbed;
@@ -525,7 +528,9 @@ function _catch(body, recover) {
           this.isFalseFocus = true;
         }
       } else {
-        this.inputElement.blur();
+        if (this.inputElement) {
+          this.inputElement.blur();
+        }
         console.error(`This should never happen!
           If you encountered this error, please make sure that your input component emits 'focus' events properly.
           For more info see https://github.com/KazanExpress/vue-simple-suggest#custom-input.
@@ -555,7 +560,7 @@ function _catch(body, recover) {
       const value = !inputEvent.target ? inputEvent : inputEvent.target.value;
 
       this.updateTextOutside(value);
-      this.$emit('input', value);
+      this.$emit('update:modelValue', value);
     },
     updateTextOutside(value) {
       if (this.text === value) {
@@ -578,52 +583,53 @@ function _catch(body, recover) {
       }
     },
     research: _async(function () {
-      const _this3 = this;
+      const _this2 = this;
 
       return _finally(function () {
         return _catch(function () {
           return _invokeIgnored(function () {
-            if (_this3.canSend) {
-              _this3.canSend = false;
+            if (_this2.canSend) {
+              _this2.canSend = false;
               // @TODO: fix when promises will be cancelable (never :D)
-              let textBeforeRequest = _this3.text;
-              return _await(_this3.getSuggestions(_this3.text), function (newList) {
-                if (textBeforeRequest === _this3.text) {
-                  _this3.$set(_this3, 'suggestions', newList);
+              let textBeforeRequest = _this2.text;
+              return _await(_this2.getSuggestions(_this2.text), function (newList) {
+                if (textBeforeRequest === _this2.text) {
+                  _this2.suggestions = newList;
                 }
               });
             }
           });
         }, function (e) {
-          _this3.clearSuggestions();
+          _this2.clearSuggestions();
           throw e;
         });
       }, function () {
-        _this3.canSend = true;
+        _this2.canSend = true;
 
-        if (_this3.suggestions.length === 0 && _this3.miscSlotsAreEmpty()) {
-          _this3.hideList();
-        } else if (_this3.isInFocus) {
-          _this3.showList();
+        if (_this2.suggestions.length === 0 && _this2.miscSlotsAreEmpty()) {
+          _this2.hideList();
+        } else if (_this2.isInFocus) {
+          _this2.showList();
         }
 
-        return _this3.suggestions;
+        // eslint-disable-next-line no-unsafe-finally
+        return _this2.suggestions;
       });
     }),
     getSuggestions: _async(function (value) {
-      const _this4 = this;
+      const _this3 = this;
 
       value = value || '';
 
-      if (value.length < _this4.minLength) {
+      if (value.length < _this3.minLength) {
         return [];
       }
 
-      _this4.selected = null;
+      _this3.selected = null;
 
       // Start request if can
-      if (_this4.listIsRequest) {
-        _this4.$emit('request-start', value);
+      if (_this3.listIsRequest) {
+        _this3.$emit('request-start', value);
       }
 
       let nextIsPlainSuggestion = false;
@@ -631,12 +637,12 @@ function _catch(body, recover) {
       return _finally(function () {
         return _catch(function () {
           return _invoke(function () {
-            if (_this4.listIsRequest) {
-              return _await(_this4.list(value), function (_this4$list) {
-                result = _this4$list || [];
+            if (_this3.listIsRequest) {
+              return _await(_this3.list(value), function (_this3$list) {
+                result = _this3$list || [];
               });
             } else {
-              result = _this4.list;
+              result = _this3.list;
             }
           }, function () {
 
@@ -647,27 +653,28 @@ function _catch(body, recover) {
 
             nextIsPlainSuggestion = typeof result[0] !== 'object' && typeof result[0] !== 'undefined' || Array.isArray(result[0]);
 
-            if (_this4.filterByQuery) {
-              result = result.filter(el => _this4.filter(el, value));
+            if (_this3.filterByQuery) {
+              result = result.filter(el => _this3.filterResult(el, value));
             }
 
-            if (_this4.listIsRequest) {
-              _this4.$emit('request-done', result);
+            if (_this3.listIsRequest) {
+              _this3.$emit('request-done', result);
             }
           });
         }, function (e) {
-          if (_this4.listIsRequest) {
-            _this4.$emit('request-failed', e);
+          if (_this3.listIsRequest) {
+            _this3.$emit('request-failed', e);
           } else {
             throw e;
           }
         });
       }, function () {
-        if (_this4.maxSuggestions) {
-          result.splice(_this4.maxSuggestions);
+        if (_this3.maxSuggestions) {
+          result = result.slice(0, _this3.maxSuggestions);
         }
 
-        _this4.isPlainSuggestion = nextIsPlainSuggestion;
+        _this3.isPlainSuggestion = nextIsPlainSuggestion;
+        // eslint-disable-next-line no-unsafe-finally
         return result;
       });
     }),
@@ -681,4 +688,72 @@ function _catch(body, recover) {
   }
 };
 
-export default VueSimpleSuggest;
+const _hoisted_1 = ["aria-owns", "aria-expanded"];
+const _hoisted_2 = ["value"];
+const _hoisted_3 = ["id", "aria-labelledby"];
+const _hoisted_4 = ["onMouseenter", "onClick", "aria-selected", "id"];
+
+function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return openBlock(), createElementBlock("div", {
+    class: normalizeClass(["vue-simple-suggest", [$props.styles.vueSimpleSuggest, { designed: !$props.destyled, focus: $data.isInFocus }]]),
+    onKeydown: _cache[1] || (_cache[1] = withKeys($event => $data.isTabbed = true, ["tab"]))
+  }, [createElementVNode("div", {
+    class: normalizeClass(["input-wrapper", $props.styles.inputWrapper]),
+    ref: "inputSlot",
+    role: "combobox",
+    "aria-haspopup": "listbox",
+    "aria-owns": $data.listId,
+    "aria-expanded": !!$data.listShown && !$props.removeList ? 'true' : 'false'
+  }, [renderSlot(_ctx.$slots, "default", {
+    field: $options.field,
+    componentField: $options.componentField
+  }, () => [createElementVNode("input", mergeProps({ class: "default-input" }, $options.field, {
+    value: $data.text || '',
+    class: $props.styles.defaultInput
+  }), null, 16 /* FULL_PROPS */, _hoisted_2)])], 10 /* CLASS, PROPS */, _hoisted_1), createVNode(Transition, { name: "vue-simple-suggest" }, {
+    default: withCtx(() => [!!$data.listShown && !$props.removeList ? (openBlock(), createElementBlock("ul", {
+      key: 0,
+      id: $data.listId,
+      class: normalizeClass(["suggestions", $props.styles.suggestions]),
+      role: "listbox",
+      "aria-labelledby": $data.listId
+    }, [!!_ctx.$slots['misc-item-above'] ? (openBlock(), createElementBlock("li", {
+      key: 0,
+      class: normalizeClass($props.styles.miscItemAbove)
+    }, [renderSlot(_ctx.$slots, "misc-item-above", {
+      suggestions: $data.suggestions,
+      query: $data.text
+    })], 2 /* CLASS */)) : createCommentVNode("v-if", true), (openBlock(true), createElementBlock(Fragment, null, renderList($data.suggestions, (suggestion, index) => {
+      return openBlock(), createElementBlock("li", {
+        class: normalizeClass(["suggest-item", [$props.styles.suggestItem, {
+          selected: $options.isSelected(suggestion),
+          hover: $options.isHovered(suggestion)
+        }]]),
+        role: "option",
+        onMouseenter: $event => $options.hover(suggestion, $event.target),
+        onMouseleave: _cache[0] || (_cache[0] = $event => $options.hover(null)),
+        onClick: $event => $options.suggestionClick(suggestion, $event),
+        "aria-selected": $options.isHovered(suggestion) || $options.isSelected(suggestion) ? 'true' : 'false',
+
+        id: $options.getId(suggestion, index),
+        key: $options.getId(suggestion, index)
+      }, [renderSlot(_ctx.$slots, "suggestion-item", {
+        autocomplete: () => $options.autocompleteText(suggestion),
+        suggestion: suggestion,
+        query: $data.text
+      }, () => [createElementVNode("span", null, toDisplayString($options.displayProperty(suggestion)), 1 /* TEXT */)])], 42 /* CLASS, PROPS, HYDRATE_EVENTS */, _hoisted_4);
+    }), 128 /* KEYED_FRAGMENT */)), !!_ctx.$slots['misc-item-below'] ? (openBlock(), createElementBlock("li", {
+      key: 1,
+      class: normalizeClass($props.styles.miscItemBelow)
+    }, [renderSlot(_ctx.$slots, "misc-item-below", {
+      suggestions: $data.suggestions,
+      query: $data.text
+    })], 2 /* CLASS */)) : createCommentVNode("v-if", true)], 10 /* CLASS, PROPS */, _hoisted_3)) : createCommentVNode("v-if", true)]),
+    _: 3 /* FORWARDED */
+  })], 34 /* CLASS, HYDRATE_EVENTS */);
+}
+
+script.render = render;
+script.__file = "lib/vue-simple-suggest.vue";
+
+export default script;
